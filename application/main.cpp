@@ -1,10 +1,10 @@
 #include <iostream>
 
 // Get header
-#include "code/include/Menu.h"
+#include "code/game/include/Menu.h"
 
 // Get source
-#include "code/src/Menu.cpp"
+#include "code/game/src/Menu.cpp"
 
 int main()
 {

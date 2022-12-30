@@ -1,0 +1,4 @@
+#pragma once
+
+#define MAX_NICKNAME_LENGTH 32
+#define MAX_PLAYERS_PER_SESSION 8
