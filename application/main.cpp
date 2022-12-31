@@ -8,6 +8,8 @@
 
 int main()
 {
-    Menu::mainMenuDisplay();
+    Menu* gameMenu = new Menu();
+    gameMenu->mainMenuDisplay();
+    delete gameMenu;
     return 0;
 }

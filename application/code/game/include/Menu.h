@@ -14,9 +14,14 @@ enum options
 class Menu
 {
     public:
-    static void mainMenuDisplay();
-    static void startNewGame();
-    static void playerList();
-    static void gameList();
-    static void confirmExit();
+    void mainMenuDisplay();
+
+    Menu() = default;
+    
+    protected:
+    void startNewGame();
+    void playerList();
+    void gameList();
+    void confirmExit();
+
 };
