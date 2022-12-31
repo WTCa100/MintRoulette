@@ -5,10 +5,10 @@
 // Link source files
 enum options
 {
-    StartNewGame,
-    ShowPlayerList,
-    ShowGameList,
-    Exit
+    StartNewGame = 1,
+    ShowPlayerList = 2,
+    ShowGameList = 3,
+    Exit = 4
 };
 
 class Menu

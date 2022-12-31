@@ -3,9 +3,11 @@
 // Get header
 #include "../include/Menu.h"
 #include "../../utilities/include/InputValidator.h"
+#include "../include/Game.h"
 
 // Get source
 #include "../../utilities/src/InputValidator.cpp"
+#include "../src/Game.cpp"
 
 void Menu::mainMenuDisplay()
 {
@@ -52,6 +54,10 @@ void Menu::mainMenuDisplay()
 void Menu::startNewGame()
 {
     std::cout << "Start new game!\n";
+    std::cout << "WIP!\n";
+    Game* session = new Game();
+    session->startGame();
+    delete session;
 }
 
 void Menu::playerList()
