@@ -3,7 +3,9 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <map>
+
+#include "./Player.h"
+#include "./Turn.h"
 
 class Game
 {
@@ -17,11 +19,11 @@ class Game
     void setInitialBankBalance(const int& initialBankBalance = 1000) {initBankBalance_ = initialBankBalance;}
 
     Game();
+    ~Game();
 
     private:
-    // Map consists of player nickname and his bank balance.
-    std::map<std::string, uint16_t> playerSet_;
-    std::vector<std::string> playerNames_;
+    std::vector<Player*> players_;
+    std::vector<Turn*> gameTurns_;
     uint16_t numberOfPlayers_;
     int initBankBalance_;
 };
