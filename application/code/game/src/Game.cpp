@@ -97,7 +97,7 @@ void Game::startGame()
     }
     // Start turns
     std::cout << "Debug info: Start of turns\n";
-    for(int i = 0; i < 5; i++)
+    for(int i = 0; i < 2; i++)
     {
         Turn* currentTurn = new Turn(players_, i);
         currentTurn->playTurn();

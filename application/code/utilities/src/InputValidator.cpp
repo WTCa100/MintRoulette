@@ -7,8 +7,6 @@ bool ValidateInput::isStringNumber(const std::string& userInput)
 {
     if(userInput.empty())
     {
-        // Todo implement exeption throws
-        std::cout << "Your input cannot be empty!\n";
         return false;
     }
     
