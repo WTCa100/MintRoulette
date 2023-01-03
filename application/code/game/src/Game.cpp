@@ -81,12 +81,20 @@ void Game::startGame()
         std::cout << "Please provide name for player " << i + 1 << std::endl;
         do
         {
-            std::getline(std::cin, tmpNicknameHolder);
-            if(tmpNicknameHolder.empty())
+            do
             {
-                std::cout << "Player must have a name!\n";
+                std::getline(std::cin, tmpNicknameHolder);
+                if(tmpNicknameHolder.empty())
+                {
+                    std::cout << "Player must have a name!\n";
+                }
+            } while (tmpNicknameHolder.empty());
+            if(ValidateInput::isADuplicatePlayer(players_, tmpNicknameHolder))
+            {
+                std::cout << "2 Players cannot have the same nickname!\n";
             }
-        } while (tmpNicknameHolder.empty());
+        } while (ValidateInput::isADuplicatePlayer(players_, tmpNicknameHolder));
+        
         roulettePlayer->setNickName(tmpNicknameHolder);
         players_.push_back(roulettePlayer);
     }
@@ -101,7 +109,8 @@ void Game::startGame()
     {
         Turn* currentTurn = new Turn(players_, i);
         currentTurn->playTurn();
-        delete currentTurn;
+        gameTurns_.push_back(currentTurn);
+        playersAndBetsSave_.push_back(currentTurn->getPlayersBets());
     }
 }
 
@@ -113,10 +122,28 @@ Game::Game()
 Game::~Game()
 {
     std::cout << "Teardown game\n";
+    for(auto i = 0; i < playersAndBetsSave_.size(); i++)
+    {
+        for(auto& j : playersAndBetsSave_[i])
+        {
+            std::cout << "Debug: Deleting bet for " << j.first->getNickName() << std::endl;
+            std::cout << "Debug: Bet info: " << j.second->getBetType() << std::endl;
+        }
+    }
+
+    for(auto i = 0; i < playersAndBetsSave_.size(); i++)
+    {
+        for(auto& j : playersAndBetsSave_[i])
+        {
+            std::cout << "Debug: Deleting bet for " << j.first->getNickName() << std::endl;
+            std::cout << "Debug: Bet info: " << j.second->getBetType() << std::endl;
+            delete j.second;
+        }
+    }
     for(auto i = 0; i < gameTurns_.size(); i++)
     {
         std::cout << "Debug Info: Delete turn " << i << std::endl;
-        //delete gameTurns_[i];
+        delete gameTurns_[i];
     }
     for(auto i = 0; i < players_.size(); i++)
     {

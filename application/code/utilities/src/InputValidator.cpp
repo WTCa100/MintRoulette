@@ -19,3 +19,15 @@ bool ValidateInput::isStringNumber(const std::string& userInput)
     }
     return true;
 }
+
+bool ValidateInput::isADuplicatePlayer(const std::vector<Player*>& userInputs, const std::string targetUserInput)
+{
+    for(auto i : userInputs)
+    {
+        if(i->getNickName() == targetUserInput)
+        {
+            return true;
+        }
+    }
+    return false;
+}

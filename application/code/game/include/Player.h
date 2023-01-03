@@ -8,8 +8,8 @@ class Player
     
     void setNickName(const std::string& nickName) { nickName_ = nickName;}
     void setBalance(const int& balance) { balance_ = balance;}
-    std::string getNickName() {return nickName_;}
-    int getBalance() {return balance_;}
+    std::string getNickName() const {return nickName_;}
+    int getBalance() const {return balance_;}
 
     Player() = default;
     Player(int balance) {balance_ = balance;}
