@@ -18,7 +18,10 @@ void Menu::mainMenuDisplay()
         std::cout << "Welcome to the mintRoulette!\t";
         std::cout << "Made by John \"WTCa100\" Bielawa\n";
         std::cout << "Test your lucky pawn!\n";
-        std::cout << "Option list {placeholder}\n";
+        std::cout << "1. New game\n";
+        std::cout << "2. Players list\n";
+        std::cout << "3. Game Lists\n";
+        std::cout << "4. Exit\n";
         std::cout << "Select and option and hit enter\n";
         do
         {
@@ -31,16 +34,16 @@ void Menu::mainMenuDisplay()
         
         switch (std::stoi(choosenOption))
         {
-        case StartNewGame:
+        case options::StartNewGame:
             startNewGame();
             break;
-        case ShowPlayerList:
+        case options::ShowPlayerList:
             playerList();
             break;
-        case ShowGameList:
+        case options::ShowGameList:
             gameList();
             break;
-        case Exit:
+        case options::Exit:
             confirmExit();
             break;
         default:

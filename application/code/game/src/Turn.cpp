@@ -24,13 +24,14 @@ void Turn::bettingPhase()
         if(askForBet())
         {
             Bet* playerBet = new Bet();
-            playerBet->askForBetType(*currentPlayers_[i]);
-            delete playerBet;
+            playerBet->askForBetType();
+            playerBet->buildBet(*currentPlayers_[i]);
+            playerAndBets_.insert(std::make_pair(currentPlayers_[i], playerBet));
         }        
         else
         {
             Bet* playerPass = new Bet(*currentPlayers_[i]);
-            delete playerPass;
+            playerAndBets_.insert(std::make_pair(currentPlayers_[i], playerPass));
         }
         
         std::cout << "Debug info: " << currentPlayers_[i]->getNickName() << " turn has ended\n";
@@ -45,7 +46,6 @@ void Turn::rollTheRoulette()
     {
         i = randomizeNumber();
     }
-    std::cout << numbers.size() << std::endl;
     size_t luckyNumPos = rand() % numbers.size();
     setLuckyNumber(numbers[luckyNumPos]);
     std::cout << "Bets are now clossed!\n";
@@ -59,6 +59,25 @@ void Turn::rollTheRoulette()
     std::cout << "The lucky number is: ";
     Sleep(1000);
     std::cout << luckyNumber_ << std::endl;
+
+    // Set lucky number
+    for(auto i : playerAndBets_)
+    {
+        // Todo set rest of BetTypes success
+        switch (i.second->getBetType())
+        {
+        case BetType::StraightUp:
+            i.second->setBetSucces(i.second->getGuessedNumber() == luckyNumber_);
+            break;
+        case BetType::DozenBet:
+            break;
+        case BetType::EvenOdd:
+            break;
+        default:
+            std::cout << "Debug Info: "<< i.first->getNickName() <<"passed this turn!\n";
+            break;
+        }
+    }
 }
 
 bool Turn::askForBet()
@@ -93,11 +112,35 @@ bool Turn::askForBet()
     return false;
 }
 
+void Turn::summaryPhase()
+{
+    // Todo send message in summary 
+    for(auto i : playerAndBets_)
+    {
+        std::cout << i.first->getNickName() << " ";
+        switch (i.second->getBetType())
+        {
+        case BetType::StraightUp:
+            std::cout << "betted straight up with " 
+                      << i.second->getGuessedNumber();
+            break;
+        case BetType::DozenBet:
+            break;
+        case BetType::EvenOdd:
+            break;
+        default:
+            std::cout << "passed this turn!\n";
+            break;
+        }
+    }
+}
+
 void Turn::playTurn()
 {
     std::cout << "Turn " << turnNumber_ << std::endl;
     bettingPhase();
     rollTheRoulette();
+
 }
 
 Turn::~Turn()
