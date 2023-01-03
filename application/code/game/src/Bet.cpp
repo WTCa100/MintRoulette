@@ -1,4 +1,5 @@
 #include <string>
+#include <iostream>
 
 #include "../include/Bet.h"
 #include "../../utilities/include/InputValidator.h"
@@ -59,6 +60,7 @@ void Bet::buildBet(const Player& whoPlacedBet)
             std::cout << "You cannot bet more money than you have\n";
         }
     } while (std::stoi(*userInput) > whoPlacedBet.getBalance());
+    ammountBetted_ = std::stoi(*userInput);
     delete userInput;
     switch (betType_)
     {
@@ -178,5 +180,6 @@ void Bet::pass()
 Bet::Bet(const Player& currentTurnPlayer)
 {
     currentTurnPlayer_ = currentTurnPlayer;
+    ammountBetted_ = -1;
     pass();
 }

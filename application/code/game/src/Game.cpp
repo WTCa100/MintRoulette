@@ -111,6 +111,7 @@ void Game::startGame()
         currentTurn->playTurn();
         gameTurns_.push_back(currentTurn);
         playersAndBetsSave_.push_back(currentTurn->getPlayersBets());
+        delete currentTurn;
     }
 }
 
@@ -124,26 +125,19 @@ Game::~Game()
     std::cout << "Teardown game\n";
     for(auto i = 0; i < playersAndBetsSave_.size(); i++)
     {
+        std::cout << "Turn: " << i << std::endl;
         for(auto& j : playersAndBetsSave_[i])
         {
             std::cout << "Debug: Deleting bet for " << j.first->getNickName() << std::endl;
-            std::cout << "Debug: Bet info: " << j.second->getBetType() << std::endl;
+            std::cout << "Debug: Bet info: Type:" << j.second->getBetType() << std::endl;
+            std::cout << "Debug: Bet info: Value: " << j.second->getAmmountBetted() << std::endl;
         }
     }
-
-    for(auto i = 0; i < playersAndBetsSave_.size(); i++)
-    {
-        for(auto& j : playersAndBetsSave_[i])
-        {
-            std::cout << "Debug: Deleting bet for " << j.first->getNickName() << std::endl;
-            std::cout << "Debug: Bet info: " << j.second->getBetType() << std::endl;
-            delete j.second;
-        }
-    }
+    
     for(auto i = 0; i < gameTurns_.size(); i++)
     {
         std::cout << "Debug Info: Delete turn " << i << std::endl;
-        delete gameTurns_[i];
+       // delete gameTurns_[i];
     }
     for(auto i = 0; i < players_.size(); i++)
     {
