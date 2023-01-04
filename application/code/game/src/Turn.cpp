@@ -4,6 +4,7 @@
 // Get header
 #include "../include/Turn.h"
 #include "../include/Bet.h"
+#include "../../utilities/include/MaxValues.h"
 
 // Get source
 #include "./Bet.cpp"
@@ -70,8 +71,28 @@ void Turn::rollTheRoulette()
             i.second->setBetSucces(i.second->getGuessedNumber() == luckyNumber_);
             break;
         case BetType::DozenBet:
+            switch(i.second->getGuessedNumberRange())
+            {
+                case guessedNumberRangeType::LowerRange:
+                i.second->setBetSucces(luckyNumber_ >= MIN_LOWER_RANGE || luckyNumber_ <= MAX_LOWER_RANGE);
+                break;
+                case guessedNumberRangeType::MiddleRange:
+                i.second->setBetSucces(luckyNumber_ >= MIN_MIDDLE_RANGE || luckyNumber_ <= MAX_MIDDLE_RANGE);
+                break;
+                case guessedNumberRangeType::UpperRange:
+                i.second->setBetSucces(luckyNumber_ >= MIN_UPPER_RANGE || luckyNumber_ <= MAX_UPPER_RANGE);
+                break;
+            }
             break;
         case BetType::EvenOdd:
+            if(i.second->getIsOddChoosen())
+            {
+                i.second->setBetSucces(luckyNumber_ % 2 != 0);
+            }
+            else
+            {
+                i.second->setBetSucces(luckyNumber_ % 2 == 0);
+            }
             break;
         default:
             std::cout << "Debug Info: "<< i.first->getNickName() <<"passed this turn!\n";
@@ -115,14 +136,14 @@ bool Turn::askForBet()
 void Turn::summaryPhase()
 {
     // Todo send message in summary 
-    for(auto i : playerAndBets_)
+    for(auto player : playerAndBets_)
     {
-        std::cout << i.first->getNickName() << " ";
-        switch (i.second->getBetType())
+        std::cout << player.first->getNickName() << " ";
+        switch (player.second->getBetType())
         {
         case BetType::StraightUp:
             std::cout << "betted straight up with " 
-                      << i.second->getGuessedNumber();
+                      << player.second->getGuessedNumber();
             break;
         case BetType::DozenBet:
             break;
@@ -132,6 +153,20 @@ void Turn::summaryPhase()
             std::cout << "passed this turn!\n";
             break;
         }
+        if(!player.second->getBetType() == BetType::Pass)
+        {
+            if(player.second->getBetSucces())
+            {
+                std::cout << " and got it!\n";
+                // Dummy value for now
+                std::cout << player.first->getNickName() <<" won " << player.second->getAmmountBetted() <<"!\n";
+            }
+            else
+            {
+                std::cout << "and did not got it right!\n";
+                std::cout << player.first->getNickName() <<" lost " << player.second->getAmmountBetted() <<"!\n";
+            }
+        }
     }
 }
 
@@ -140,7 +175,7 @@ void Turn::playTurn()
     std::cout << "Turn " << turnNumber_ << std::endl;
     bettingPhase();
     rollTheRoulette();
-
+    summaryPhase();
 }
 
 Turn::~Turn()

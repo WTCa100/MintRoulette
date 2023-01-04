@@ -6,6 +6,7 @@
 #include "../../utilities/include/InputValidator.h"
 
 enum BetType{
+    Pass = -1,
     StraightUp = 1,
     DozenBet = 2,
     EvenOdd = 3
@@ -36,11 +37,12 @@ class Bet : public ValidateInput
     void setAmmountBetted(const int& ammountBetted) {ammountBetted_ = ammountBetted;}
 
     // Getter
+    const bool getBetSucces() {return wasBetSuccesful_;}
     const BetType getBetType() { return betType_;}
     const int getAmmountBetted() {return ammountBetted_;}
     const size_t getGuessedNumber() {return guessedNumber_;}
     const size_t getGuessedNumberRange() {return guessedNumberRangeType_;}
-    const bool getIsOdChoosen() {return isOddChoosen_;}
+    const bool getIsOddChoosen() {return isOddChoosen_;}
 
     Bet() = default;
     // Passing constructor

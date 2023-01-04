@@ -180,6 +180,7 @@ void Bet::pass()
 Bet::Bet(const Player& currentTurnPlayer)
 {
     currentTurnPlayer_ = currentTurnPlayer;
-    ammountBetted_ = -1;
+    betType_ = BetType::Pass;
+    ammountBetted_ = 0;
     pass();
 }
