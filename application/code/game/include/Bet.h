@@ -12,7 +12,13 @@ enum BetType{
     EvenOdd = 3
 };
 
-enum guessedNumberRangeType{
+// The following code is enum-like version of predefined winning odds.
+constexpr double PassOdd = -1.0;
+constexpr double StraightUpOdd = 0.028; // Equal to 1/35
+constexpr double DozenBetOdd = 0.333; // Equal to 1/3
+constexpr double EvenOddOdd = 0.5; // Equal to 1/2
+
+enum GuessedNumberRangeType{
     LowerRange = 1,
     MiddleRange = 2,
     UpperRange = 3
@@ -22,7 +28,7 @@ class Bet : public ValidateInput
 {
     public:
     void askForBetType();
-    void pass();
+    void Pass();
     void buildBet(const Player& whoPlacedBet);
     void askStraightUp();
     void askDozenBet();
@@ -35,13 +41,15 @@ class Bet : public ValidateInput
     void setBetSucces(const bool& wasBetSuccesful) {wasBetSuccesful_ = wasBetSuccesful;}
     void setBetType(const BetType& betType) {betType_ = betType;}
     void setAmmountBetted(const int& ammountBetted) {ammountBetted_ = ammountBetted;}
+    void setWinningOdds(const double& winningOdds) {winningOdds_ = winningOdds;}
 
-    // Getter
+    // Getters
+    const double getWinningOdds() {return winningOdds_;}
     const bool getBetSucces() {return wasBetSuccesful_;}
     const BetType getBetType() { return betType_;}
     const int getAmmountBetted() {return ammountBetted_;}
     const size_t getGuessedNumber() {return guessedNumber_;}
-    const size_t getGuessedNumberRange() {return guessedNumberRangeType_;}
+    const GuessedNumberRangeType getGuessedNumberRange() {return GuessedNumberRange_;}
     const bool getIsOddChoosen() {return isOddChoosen_;}
 
     Bet() = default;
@@ -50,10 +58,10 @@ class Bet : public ValidateInput
     private:
     int ammountBetted_;
     size_t guessedNumber_;
-    //TODO change to different type: guessedNumberRangeType
-    size_t guessedNumberRangeType_;
+    GuessedNumberRangeType GuessedNumberRange_;
     bool isOddChoosen_;
     BetType betType_;
+    double winningOdds_;
     bool wasBetSuccesful_;
     Player currentTurnPlayer_;
 

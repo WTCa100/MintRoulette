@@ -15,7 +15,7 @@ class Turn
     void playTurn();
     void rollTheRoulette();
     void summaryPhase();
-    // If false is returned the player will pass
+    // If false is returned the player will Pass
     bool askForBet();
 
 

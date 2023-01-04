@@ -34,7 +34,7 @@ void Turn::bettingPhase()
             Bet* playerPass = new Bet(*currentPlayers_[i]);
             playerAndBets_.insert(std::make_pair(currentPlayers_[i], playerPass));
         }
-        
+        std::cout << "Debug Info: playerAndBets: size: " << playerAndBets_.size() << std::endl;
         std::cout << "Debug info: " << currentPlayers_[i]->getNickName() << " turn has ended\n";
     }
 }
@@ -61,7 +61,6 @@ void Turn::rollTheRoulette()
     Sleep(1000);
     std::cout << luckyNumber_ << std::endl;
 
-    // Set lucky number
     for(auto i : playerAndBets_)
     {
         // Todo set rest of BetTypes success
@@ -73,14 +72,14 @@ void Turn::rollTheRoulette()
         case BetType::DozenBet:
             switch(i.second->getGuessedNumberRange())
             {
-                case guessedNumberRangeType::LowerRange:
-                i.second->setBetSucces(luckyNumber_ >= MIN_LOWER_RANGE || luckyNumber_ <= MAX_LOWER_RANGE);
+                case GuessedNumberRangeType::LowerRange:
+                i.second->setBetSucces(luckyNumber_ >= MIN_LOWER_RANGE && luckyNumber_ <= MAX_LOWER_RANGE);
                 break;
-                case guessedNumberRangeType::MiddleRange:
-                i.second->setBetSucces(luckyNumber_ >= MIN_MIDDLE_RANGE || luckyNumber_ <= MAX_MIDDLE_RANGE);
+                case GuessedNumberRangeType::MiddleRange:
+                i.second->setBetSucces(luckyNumber_ >= MIN_MIDDLE_RANGE && luckyNumber_ <= MAX_MIDDLE_RANGE);
                 break;
-                case guessedNumberRangeType::UpperRange:
-                i.second->setBetSucces(luckyNumber_ >= MIN_UPPER_RANGE || luckyNumber_ <= MAX_UPPER_RANGE);
+                case GuessedNumberRangeType::UpperRange:
+                i.second->setBetSucces(luckyNumber_ >= MIN_UPPER_RANGE && luckyNumber_ <= MAX_UPPER_RANGE);
                 break;
             }
             break;
@@ -98,6 +97,12 @@ void Turn::rollTheRoulette()
             std::cout << "Debug Info: "<< i.first->getNickName() <<"passed this turn!\n";
             break;
         }
+    }
+
+    for(auto debugPlayer : playerAndBets_)
+    {
+        std::cout << "Debug Info: Player: NickName: " << debugPlayer.first->getNickName() << std::endl;
+        std::cout << "Debug Info: Bet: Value: " << debugPlayer.second->getAmmountBetted() << std::endl;
     }
 }
 
@@ -136,7 +141,8 @@ bool Turn::askForBet()
 void Turn::summaryPhase()
 {
     // Todo send message in summary 
-    for(auto player : playerAndBets_)
+    std::cout << "Summary!\n"; 
+    for(auto& player : playerAndBets_)
     {
         std::cout << player.first->getNickName() << " ";
         switch (player.second->getBetType())
@@ -146,6 +152,21 @@ void Turn::summaryPhase()
                       << player.second->getGuessedNumber();
             break;
         case BetType::DozenBet:
+            std::cout << " betted dozen on number between ";
+            switch (player.second->getGuessedNumberRange())
+            {
+            case GuessedNumberRangeType::LowerRange:
+                std::cout << MIN_LOWER_RANGE << " and " 
+                          << MAX_LOWER_RANGE  << std::endl;
+                break;
+            case GuessedNumberRangeType::MiddleRange:
+                std::cout << MIN_MIDDLE_RANGE << " and "
+                          << MAX_MIDDLE_RANGE << std::endl;
+                break;
+            case GuessedNumberRangeType::UpperRange:
+                std::cout << MIN_UPPER_RANGE << " and "
+                          << MAX_UPPER_RANGE << std::endl;
+            }
             break;
         case BetType::EvenOdd:
             break;
@@ -153,21 +174,26 @@ void Turn::summaryPhase()
             std::cout << "passed this turn!\n";
             break;
         }
-        if(!player.second->getBetType() == BetType::Pass)
+        if(player.second->getBetType() != BetType::Pass)
         {
+            float winAmmount = player.second->getAmmountBetted() / player.second->getWinningOdds();
+            int currentPlayerBalance = player.first->getBalance();
             if(player.second->getBetSucces())
             {
                 std::cout << " and got it!\n";
                 // Dummy value for now
-                std::cout << player.first->getNickName() <<" won " << player.second->getAmmountBetted() <<"!\n";
+                std::cout << player.first->getNickName() <<" won " << winAmmount  <<"!\n";
+                player.first->setBalance(currentPlayerBalance + static_cast<int>(winAmmount));
             }
             else
             {
-                std::cout << "and did not got it right!\n";
+                std::cout << " and did not got it right!\n";
                 std::cout << player.first->getNickName() <<" lost " << player.second->getAmmountBetted() <<"!\n";
+                player.first->setBalance(currentPlayerBalance - player.second->getAmmountBetted());
             }
         }
     }
+    std::cout << "End of turn: " << turnNumber_ << "!\n";
 }
 
 void Turn::playTurn()
@@ -180,5 +206,5 @@ void Turn::playTurn()
 
 Turn::~Turn()
 {
-    std::cout << "End of turn: " << turnNumber_ << "!\n";
+    std::cout << "Debug Info: Turn: " << turnNumber_ << " Teardown\n";
 }

@@ -26,18 +26,22 @@ void Bet::askForBetType()
         switch (std::stoi(userInput))
         {
         case BetType::StraightUp:
-            setBetType(BetType::StraightUp);
+            betType_ = BetType::StraightUp;
+            winningOdds_ = StraightUpOdd;
             break;
         case BetType::DozenBet:
-            setBetType(BetType::DozenBet);
+            betType_ = BetType::DozenBet;
+            winningOdds_ = DozenBetOdd;
             break;
         case BetType::EvenOdd:
-            setBetType(BetType::EvenOdd);
+            betType_ = BetType::EvenOdd;
+            winningOdds_ = EvenOddOdd;
             break;
         default:
             std::cout << "No such bet type!\n";
             break;
         }
+        printf("Debug Info: Bet: WinningOdds: Value: %.3f\n", winningOdds_);
     } while (std::stoi(userInput) < 1 || std::stoi(userInput) > static_cast<int>(BetType::EvenOdd));
 }
 
@@ -126,7 +130,7 @@ void Bet::askDozenBet()
             std::cout << "Plase enter values within range 1 to 3\n";
         }
     } while (std::stoi(*userInput) < 1 || std::stoi(*userInput) > 3);
-    
+    GuessedNumberRange_ = static_cast<GuessedNumberRangeType>(std::stoi(*userInput));
     delete userInput;
 }
 
@@ -172,15 +176,16 @@ bool Bet::isStringValid(const std::string& userInput)
     return false;
 }
 
-void Bet::pass()
+void Bet::Pass()
 {
-    std::cout << currentTurnPlayer_.getNickName() << " - has passed this turn!\n";
+    std::cout << currentTurnPlayer_.getNickName() << " - has Pass this turn!\n";
 }
 
 Bet::Bet(const Player& currentTurnPlayer)
 {
     currentTurnPlayer_ = currentTurnPlayer;
     betType_ = BetType::Pass;
+    winningOdds_ = -1.0;
     ammountBetted_ = 0;
-    pass();
+    Pass();
 }

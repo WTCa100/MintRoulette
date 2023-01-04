@@ -111,7 +111,10 @@ void Game::startGame()
         currentTurn->playTurn();
         gameTurns_.push_back(currentTurn);
         playersAndBetsSave_.push_back(currentTurn->getPlayersBets());
-        delete currentTurn;
+        // Here check if game can progress (for example if there is at least 2 players with more than 1 in their bank)
+        // If not, end and ask if player wants to save the game
+        // If yes, ask if players would like to continue the game or end
+        // If they would like to end ask for save again
     }
 }
 
@@ -137,7 +140,7 @@ Game::~Game()
     for(auto i = 0; i < gameTurns_.size(); i++)
     {
         std::cout << "Debug Info: Delete turn " << i << std::endl;
-       // delete gameTurns_[i];
+        delete gameTurns_[i];
     }
     for(auto i = 0; i < players_.size(); i++)
     {
