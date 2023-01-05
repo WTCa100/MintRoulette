@@ -176,20 +176,22 @@ void Turn::summaryPhase()
         }
         if(player.second->getBetType() != BetType::Pass)
         {
-            float winAmmount = player.second->getAmmountBetted() / player.second->getWinningOdds();
+            double winAmmount = player.second->getAmmountBetted() / player.second->getWinningOdds();
             int currentPlayerBalance = player.first->getBalance();
             if(player.second->getBetSucces())
             {
                 std::cout << " and got it!\n";
                 // Dummy value for now
-                std::cout << player.first->getNickName() <<" won " << winAmmount  <<"!\n";
+                std::cout << player.first->getNickName() <<" won " << static_cast<int>(winAmmount)  <<"!\n";
                 player.first->setBalance(currentPlayerBalance + static_cast<int>(winAmmount));
+                player.first->setMoneyAccumulated(player.first->getMoneyAccumulated() + static_cast<int>(winAmmount));
             }
             else
             {
                 std::cout << " and did not got it right!\n";
                 std::cout << player.first->getNickName() <<" lost " << player.second->getAmmountBetted() <<"!\n";
                 player.first->setBalance(currentPlayerBalance - player.second->getAmmountBetted());
+                player.first->setMoneyAccumulated(player.first->getMoneyAccumulated() - player.second->getAmmountBetted());
             }
         }
     }
