@@ -1,5 +1,6 @@
 #include <ctime>
 #include <limits.h>
+#include <algorithm>
 
 // Get header
 #include "../include/Game.h"
@@ -9,6 +10,7 @@
 
 // Get source
 #include "./Turn.cpp"
+#include "../src/Player.cpp"
 
 void Game::setGameConfig()
 {
@@ -98,23 +100,100 @@ void Game::startGame()
         roulettePlayer->setNickName(tmpNicknameHolder);
         players_.push_back(roulettePlayer);
     }
-    std::cout <<"there are " << players_.size() << " players\n";
+    playersAlive_ = players_;
+    std::cout <<"there are " << playersAlive_.size() << " players\n";
     for(auto i : players_)
     {
         std::cout << "Player nick: " << i->getNickName() << std::endl;
     }
     // Start turns
     std::cout << "Debug info: Start of turns\n";
-    for(int i = 0; i < 2; i++)
+    bool canGameProgress = true;
+    uint16_t turnId = 0;
+    while(canGameProgress)
     {
-        Turn* currentTurn = new Turn(players_, i);
+        turnId ++;
+        bool stopGameEarly = false;
+        Turn* currentTurn = new Turn(playersAlive_, turnId);
         currentTurn->playTurn();
         gameTurns_.push_back(currentTurn);
         playersAndBetsSave_.push_back(currentTurn->getPlayersBets());
+        eliminatePlayers();
         // Here check if game can progress (for example if there is at least 2 players with more than 1 in their bank)
         // If not, end and ask if player wants to save the game
         // If yes, ask if players would like to continue the game or end
         // If they would like to end ask for save again
+        stopGameEarly = askForStopGameEarly(stopGameEarly);
+        canGameProgress = checkGameCondition(stopGameEarly);
+    }
+}
+
+void Game::eliminatePlayers()
+{
+    for(auto& checkPlayer : playersAlive_)
+    {
+        if(checkPlayer->getBalance() == 0)
+        {
+            std::cout << "Player: " << checkPlayer->getNickName() << " got eliminated!\n";
+            playersEliminated_.push_back(checkPlayer);
+        }
+    }
+    for(auto& killPlayer : playersEliminated_)
+    {
+        playersAlive_.erase(std::remove(playersAlive_.begin(), playersAlive_.end(), killPlayer), playersAlive_.end());
+    }
+}
+
+bool Game::isStringValid(const std::string& userInput)
+{
+    return (tolower(userInput[0]) == 'y' ||
+            tolower(userInput[0]) == 'n');
+}
+
+bool Game::askForStopGameEarly(bool& stopEarly)
+{
+    std::string userInput = "";
+    std::cout << "Do you wish to proccede? y/n\n";
+    do
+    {
+        std::getline(std::cin, userInput);
+        if(!this->isStringValid(userInput))
+        {
+            std::cout << "It's either yes or no\n";
+        }
+    } while (!this->isStringValid(userInput));
+
+    if(tolower(userInput[0]) == 'y')
+    {
+        return false;
+    }
+    return true;
+}
+
+/// @brief Checks if game is eligable for further progression
+/// @param canGameProgress
+/// @todo Ask if player wants to continue games
+/// @return 1: can progress 0: cannot progress
+bool Game::checkGameCondition(const bool& stopEarly)
+{
+    if(playersAlive_.size() <= 1)
+    {
+        return false;
+    }
+    if(stopEarly)
+    {
+        return false;
+    }
+    return true;
+}
+
+/// @brief Summerizes game progres
+void Game::endScreen()
+{
+    std::cout << "Game summary\n";
+    for(auto& player : players_)
+    {
+        player->displayMoneyWonLoss();
     }
 }
 
@@ -125,7 +204,12 @@ Game::Game()
 
 Game::~Game()
 {
+    endScreen();
     std::cout << "Teardown game\n";
+    std::cout << "Debug: Info: Players: Alive: Clear\n";
+    playersAlive_.clear(); 
+    std::cout << "Debug: Info: Players: Elimineted: Clear\n";
+    playersEliminated_.clear(); 
     for(auto i = 0; i < playersAndBetsSave_.size(); i++)
     {
         std::cout << "Turn: " << i << std::endl;
