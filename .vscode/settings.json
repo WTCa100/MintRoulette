@@ -49,7 +49,9 @@
         "xutility": "cpp",
         "list": "cpp",
         "unordered_map": "cpp",
-        "xhash": "cpp"
+        "xhash": "cpp",
+        "algorithm": "cpp",
+        "fstream": "cpp"
     },
     "cmake.configureOnOpen": false
 }
