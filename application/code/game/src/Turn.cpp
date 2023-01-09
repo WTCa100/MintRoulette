@@ -25,14 +25,15 @@ void Turn::bettingPhase()
         if(askForBet())
         {
             Bet* playerBet = new Bet();
-            playerBet->askForBetType();
             playerBet->buildBet(*currentPlayers_[i]);
             playerAndBets_.insert(std::make_pair(currentPlayers_[i], playerBet));
+            currentPlayers_[i]->setBetCount(currentPlayers_[i]->getBetCount() + 1);
         }        
         else
         {
             Bet* playerPass = new Bet(*currentPlayers_[i]);
             playerAndBets_.insert(std::make_pair(currentPlayers_[i], playerPass));
+            currentPlayers_[i]->setPassCount(currentPlayers_[i]->getPassCount() + 1);
         }
         std::cout << "Debug Info: playerAndBets: size: " << playerAndBets_.size() << std::endl;
         std::cout << "Debug info: " << currentPlayers_[i]->getNickName() << " turn has ended\n";
@@ -152,7 +153,7 @@ void Turn::summaryPhase()
                       << player.second->getGuessedNumber();
             break;
         case BetType::DozenBet:
-            std::cout << " betted dozen on number between ";
+            std::cout << "betted dozen on number between ";
             switch (player.second->getGuessedNumberRange())
             {
             case GuessedNumberRangeType::LowerRange:
@@ -169,6 +170,14 @@ void Turn::summaryPhase()
             }
             break;
         case BetType::EvenOdd:
+            if(player.second->getIsOddChoosen())
+            {
+                std::cout << "betted for odd ";
+            }
+            else
+            {
+                std::cout << "betted for even ";
+            }
             break;
         default:
             std::cout << "passed this turn!\n";
@@ -180,7 +189,7 @@ void Turn::summaryPhase()
             int currentPlayerBalance = player.first->getBalance();
             if(player.second->getBetSucces())
             {
-                std::cout << " and got it!\n";
+                std::cout << "and got it!\n";
                 // Dummy value for now
                 std::cout << player.first->getNickName() <<" won " << static_cast<int>(winAmmount)  <<"!\n";
                 player.first->setBalance(currentPlayerBalance + static_cast<int>(winAmmount));
@@ -188,7 +197,7 @@ void Turn::summaryPhase()
             }
             else
             {
-                std::cout << " and did not got it right!\n";
+                std::cout << "and did not got it right!\n";
                 std::cout << player.first->getNickName() <<" lost " << player.second->getAmmountBetted() <<"!\n";
                 player.first->setBalance(currentPlayerBalance - player.second->getAmmountBetted());
                 player.first->setMoneyAccumulated(player.first->getMoneyAccumulated() - player.second->getAmmountBetted());
