@@ -45,10 +45,10 @@ void Bet::askForBetType()
     } while (std::stoi(userInput) < 1 || std::stoi(userInput) > static_cast<int>(BetType::EvenOdd));
 }
 
-void Bet::buildBet(const Player& whoPlacedBet)
+void Bet::askForBetAmmount(const Player& whoPlacedBet)
 {
     std::string* userInput = new std::string;
-    std::cout << "How much money you are willing to bet?\n";
+    std::cout << "How much money you are willing to bet? (you have "<< whoPlacedBet.getBalance() << "\n";
     do
     {
         do
@@ -66,6 +66,12 @@ void Bet::buildBet(const Player& whoPlacedBet)
     } while (std::stoi(*userInput) > whoPlacedBet.getBalance());
     ammountBetted_ = std::stoi(*userInput);
     delete userInput;
+}
+
+void Bet::buildBet(const Player& whoPlacedBet)
+{
+    askForBetAmmount(whoPlacedBet);
+    askForBetType();
     switch (betType_)
     {
     case BetType::StraightUp:

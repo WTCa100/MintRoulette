@@ -33,6 +33,7 @@ class Bet : public ValidateInput
     void askStraightUp();
     void askDozenBet();
     void askEvenOdd();
+    void askForBetAmmount(const Player& whoPlacedBet);
 
     bool isStringValid(const std::string& userInput) override;
 
