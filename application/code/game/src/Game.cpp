@@ -191,9 +191,10 @@ bool Game::checkGameCondition(const bool& stopEarly)
 void Game::endScreen()
 {
     std::cout << "Game summary\n";
-    for(auto& player : players_)
+    for(auto& players : players_)
     {
-        player->displayMoneyWonLoss();
+        players->displayMoneyWonLoss();
+        players->displayBetPassCounts();
     }
 }
 
