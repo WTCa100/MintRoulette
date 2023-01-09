@@ -16,3 +16,25 @@ void Player::displayMoneyWonLoss()
         << std::endl;
     }
 }
+
+void Player::displayBetPassCounts()
+{
+    std::cout << "Player " << nickName_ << " placed ";
+    if(betCount_ > 0)
+    {
+        std::cout << betCount_ << " bets ";
+    }
+    else
+    {
+        std::cout << "no bets ";
+    }
+    std::cout << "and ";
+    if(passCount_ > 0)
+    {
+        std::cout << passCount_ << " passes!\n";
+    }
+    else
+    {
+        std::cout << "no passes!\n";
+    }
+}
