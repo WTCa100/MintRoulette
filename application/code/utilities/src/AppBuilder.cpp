@@ -6,12 +6,16 @@
 #include "../include/AppBuilder.h"
 #include "../include/Paths.h"
 
-void AppBuilder::createDirectory(const std::pair<std::string, std::string>& setupPath)
+
+void AppBuilder::createDirectory(const std::string& pathToSet)
 {
+    const std::string sysCommandExec = "mkdir " + pathToSet;
     do
     {
-        system(setupPath.second.c_str());
-    }while(!isDirectoryGood(setupPath.first));
+        std::cout << sysCommandExec << std::endl;
+        system(sysCommandExec.c_str());
+    }while(!isDirectoryGood(pathToSet));
+    std::cout << "Done!\n";
 }
 
 bool AppBuilder::isDirectoryGood(const std::string& path)
@@ -22,21 +26,24 @@ bool AppBuilder::isDirectoryGood(const std::string& path)
 
 void AppBuilder::checkDirectories()
 {
-    for(auto path : _pathCheckingMap)
+    if(_pathsToCheck.empty())
     {
-        std::cout << "Checking " << path.first << std::endl;
-        if(isDirectoryGood(path.first))
+        std::cout << "Nothing to check!\n";
+        return;
+    }
+
+    for(auto path: _pathsToCheck)
+    {
+        std::cout << "Checking " << path << " ...\n";
+        if(!isDirectoryGood(path))
         {
-            std::cout << "Found!\n";
+            std::cout << "Not found!\n";
+            std::cout << "Attempting to create " << path << std::endl;
+            createDirectory(path);
             continue;
         }
-        std::cout << "Not found!\n";
 
-        {
-        std::cout << "Creating " << path.first << std::endl;
-        createDirectory(path);
-        }
+        std::cout << "Found!\n";
 
-        std::cout << "Continuing...\n";
     }
 }
