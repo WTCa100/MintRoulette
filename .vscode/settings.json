@@ -51,7 +51,8 @@
         "unordered_map": "cpp",
         "xhash": "cpp",
         "algorithm": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "set": "cpp"
     },
     "cmake.configureOnOpen": false
 }
