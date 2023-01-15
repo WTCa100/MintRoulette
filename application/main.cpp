@@ -12,9 +12,12 @@
 int main()
 {
     AppBuilder* makeApp = new AppBuilder;
-    makeApp->checkDirectories();
+    makeApp->setupGameFiles();
     delete makeApp;
+    
+    // Generate seeds
     srand(static_cast<unsigned int>(time(NULL)));
+
     Menu* gameMenu = new Menu();
     gameMenu->mainMenuDisplay();
     delete gameMenu;
