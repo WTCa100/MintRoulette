@@ -194,6 +194,7 @@ void Turn::summaryPhase()
                 std::cout << player.first->getNickName() <<" won " << static_cast<int>(winAmmount)  <<"!\n";
                 player.first->setBalance(currentPlayerBalance + static_cast<int>(winAmmount));
                 player.first->setMoneyAccumulated(player.first->getMoneyAccumulated() + static_cast<int>(winAmmount));
+                player.first->setGoodBetCount(player.first->getGoodBetCount() + 1);
             }
             else
             {
