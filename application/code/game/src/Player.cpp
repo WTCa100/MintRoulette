@@ -2,6 +2,7 @@
 
 #include "../include/Player.h"
 
+/// @brief displays if player lost or won money.
 void Player::displayMoneyWonLoss()
 {
     std::cout << "Player " << nickName_;
@@ -17,6 +18,7 @@ void Player::displayMoneyWonLoss()
     }
 }
 
+/// @brief Displays betCount_ and passCount_ logically correct
 void Player::displayBetPassCounts()
 {
     std::cout << "Player " << nickName_ << " placed ";
@@ -39,7 +41,7 @@ void Player::displayBetPassCounts()
     }
 }
 
-/// @brief Constructor used for saving and loading
+/// @brief Constructor used for saving and loading player data from and to file
 /// @param nickName user name
 /// @param globMoneyAccumulated how many player have accumulated during all of his playthroughs
 /// @param globGoodBetCount how many bets that player placed were good
@@ -85,6 +87,9 @@ Player::Player(int balance)
     goodBetCount_ = 0;
 }
 
+/// @brief Constructor currently with no use
+/// @param nickName player name
+/// @param balance inital bank balance
 Player::Player(const std::string nickName, int balance)
 {
     // Global
@@ -102,6 +107,7 @@ Player::Player(const std::string nickName, int balance)
     goodBetCount_ = 0;
 }
 
+/// @brief Assings current local stats of player to it's global equivalents
 void Player::moveToGlobalStats()
 {
     std::cout << "Debug: Player: globPassCount: Pass: First " << globPassCount_ << std::endl;

@@ -13,6 +13,7 @@
 #include "./Turn.cpp"
 #include "../src/Player.cpp"
 
+/// @brief Sets up information about number of players and initial bank account
 void Game::setGameConfig()
 {
     std::string userInput = "";
@@ -71,17 +72,22 @@ void Game::setGameConfig()
     }
 }
 
+/// @brief  Checks if player is a returning one or not
+/// @param name player nickname used as filename
+/// @return if file nammed [playerNickname].pl exists
 bool Game::checkIfPlayerExists(const std::string& name) const
 {
     return fManager->isFileGood(FILE_PLAYER_STATS_PATH, name + EXT_PLAYER_STATS);
 }
 
+/// @brief Core gameplay - create player instances, assign them nicknames, and play
 void Game::startGame()
 {
     std::cout << "WIP!\n";
     std::cout << "Player count: " << numberOfPlayers_ << std::endl;
     std::cout << "Init balance: " << initBankBalance_ << std::endl;
 
+    // ask for names
     for(int i = 0; i < numberOfPlayers_; i++)
     {
         std::string tmpNicknameHolder = "";
@@ -102,6 +108,8 @@ void Game::startGame()
                 std::cout << "2 Players cannot have the same nickname!\n";
             }
         } while (ValidateInput::isADuplicatePlayer(players_, tmpNicknameHolder));
+
+        // Check if player is returning one or not
         if(checkIfPlayerExists(tmpNicknameHolder))
         {
             roulettePlayer = loadPlayer(tmpNicknameHolder);
@@ -120,6 +128,7 @@ void Game::startGame()
     {
         std::cout << "Player nick: " << i->getNickName() << std::endl;
     }
+
     // Start turns
     std::cout << "Debug info: Start of turns\n";
     bool canGameProgress = true;
@@ -133,10 +142,8 @@ void Game::startGame()
         gameTurns_.push_back(currentTurn);
         playersAndBetsSave_.push_back(currentTurn->getPlayersBets());
         eliminatePlayers();
-        // Here check if game can progress (for example if there is at least 2 players with more than 1 in their bank)
-        // If not, end and ask if player wants to save the game
-        // If yes, ask if players would like to continue the game or end
-        // If they would like to end ask for save again
+
+        // Check if players want to continue
         if(playersAlive_.size() > 1)
         {
             stopGameEarly = askForStopGameEarly(stopGameEarly);
@@ -145,6 +152,8 @@ void Game::startGame()
     }
 }
 
+/// @brief removes player from playersAlive_ and assigns it to playersEliminated_
+/// @note Player is eliminated when his balance reaches zero
 void Game::eliminatePlayers()
 {
     for(auto& checkPlayer : playersAlive_)
@@ -161,12 +170,18 @@ void Game::eliminatePlayers()
     }
 }
 
+/// @brief Check if user inputed 'y' or 'n'
+/// @param userInput 
+/// @return if user input has it's first value of 'y' or 'n'
 bool Game::isStringValid(const std::string& userInput)
 {
     return (tolower(userInput[0]) == 'y' ||
             tolower(userInput[0]) == 'n');
 }
 
+/// @brief Prompt players if they want to still playing
+/// @param stopEarly game loop boolean value
+/// @return if players wants to stop early
 bool Game::askForStopGameEarly(bool& stopEarly)
 {
     std::string userInput = "";
@@ -204,7 +219,7 @@ bool Game::checkGameCondition(const bool& stopEarly)
     return true;
 }
 
-/// @brief Summerizes game progress
+/// @brief Summerizes game progress. Display how much money player lost and how many bets and passes they have placed
 void Game::endScreen()
 {
     std::cout << "Game summary\n";
@@ -215,16 +230,22 @@ void Game::endScreen()
     }
 }
 
+/// @brief Defult constructor
 Game::Game()
 {
+    // For checking and manipulating files
     fManager = new FileManager;
+    // For proper setup
     setGameConfig();
 }
 
+/// @brief Deconstructs the game with it's content
 Game::~Game()
 {
+    // Summarize game
     endScreen();
-    // Place for save game
+
+    // Save player progress
      for(auto i = 0; i < players_.size(); i++)
     {
         std::cout << "Debug Info: Player: Save: " << i + 1 << std::endl;
@@ -235,27 +256,36 @@ Game::~Game()
     playersAlive_.clear(); 
     std::cout << "Debug: Info: Players: Elimineted: Clear\n";
     playersEliminated_.clear(); 
-    for(auto i = 0; i < playersAndBetsSave_.size(); i++)
+
+    // Delete bets
+    for(auto turn = 0; turn < playersAndBetsSave_.size(); turn++)
     {
-        std::cout << "Turn: " << i << std::endl;
-        for(auto& j : playersAndBetsSave_[i])
+        std::cout << "Turn: " << turn << std::endl;
+        // Itarate throught the map and delete it's second argument
+        for(auto& pAndB : playersAndBetsSave_[turn])
         {
-            std::cout << "Debug: Deleting bet for " << j.first->getNickName() << std::endl;
-            std::cout << "Debug: Bet info: Type:" << j.second->getBetType() << std::endl;
-            std::cout << "Debug: Bet info: Value: " << j.second->getAmmountBetted() << std::endl;
+            std::cout << "Debug: Deleting bet for " << pAndB.first->getNickName() << std::endl;
+            std::cout << "Debug: Bet info: Type:" << pAndB.second->getBetType() << std::endl;
+            std::cout << "Debug: Bet info: Value: " << pAndB.second->getAmmountBetted() << std::endl;
+            delete pAndB.second;
         }
     }
     
+    // Delete turn info
     for(auto i = 0; i < gameTurns_.size(); i++)
     {
         std::cout << "Debug Info: Delete turn " << i << std::endl;
         delete gameTurns_[i];
     }
+    
+    // Delete player info
     for(auto i = 0; i < players_.size(); i++)
     {
         std::cout << "Debug Info: Delete player " << i + 1 << std::endl;
         delete players_[i];
     }
+
+    // Delete FileManager
     delete fManager;
     
 }
@@ -273,6 +303,9 @@ void Game::savePlayerStats(const Player& savePlayer)
     fManager->appendPlayerSaveFile(savePlayer);
 }
 
+/// @brief Loads player attributes from save file and assings them to a player pointer
+/// @param name loading player's name
+/// @return Player instance with setup values
 Player* Game::loadPlayer(const std::string& name) const
 {
     std::vector<std::string> playerValues = fManager->loadFileContent(FILE_PLAYER_STATS_PATH, name + EXT_PLAYER_STATS);

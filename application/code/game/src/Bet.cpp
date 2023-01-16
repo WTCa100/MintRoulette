@@ -5,6 +5,7 @@
 #include "../../utilities/include/InputValidator.h"
 #include "../../utilities/include/MaxValues.h"
 
+/// @brief Asks player to select desired bet type
 void Bet::askForBetType()
 {
     std::string userInput;
@@ -45,6 +46,9 @@ void Bet::askForBetType()
     } while (std::stoi(userInput) < 1 || std::stoi(userInput) > static_cast<int>(BetType::EvenOdd));
 }
 
+/// @brief Asks player how much money he want to bet from his bank
+/// @param whoPlacedBet value of bet
+/// @warning Bet cannot be greater than bank account.
 void Bet::askForBetAmmount(const Player& whoPlacedBet)
 {
     std::string* userInput = new std::string;
@@ -68,6 +72,9 @@ void Bet::askForBetAmmount(const Player& whoPlacedBet)
     delete userInput;
 }
 
+/// @brief Sets up class attributes via askForBetAmmount, -Type and more specific 
+/// information depending on bet type player choose
+/// @param whoPlacedBet current Player 
 void Bet::buildBet(const Player& whoPlacedBet)
 {
     askForBetAmmount(whoPlacedBet);
@@ -90,6 +97,7 @@ void Bet::buildBet(const Player& whoPlacedBet)
 
 }
 
+/// @brief Builds straightUp type of bet
 void Bet::askStraightUp()
 {
     std::string* userInput = new std::string;
@@ -114,6 +122,7 @@ void Bet::askStraightUp()
     delete userInput;
 }
 
+/// @brief Builds dozen type of bet
 void Bet::askDozenBet()
 {
     std::string* userInput = new std::string;
@@ -140,6 +149,7 @@ void Bet::askDozenBet()
     delete userInput;
 }
 
+/// @brief Builds Odd/Even type of bet.
 void Bet::askEvenOdd()
 {
     std::string* userInput = new std::string;
@@ -166,6 +176,9 @@ void Bet::askEvenOdd()
     delete userInput;
 }
 
+/// @brief Checks if player have inputed "odd" or "even"
+/// @param userInput user specified string value
+/// @return if input is "odd" or "even"
 bool Bet::isStringValid(const std::string& userInput)
 {
     std::string* tmpHolder = new std::string(userInput);
@@ -182,11 +195,14 @@ bool Bet::isStringValid(const std::string& userInput)
     return false;
 }
 
+/// @brief This function displays that player has passed his turn
 void Bet::Pass()
 {
     std::cout << currentTurnPlayer_.getNickName() << " - has Pass this turn!\n";
 }
 
+/// @brief Passing constructor
+/// @param currentTurnPlayer 
 Bet::Bet(const Player& currentTurnPlayer)
 {
     currentTurnPlayer_ = currentTurnPlayer;

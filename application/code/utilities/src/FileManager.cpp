@@ -14,7 +14,9 @@ bool FileManager::isFileGood(const std::string& path, const std::string& fileNam
     return fileCheck.good();
 }
 
-
+/// @brief Creates file in given directory and nickname
+/// @param path destination where file should be saved
+/// @param fileName filename
 void FileManager::createFile(const std::string& path, const std::string& fileName)
 {
     const std::string toMake = path + "/" + fileName;
@@ -29,6 +31,9 @@ void FileManager::createFile(const std::string& path, const std::string& fileNam
     std::cout << "Could not create the file!\n";
 }
 
+/// @brief Creates file using simple template.
+/// @param fType file type that the file has
+/// @param fileName desired name of the file
 void FileManager::touch(const FileType& fType, const std::string& fileName)
 {
     std::string tmpPathHolder;
@@ -56,6 +61,8 @@ void FileManager::touch(const FileType& fType, const std::string& fileName)
     }
 }
 
+/// @brief Loads information about previous save state and append it with new values
+/// @param appPlayerStat player whom values shall be updated
 void FileManager::appendPlayerSaveFile(const Player& appPlayerStat)
 {
     std::string path = FILE_PLAYER_STATS_PATH;
@@ -99,6 +106,10 @@ void FileManager::appendPlayerSaveFile(const Player& appPlayerStat)
     appendTheSave.close();
 }
 
+/// @brief Loads content line by line into a vector
+/// @param path path to the file
+/// @param fileName which file at path to load
+/// @return vector populated with read lines 
 std::vector <std::string> FileManager::loadFileContent(const std::string& path, const std::string& fileName)
 {
     std::vector<std::string> fileContent;

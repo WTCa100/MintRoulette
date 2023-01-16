@@ -9,11 +9,15 @@
 // Get source
 #include "./Bet.cpp"
 
+/// @brief Get random number from specified range
+/// @return Random number from range 0 to 36 as uint_16
 uint16_t Turn::randomizeNumber()
 {
     return static_cast<uint16_t>(rand()% 37);
 }
 
+/// @brief Iterate through every player, display nick and balance and promp them if they want to place a bet.
+/// @note depending on whether or not player wants to bet a different Bet initializer is created.
 void Turn::bettingPhase()
 {
     for(int i = 0; i < currentPlayers_.size(); i++)

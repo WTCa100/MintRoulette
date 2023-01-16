@@ -6,6 +6,9 @@
 #include "../include/AppBuilder.h"
 #include "../include/Paths.h"
 
+/// @brief Creates directory using "mkdir" command
+/// @param pathToSet desired path to be created
+/// @warning This function can result in infinite loop if not used properly
 void AppBuilder::createDirectory(const std::string& pathToSet)
 {
     const std::string sysCommandExec = "mkdir " + pathToSet;
@@ -17,6 +20,9 @@ void AppBuilder::createDirectory(const std::string& pathToSet)
     std::cout << "Done!\n";
 }
 
+/// @brief Checks if directory exists using struct stat
+/// @param path path to check
+/// @return value of file stat
 bool AppBuilder::isDirectoryGood(const std::string& path)
 {
     struct stat buffer;
@@ -26,12 +32,14 @@ bool AppBuilder::isDirectoryGood(const std::string& path)
 /// @brief Check every path entry in _pathsToCheck
 void AppBuilder::checkDirectories()
 {
+    // Check if there are no paths to check 
     if(_pathsToCheck.empty())
     {
         std::cout << "Nothing to check!\n";
         return;
     }
 
+    // Check and create if necessery a folder
     for(auto path: _pathsToCheck)
     {
         std::cout << "Checking " << path << " ...\n";
@@ -44,10 +52,10 @@ void AppBuilder::checkDirectories()
         }
 
         std::cout << "Found!\n";
-
     }
 }
 
+/// @brief 
 void AppBuilder::buildInitConfig()
 {
     std::string initConfigPath = INIT_CONFIG_PATH;
@@ -101,15 +109,15 @@ bool AppBuilder::isInitRequired()
 }
 
 
-
+/// @brief Initializes new FileManager and by default sets inital launch to true
 AppBuilder::AppBuilder()
 {
     fileMgmt_ = new FileManager();
     isInitLaunch_ = true;
 }
 
+/// @brief Delete existing file manager instance
 AppBuilder::~AppBuilder()
 {
-    isInitLaunch_ = 0;
     delete fileMgmt_;
 }

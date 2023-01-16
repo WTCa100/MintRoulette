@@ -9,6 +9,7 @@
 #include "../../utilities/src/InputValidator.cpp"
 #include "../src/Game.cpp"
 
+/// @brief Shows main menu with asking which action user wants to take next
 void Menu::mainMenuDisplay()
 {
     std::string choosenOption = "";
@@ -54,6 +55,7 @@ void Menu::mainMenuDisplay()
     
 }
 
+/// @brief Create game instance
 void Menu::startNewGame()
 {
     std::cout << "Start new game!\n";
@@ -63,16 +65,19 @@ void Menu::startNewGame()
     delete session;
 }
 
+/// @brief Show lists of players and higscores
 void Menu::playerList()
 {
     std::cout << "Player list!\n";
 }
 
+/// @brief Show lists of games and it's log
 void Menu::gameList()
 {
     std::cout << "Game list!\n";
 }
 
+/// @brief Prompt user to double check 
 void Menu::confirmExit()
 {
     std::cout << "You sure you want to exit?\n";
