@@ -1,6 +1,9 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
+
+#include "../../utilities/include/FileManager.h"
 
 // Link source files
 enum options
@@ -15,13 +18,16 @@ class Menu
 {
     public:
     void mainMenuDisplay();
-
-    Menu() = default;
-    
-    protected:
     void startNewGame();
     void playerList();
     void gameList();
     void confirmExit();
+    std::vector <std::string> getPlayerStatsFiles();
+    
+    Menu() {fManager_ = new FileManager;};
+    ~Menu() {delete fManager_;}
+
+    private:
+    FileManager* fManager_;
 
 };

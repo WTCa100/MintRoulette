@@ -1,13 +1,16 @@
 #include <string>
+#include <experimental/filesystem>
 
 // Get header
 #include "../include/Menu.h"
-#include "../../utilities/include/InputValidator.h"
 #include "../include/Game.h"
+#include "../include/Player.h"
+#include "../../utilities/include/InputValidator.h"
+#include "../../utilities/include/Paths.h"
 
 // Get source
 #include "../../utilities/src/InputValidator.cpp"
-#include "../src/Game.cpp"
+#include "./Game.cpp"
 
 /// @brief Shows main menu with asking which action user wants to take next
 void Menu::mainMenuDisplay()
@@ -58,9 +61,10 @@ void Menu::mainMenuDisplay()
 /// @brief Create game instance
 void Menu::startNewGame()
 {
+
     std::cout << "Start new game!\n";
     std::cout << "WIP!\n";
-    Game* session = new Game();
+    Game* session = new Game(fManager_);
     session->startGame();
     delete session;
 }
@@ -68,6 +72,17 @@ void Menu::startNewGame()
 /// @brief Show lists of players and higscores
 void Menu::playerList()
 {
+    // Load information about every entry
+    std::vector <std::string> avilableFiles = getPlayerStatsFiles();
+    std::vector <Player*> savedPlayers;
+    // List all players bit withouth pathing
+    for(auto& player : avilableFiles)
+    {
+        player.erase(player.begin(), player.begin() + player.rfind("\\") + 1);
+        std::cout << "Debug: List: Players: File: Names: " << player << std::endl;
+    }
+
+
     std::cout << "Player list!\n";
 }
 
@@ -81,4 +96,20 @@ void Menu::gameList()
 void Menu::confirmExit()
 {
     std::cout << "You sure you want to exit?\n";
+}
+
+std::vector <std::string> Menu::getPlayerStatsFiles()
+{
+    std::vector<std::string> files;
+    const std::string statsPath = FILE_PLAYER_STATS_PATH;
+    for(const auto& entry : std::experimental::filesystem::directory_iterator(statsPath))
+    {
+        std::string strPath{entry.path().string()};
+        files.push_back(strPath);
+    }
+    for(auto test : files)
+    {
+        std::cout << "Debug: Files: Path: Display: " << test << std::endl;
+    }
+    return files;
 }
