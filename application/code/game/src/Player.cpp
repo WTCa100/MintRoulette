@@ -110,10 +110,7 @@ Player::Player(const std::string nickName, int balance)
 /// @brief Assings current local stats of player to it's global equivalents
 void Player::moveToGlobalStats()
 {
-    std::cout << "Debug: Player: globPassCount: Pass: First " << globPassCount_ << std::endl;
-    std::cout << "Debug: Player: passCount: Pass: " << passCount_ << std::endl;
     globPassCount_ += passCount_;
-    std::cout << "Debug: Player: globPassCount: Pass: Second " << globPassCount_ << std::endl;
     globBetCount_ += betCount_;
     globGoodBetCount_ += goodBetCount_;
     globMoneyAccumulated_ += moneyAccumulated_;
