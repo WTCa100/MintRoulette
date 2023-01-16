@@ -1,5 +1,6 @@
 #include <ctime>
 #include <limits.h>
+#include <fstream>
 #include <algorithm>
 
 // Get header
@@ -70,6 +71,11 @@ void Game::setGameConfig()
     }
 }
 
+bool Game::checkIfPlayerExists(const std::string& name) const
+{
+    return fManager->isFileGood(FILE_PLAYER_STATS_PATH, name + EXT_PLAYER_STATS);
+}
+
 void Game::startGame()
 {
     std::cout << "WIP!\n";
@@ -79,7 +85,7 @@ void Game::startGame()
     for(int i = 0; i < numberOfPlayers_; i++)
     {
         std::string tmpNicknameHolder = "";
-        Player* roulettePlayer = new Player(initBankBalance_);
+        Player* roulettePlayer;
         std::cout << "Please provide name for player " << i + 1 << std::endl;
         do
         {
@@ -96,8 +102,16 @@ void Game::startGame()
                 std::cout << "2 Players cannot have the same nickname!\n";
             }
         } while (ValidateInput::isADuplicatePlayer(players_, tmpNicknameHolder));
+        if(checkIfPlayerExists(tmpNicknameHolder))
+        {
+            // TODO: Create player with data from loaded file
+        }
+        else
+        {
+            roulettePlayer = new Player(initBankBalance_);
+            roulettePlayer->setNickName(tmpNicknameHolder);
+        }
         
-        roulettePlayer->setNickName(tmpNicknameHolder);
         players_.push_back(roulettePlayer);
     }
     playersAlive_ = players_;
@@ -123,7 +137,10 @@ void Game::startGame()
         // If not, end and ask if player wants to save the game
         // If yes, ask if players would like to continue the game or end
         // If they would like to end ask for save again
-        stopGameEarly = askForStopGameEarly(stopGameEarly);
+        if(playersAlive_.size() > 1)
+        {
+            stopGameEarly = askForStopGameEarly(stopGameEarly);
+        }
         canGameProgress = checkGameCondition(stopGameEarly);
     }
 }
@@ -200,12 +217,19 @@ void Game::endScreen()
 
 Game::Game()
 {
+    fManager = new FileManager;
     setGameConfig();
 }
 
 Game::~Game()
 {
     endScreen();
+    // Place for save game
+     for(auto i = 0; i < players_.size(); i++)
+    {
+        std::cout << "Debug Info: Player: Save: " << i + 1 << std::endl;
+        savePlayerStats(*players_[i]);
+    }   
     std::cout << "Teardown game\n";
     std::cout << "Debug: Info: Players: Alive: Clear\n";
     playersAlive_.clear(); 
@@ -232,4 +256,19 @@ Game::~Game()
         std::cout << "Debug Info: Delete player " << i + 1 << std::endl;
         delete players_[i];
     }
+    delete fManager;
+    
+}
+
+/// @brief Saves player statistis into a file with .pl extension.
+/// @note This function appends player's global stats.
+/// @param savePlayer which player instance to save
+void Game::savePlayerStats(const Player& savePlayer)
+{
+    if(!fManager->isFileGood(FILE_PLAYER_STATS_PATH, savePlayer.getNickName() + EXT_PLAYER_STATS))
+    {
+        std::cout << "No save found!\n";
+        fManager->touch(FileType::PlayerStat, savePlayer.getNickName() + EXT_PLAYER_STATS);
+    }
+    fManager->appendPlayerSaveFile(savePlayer);
 }
