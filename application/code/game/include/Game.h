@@ -23,6 +23,7 @@ class Game : public ValidateInput
     bool askForStopGameEarly(bool& stopEarly);
     bool isStringValid(const std::string& userInput) override;
     bool checkIfPlayerExists(const std::string& name) const;
+    Player* loadPlayer(const std::string& name) const;
 
     // Setters
     // Config

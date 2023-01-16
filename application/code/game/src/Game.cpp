@@ -104,7 +104,7 @@ void Game::startGame()
         } while (ValidateInput::isADuplicatePlayer(players_, tmpNicknameHolder));
         if(checkIfPlayerExists(tmpNicknameHolder))
         {
-            // TODO: Create player with data from loaded file
+            roulettePlayer = loadPlayer(tmpNicknameHolder);
         }
         else
         {
@@ -204,7 +204,7 @@ bool Game::checkGameCondition(const bool& stopEarly)
     return true;
 }
 
-/// @brief Summerizes game progres
+/// @brief Summerizes game progress
 void Game::endScreen()
 {
     std::cout << "Game summary\n";
@@ -271,4 +271,43 @@ void Game::savePlayerStats(const Player& savePlayer)
         fManager->touch(FileType::PlayerStat, savePlayer.getNickName() + EXT_PLAYER_STATS);
     }
     fManager->appendPlayerSaveFile(savePlayer);
+}
+
+Player* Game::loadPlayer(const std::string& name) const
+{
+    std::vector<std::string> playerValues = fManager->loadFileContent(FILE_PLAYER_STATS_PATH, name + EXT_PLAYER_STATS);
+    // Get Values
+    for(auto& line : playerValues)
+    {
+        std::cout << "Debug: Player: Load: Attrval: " << line << std::endl;
+        line.erase(line.begin(), line.begin() + line.rfind(':') + 1);
+        std::cout << "Debug: Player: Load: Attrval: Trimmed: " << line << std::endl;
+    }
+
+    // Initialize temporary values
+    uint32_t goodBetCount; uint32_t passCount; uint32_t betCount; int totalMoneyGained;
+    for(int attribute = 0; attribute < playerValues.size(); attribute++)
+    {
+        switch(static_cast<PlayerAttribute>(attribute))
+        {
+            // We already have the name so no need to do anythin here
+            case PlayerAttribute::plName:
+            continue;
+            break;
+            case PlayerAttribute::plGoodBetCount:
+            goodBetCount = static_cast<uint32_t> (std::stoul(playerValues[attribute]));
+            break;
+            case PlayerAttribute::plPassCount:
+            passCount = static_cast<uint32_t> (std::stoul(playerValues[attribute]));
+            break;
+            case PlayerAttribute::plBetCount:
+            betCount = static_cast<uint32_t> (std::stoul(playerValues[attribute]));
+            break;
+            case PlayerAttribute::plTotalMoneyGained:
+            totalMoneyGained = std::stoi(playerValues[attribute]);
+        }
+    }
+
+    Player* returnPlayer = new Player(name, totalMoneyGained, goodBetCount, betCount, passCount, initBankBalance_);
+    return returnPlayer;
 }
