@@ -55,6 +55,7 @@ Player::Player(const std::string nickName, int globMoneyAccumulated, uint32_t gl
     globBetCount_ = globBetCount;
     globGoodBetCount_ = globGoodBetCount;
     globPassCount_ = globPassCount;
+    globMoneyAccumulated_ = globMoneyAccumulated;
 
     // Setup local variables
     balance_ = balance;
@@ -103,7 +104,10 @@ Player::Player(const std::string nickName, int balance)
 
 void Player::moveToGlobalStats()
 {
+    std::cout << "Debug: Player: globPassCount: Pass: First " << globPassCount_ << std::endl;
+    std::cout << "Debug: Player: passCount: Pass: " << passCount_ << std::endl;
     globPassCount_ += passCount_;
+    std::cout << "Debug: Player: globPassCount: Pass: Second " << globPassCount_ << std::endl;
     globBetCount_ += betCount_;
     globGoodBetCount_ += goodBetCount_;
     globMoneyAccumulated_ += moneyAccumulated_;
