@@ -17,9 +17,18 @@ std::map<const std::string, const std::string> _filesToCheck{
 };*/
 
 enum FileType{
-    PlayerStat = 1,
-    GameSave = 2,
+    PlayerStat  = 1,
+    GameSave    = 2,
     GameSaveDbg = 3
+};
+
+
+enum PlayerAttribute{
+    plName = 0,
+    plGoodBetCount = 1,
+    plPassCount = 2,
+    plBetCount = 3,
+    plTotalMoneyGained = 4
 };
 
 class FileManager{

@@ -9,7 +9,7 @@
 /// @return File state
 bool FileManager::isFileGood(const std::string& path, const std::string& fileName)
 {
-    std::cout << path + "/" + fileName << std::endl;
+    std::cout << "Debug: File: Check: Path:" << path + "/" + fileName << std::endl;
     std::ifstream fileCheck(path + "/" + fileName);
     return fileCheck.good();
 }
@@ -71,21 +71,21 @@ void FileManager::appendPlayerSaveFile(const Player& appPlayerStat)
         line.erase(line.begin() + line.rfind(':') + 1, line.end());
         // Add new values
         appendTheSave << line;
-        switch (lineNum)
+        switch (static_cast<PlayerAttribute>(lineNum))
         {
-        case 0:
+        case PlayerAttribute::plName:
             appendTheSave << appPlayerStat.getNickName();
             break;
-        case 1:
+        case PlayerAttribute::plGoodBetCount:
             appendTheSave << appPlayerStat.getGlobalGoodBetCount();
             break;            
-        case 2:
-            appendTheSave << appPlayerStat.getGlobalBetCount();
-            break;            
-        case 3:
+        case PlayerAttribute::plPassCount:
             appendTheSave << appPlayerStat.getGlobalPassCount();
             break;            
-        case 4:
+        case PlayerAttribute::plBetCount:
+            appendTheSave << appPlayerStat.getGlobalBetCount();
+            break;            
+        case PlayerAttribute::plTotalMoneyGained:
             appendTheSave << appPlayerStat.getGlobalMoneyAccumulated();
             break;
         
