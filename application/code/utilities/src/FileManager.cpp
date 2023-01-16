@@ -128,3 +128,47 @@ std::vector <std::string> FileManager::loadFileContent(const std::string& path, 
     readFile.close();
     return fileContent;
 }
+
+/// @brief Loads player attributes from save file and assings them to a player pointer
+/// @param name loading player's name
+/// @param initialBankBalance 
+/// @return Player instance with setup values
+Player* FileManager::makePlayerFromLoadedFile(const std::string& name,
+                                              const uint32_t initialBankBalance)
+{
+    std::vector<std::string> playerValues = loadFileContent(FILE_PLAYER_STATS_PATH, name + EXT_PLAYER_STATS);
+    // Get Values
+    for(auto& line : playerValues)
+    {
+        std::cout << "Debug: Player: Load: Attrval: " << line << std::endl;
+        line.erase(line.begin(), line.begin() + line.rfind(':') + 1);
+        std::cout << "Debug: Player: Load: Attrval: Trimmed: " << line << std::endl;
+    }
+
+    // Initialize temporary values
+    uint32_t goodBetCount; uint32_t passCount; uint32_t betCount; int totalMoneyGained;
+    for(int attribute = 0; attribute < playerValues.size(); attribute++)
+    {
+        switch(static_cast<PlayerAttribute>(attribute))
+        {
+            // We already have the name so no need to do anythin here
+            case PlayerAttribute::plName:
+            continue;
+            break;
+            case PlayerAttribute::plGoodBetCount:
+            goodBetCount = static_cast<uint32_t> (std::stoul(playerValues[attribute]));
+            break;
+            case PlayerAttribute::plPassCount:
+            passCount = static_cast<uint32_t> (std::stoul(playerValues[attribute]));
+            break;
+            case PlayerAttribute::plBetCount:
+            betCount = static_cast<uint32_t> (std::stoul(playerValues[attribute]));
+            break;
+            case PlayerAttribute::plTotalMoneyGained:
+            totalMoneyGained = std::stoi(playerValues[attribute]);
+        }
+    }
+
+    Player* returnPlayer = new Player(name, totalMoneyGained, goodBetCount, betCount, passCount, initialBankBalance);
+    return returnPlayer;    
+}
