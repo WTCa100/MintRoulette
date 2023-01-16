@@ -34,3 +34,6 @@
 # Folders
 application/bin/
 .vscode/
+
+# Custom files
+application/Makefile.bat
