@@ -18,7 +18,7 @@ const std::set<std::string> _pathsToCheck{
     FOLDER_BIN,
     FOLDER_BIN_SAVES,
     FOLDER_BIN_PLAYERS_STATS,
-    FOLDER_BIN_UTILIS
+    FOLDER_BIN_SAVES_DEBUG
 };
 
 class AppBuilder
