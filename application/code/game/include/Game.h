@@ -23,7 +23,6 @@ class Game : public ValidateInput
     bool askForStopGameEarly(bool& stopEarly);
     bool isStringValid(const std::string& userInput) override;
     bool checkIfPlayerExists(const std::string& name) const;
-    Player* loadPlayer(const std::string& name) const;
 
     // Setters
     // Config
@@ -34,11 +33,11 @@ class Game : public ValidateInput
     // Saving
     void savePlayerStats(const Player& savePlayer);
 
-    Game();
+    Game(const FileManager* fManager);
     ~Game();
 
     private:
-    FileManager* fManager;
+    FileManager* fManager_;
     std::vector <std::unordered_map<Player*, Bet*>> playersAndBetsSave_;
     std::vector<Player*> playersAlive_;
     std::vector<Player*> playersEliminated_;

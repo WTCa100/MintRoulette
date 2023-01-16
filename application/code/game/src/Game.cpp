@@ -77,7 +77,7 @@ void Game::setGameConfig()
 /// @return if file nammed [playerNickname].pl exists
 bool Game::checkIfPlayerExists(const std::string& name) const
 {
-    return fManager->isFileGood(FILE_PLAYER_STATS_PATH, name + EXT_PLAYER_STATS);
+    return fManager_->isFileGood(FILE_PLAYER_STATS_PATH, name + EXT_PLAYER_STATS);
 }
 
 /// @brief Core gameplay - create player instances, assign them nicknames, and play
@@ -112,7 +112,7 @@ void Game::startGame()
         // Check if player is returning one or not
         if(checkIfPlayerExists(tmpNicknameHolder))
         {
-            roulettePlayer = loadPlayer(tmpNicknameHolder);
+            roulettePlayer = fManager_->makePlayerFromLoadedFile(tmpNicknameHolder, initBankBalance_);
         }
         else
         {
@@ -231,10 +231,10 @@ void Game::endScreen()
 }
 
 /// @brief Defult constructor
-Game::Game()
+Game::Game(const FileManager* fManager)
 {
     // For checking and manipulating files
-    fManager = new FileManager;
+    fManager_ = new FileManager;
     // For proper setup
     setGameConfig();
 }
@@ -285,8 +285,7 @@ Game::~Game()
         delete players_[i];
     }
 
-    // Delete FileManager
-    delete fManager;
+
     
 }
 
@@ -295,52 +294,10 @@ Game::~Game()
 /// @param savePlayer which player instance to save
 void Game::savePlayerStats(const Player& savePlayer)
 {
-    if(!fManager->isFileGood(FILE_PLAYER_STATS_PATH, savePlayer.getNickName() + EXT_PLAYER_STATS))
+    if(!fManager_->isFileGood(FILE_PLAYER_STATS_PATH, savePlayer.getNickName() + EXT_PLAYER_STATS))
     {
         std::cout << "No save found!\n";
-        fManager->touch(FileType::PlayerStat, savePlayer.getNickName() + EXT_PLAYER_STATS);
+        fManager_->touch(FileType::PlayerStat, savePlayer.getNickName() + EXT_PLAYER_STATS);
     }
-    fManager->appendPlayerSaveFile(savePlayer);
-}
-
-/// @brief Loads player attributes from save file and assings them to a player pointer
-/// @param name loading player's name
-/// @return Player instance with setup values
-Player* Game::loadPlayer(const std::string& name) const
-{
-    std::vector<std::string> playerValues = fManager->loadFileContent(FILE_PLAYER_STATS_PATH, name + EXT_PLAYER_STATS);
-    // Get Values
-    for(auto& line : playerValues)
-    {
-        std::cout << "Debug: Player: Load: Attrval: " << line << std::endl;
-        line.erase(line.begin(), line.begin() + line.rfind(':') + 1);
-        std::cout << "Debug: Player: Load: Attrval: Trimmed: " << line << std::endl;
-    }
-
-    // Initialize temporary values
-    uint32_t goodBetCount; uint32_t passCount; uint32_t betCount; int totalMoneyGained;
-    for(int attribute = 0; attribute < playerValues.size(); attribute++)
-    {
-        switch(static_cast<PlayerAttribute>(attribute))
-        {
-            // We already have the name so no need to do anythin here
-            case PlayerAttribute::plName:
-            continue;
-            break;
-            case PlayerAttribute::plGoodBetCount:
-            goodBetCount = static_cast<uint32_t> (std::stoul(playerValues[attribute]));
-            break;
-            case PlayerAttribute::plPassCount:
-            passCount = static_cast<uint32_t> (std::stoul(playerValues[attribute]));
-            break;
-            case PlayerAttribute::plBetCount:
-            betCount = static_cast<uint32_t> (std::stoul(playerValues[attribute]));
-            break;
-            case PlayerAttribute::plTotalMoneyGained:
-            totalMoneyGained = std::stoi(playerValues[attribute]);
-        }
-    }
-
-    Player* returnPlayer = new Player(name, totalMoneyGained, goodBetCount, betCount, passCount, initBankBalance_);
-    return returnPlayer;
+    fManager_->appendPlayerSaveFile(savePlayer);
 }
