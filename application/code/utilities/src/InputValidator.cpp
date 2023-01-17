@@ -25,7 +25,7 @@ bool ValidateInput::isStringNumber(const std::string& userInput)
 
 /// @brief Checks if provided user input already exists
 /// @param userInputs vector populated with all playeres
-/// @param targetUserInput new value provided by user
+/// @param targetUserInput comparator
 /// @return if another record with same value exists
 bool ValidateInput::isADuplicatePlayer(const std::vector<Player*>& userInputs, const std::string targetUserInput)
 {
@@ -37,4 +37,14 @@ bool ValidateInput::isADuplicatePlayer(const std::vector<Player*>& userInputs, c
         }
     }
     return false;
+}
+
+std::string ValidateInput::stringToLower(const std::string& makeLower)
+{
+    std::string madeLowered;
+    for(auto character : makeLower)
+    {
+        madeLowered += tolower(character);
+    }
+    return madeLowered;
 }
