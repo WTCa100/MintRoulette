@@ -32,7 +32,7 @@ void Game::setGameConfig()
                 }
                 else
                 {
-                    std::cout << "Max player count is 8, and there must be at least one player\n";
+                    std::cout << "Max player count is 8, and there must be at least two players\n";
                 }
             }
             else
