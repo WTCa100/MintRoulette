@@ -140,9 +140,9 @@ Player* FileManager::makePlayerFromLoadedFile(const std::string& name,
     // Get Values
     for(auto& line : playerValues)
     {
-        std::cout << "Debug: Player: Load: Attrval: " << line << std::endl;
+        //std::cout << "Debug: Player: Load: Attrval: " << line << std::endl;
         line.erase(line.begin(), line.begin() + line.rfind(':') + 1);
-        std::cout << "Debug: Player: Load: Attrval: Trimmed: " << line << std::endl;
+        //std::cout << "Debug: Player: Load: Attrval: Trimmed: " << line << std::endl;
     }
 
     // Initialize temporary values
