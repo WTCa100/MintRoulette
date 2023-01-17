@@ -211,12 +211,6 @@ void Turn::summaryPhase()
     }
     std::cout << "End of turn: " << turnNumber_ << "!\n";
     
-    // Assign values to global player values
-    // We are basically keeping track of player values
-    for(auto& player : currentPlayers_)
-    {
-        player->moveToGlobalStats();
-    }    
 }
 
 void Turn::playTurn()

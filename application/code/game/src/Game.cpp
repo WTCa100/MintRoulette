@@ -227,6 +227,7 @@ void Game::endScreen()
     {
         players->displayMoneyWonLoss();
         players->displayBetPassCounts();
+        players->moveToGlobalStats();
     }
 }
 

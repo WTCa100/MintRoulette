@@ -180,10 +180,12 @@ void Menu::displayFullList(const std::vector<Player*>& listToDisplay)
  void Menu::choosePlayerToDisplayDetails(const std::vector<Player*>& listToDisplay)
  {
         std::cout << "If you want to see someones detailed stats please write down their name\n";
-        std::cout << "Take noe that it is case sensitive\n";
+        std::cout << "Take note that it is case sensitive\n";
         std::string checkForDetails;
         do
         {
+            std::cout << "Provide Player name: \n";
+            checkForDetails.clear();
             std::getline(std::cin, checkForDetails);
             if(ValidateInput::stringToLower(checkForDetails) != "q")
             {
@@ -198,15 +200,13 @@ void Menu::displayFullList(const std::vector<Player*>& listToDisplay)
                             break;
                         }
                     }
-                    std::cout << "Press any key to continue...\n";
-                    std::cin.get(); 
                 }
                 else
                 {
                     std::cout << "No such player found!\n";
-                    std::cout << "Press any key to continue...\n";
-                    std::cin.get();                    
                 }
+                std::cout << "Press any key to continue...\n";
+                std::cin.get();                    
             }
         } while (ValidateInput::stringToLower(checkForDetails) != "q");
  }
