@@ -1,4 +1,5 @@
 #include <string>
+#include <algorithm>
 #include <experimental/filesystem>
 
 // Get header
@@ -75,15 +76,53 @@ void Menu::playerList()
     // Load information about every entry
     std::vector <std::string> avilableFiles = getPlayerStatsFiles();
     std::vector <Player*> savedPlayers;
+    // Used for latter input
+    std::string optionChoosen;
     // List all players bit withouth pathing
     for(auto& player : avilableFiles)
     {
         player.erase(player.begin(), player.begin() + player.rfind("\\") + 1);
-        std::cout << "Debug: List: Players: File: Names: " << player << std::endl;
+        player.erase(player.begin() + player.rfind('.'), player.end());
+        std::cout << "Debug: List: Players: File: Name: " << player << std::endl;
+        savedPlayers.push_back(fManager_->makePlayerFromLoadedFile(player));
     }
+    
+    do
+    {
+        std::cout << "Player list!\n";
+        std::cout << "Options are: \n";
+        std::cout << "1. Show highscores WIP\n";
+        std::cout << "2. List all player names\n";
+        std::cout << "3. Go back\n";
+        do
+        {
+            std::getline(std::cin, optionChoosen);
+            if(!ValidateInput::isStringNumber(optionChoosen))
+            {
+                std::cout << "Please select a valid option\n";
+            }
+        } while (!ValidateInput::isStringNumber(optionChoosen));
+        PlayerListsOptions declearedOption = static_cast<PlayerListsOptions>(std::stoi(optionChoosen));
+        switch (declearedOption)
+        {
+        case PlayerListsOptions::ShowHighscores:
+            std::cout << "No highscores currently WIP!\n";
+            break;
+        case PlayerListsOptions::ShowFullList:
+            std::cout << "Showing full list:\n";
+            displayFullList(savedPlayers);
+            break;
+        case PlayerListsOptions::ExitListDisplay:
+        default:
+            break;
+        }
 
-
-    std::cout << "Player list!\n";
+    } while (static_cast<PlayerListsOptions>(std::stoi(optionChoosen)) != PlayerListsOptions::ExitListDisplay);
+    // Teardown loaded content
+    for(auto player : savedPlayers)
+    {
+        delete player;
+    }
 }
 
 /// @brief Show lists of games and it's log
@@ -113,3 +152,61 @@ std::vector <std::string> Menu::getPlayerStatsFiles()
     }
     return files;
 }
+
+void Menu::showPlayerStats(const Player& showPlayer)
+{
+    std::cout << "Player name: " << showPlayer.getNickName() <<std::endl;
+    std::cout <<"Managed to placed " << showPlayer.getGlobalGoodBetCount() << " bets right\n";
+    std::cout <<"Placed " << showPlayer.getGlobalBetCount() << " bets\n";
+    std::cout <<"Passed " << showPlayer.getGlobalPassCount() << " times!\n";
+    std::cout <<"And accumulated " << showPlayer.getGlobalMoneyAccumulated() << " ammount of money!\n";
+}
+
+void Menu::displayFullList(const std::vector<Player*>& listToDisplay)
+{
+    for(int entryNo = 0; entryNo < listToDisplay.size(); entryNo++)
+    {
+        std::cout << entryNo + 1 << ": " << listToDisplay[entryNo]->getNickName() << std::endl;
+        if(entryNo % 50 == 0 && entryNo != 0)
+        {
+            std::cout << "End of the page!\n";
+            std::cin.get();
+        }
+    }
+    choosePlayerToDisplayDetails(listToDisplay);
+
+}
+
+ void Menu::choosePlayerToDisplayDetails(const std::vector<Player*>& listToDisplay)
+ {
+        std::cout << "If you want to see someones detailed stats please write down their name\n";
+        std::cout << "Take noe that it is case sensitive\n";
+        std::string checkForDetails;
+        do
+        {
+            std::getline(std::cin, checkForDetails);
+            if(ValidateInput::stringToLower(checkForDetails) != "q")
+            {
+                // Search and display player
+                if(ValidateInput::isADuplicatePlayer(listToDisplay, checkForDetails))
+                {
+                    for(auto player : listToDisplay)
+                    {
+                        if(player->getNickName() == checkForDetails)
+                        {
+                            showPlayerStats(*player);
+                            break;
+                        }
+                    }
+                    std::cout << "Press any key to continue...\n";
+                    std::cin.get(); 
+                }
+                else
+                {
+                    std::cout << "No such player found!\n";
+                    std::cout << "Press any key to continue...\n";
+                    std::cin.get();                    
+                }
+            }
+        } while (ValidateInput::stringToLower(checkForDetails) != "q");
+ }
