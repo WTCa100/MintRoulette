@@ -1,6 +1,8 @@
 #pragma once
 
+#define MIN_NICKNAME_LENGTH 3
 #define MAX_NICKNAME_LENGTH 32
+
 #define MAX_PLAYERS_PER_SESSION 8
 
 #define MAX_POSSIBLE_LUCKY_NUMBER 36

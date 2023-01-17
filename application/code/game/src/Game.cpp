@@ -102,7 +102,7 @@ void Game::startGame()
                 {
                     std::cout << "Player must have a name!\n";
                 }
-            } while (tmpNicknameHolder.empty());
+            } while (tmpNicknameHolder.size() < MIN_NICKNAME_LENGTH || tmpNicknameHolder.size() > MAX_NICKNAME_LENGTH);
             if(ValidateInput::isADuplicatePlayer(players_, tmpNicknameHolder))
             {
                 std::cout << "2 Players cannot have the same nickname!\n";
