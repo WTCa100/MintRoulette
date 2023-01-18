@@ -16,6 +16,7 @@ class Player
     void setGoodBetCount(const uint32_t& goodBetCount) {goodBetCount_ = goodBetCount;}
     void setBetCount(const uint32_t& betCount) {betCount_ = betCount;}
     void setPassCount(const uint32_t& passCount) {passCount_ = passCount;}
+    void setPlayerOrderNumber(const uint16_t& playerOrderNumber) {playerOrderNumber_ = playerOrderNumber;}
     // Globals
     void setNickName(const std::string& nickName) { nickName_ = nickName;}
     void setGlobalMoneyAccumulated(const int& globMoneyAccumulated) {globMoneyAccumulated_ = globMoneyAccumulated;}
@@ -30,6 +31,7 @@ class Player
     uint32_t getGoodBetCount() const {return goodBetCount_;}
     uint32_t getBetCount() const {return betCount_;}
     uint32_t getPassCount() const {return passCount_;}
+    uint16_t getPlayerOrderNumber() const {return playerOrderNumber_;}
     // Globals
     std::string getNickName() const {return nickName_;}
     int getGlobalMoneyAccumulated() const {return globMoneyAccumulated_;}
@@ -38,10 +40,10 @@ class Player
     uint32_t getGlobalPassCount() const {return globPassCount_;}
 
     Player() = default;
-    Player(int balance);
-    Player(const std::string nickName, int balance);                                    
+    Player(int balance, int playerOrder);
+    Player(const std::string nickName, int balance, int playerOrder = 0);                                    
     Player(const std::string nickName, int globMoneyAccumulated, uint32_t goodBetCount, uint32_t betCount,
-           uint32_t passCount, int balance = 0);
+           uint32_t passCount, int playerOrder = 0, int balance = 0);
 
     private:
     // Local variables related to one session
@@ -50,6 +52,7 @@ class Player
     uint32_t goodBetCount_;
     uint32_t betCount_;
     uint32_t passCount_;
+    uint16_t playerOrderNumber_;
 
     // Global variables
     std::string nickName_;

@@ -50,7 +50,7 @@ void Player::displayBetPassCounts()
 /// @param balance initial bank balance (at start of the game) / default is 0
 /// @note balance is optional flag
 Player::Player(const std::string nickName, int globMoneyAccumulated, uint32_t globGoodBetCount, uint32_t globBetCount,
-               uint32_t globPassCount, int balance)
+               uint32_t globPassCount, int playerOrder, int balance)
 {
     // Setup global variables
     nickName_ = nickName;
@@ -65,12 +65,12 @@ Player::Player(const std::string nickName, int globMoneyAccumulated, uint32_t gl
     passCount_ = 0;
     betCount_ = 0;
     goodBetCount_ = 0;
-
+    playerOrderNumber_ = playerOrder;
 }
 
 /// @brief Constructor used as default when initial value of balance is set
 /// @param balance inistial value of bank ammount 
-Player::Player(int balance)
+Player::Player(int balance, int playerOrder)
 {
     // Global
     nickName_ = "";
@@ -85,12 +85,13 @@ Player::Player(int balance)
     betCount_ = 0;
     passCount_ = 0;
     goodBetCount_ = 0;
+    playerOrderNumber_ = playerOrder;
 }
 
 /// @brief Constructor currently with no use
 /// @param nickName player name
 /// @param balance inital bank balance
-Player::Player(const std::string nickName, int balance)
+Player::Player(const std::string nickName, int balance, int playerOrder)
 {
     // Global
     nickName_ = nickName; 
@@ -105,6 +106,7 @@ Player::Player(const std::string nickName, int balance)
     betCount_ = 0;
     passCount_ = 0;
     goodBetCount_ = 0;
+    playerOrderNumber_ = playerOrder;
 }
 
 /// @brief Assings current local stats of player to it's global equivalents
