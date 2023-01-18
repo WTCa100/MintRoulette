@@ -11,6 +11,7 @@
 #include "./Bet.h"
 #include "../../utilities/include/InputValidator.h"
 #include "../../utilities/include/FileManager.h"
+#include "../../utilities/include/Logger.h"
 
 class Game : public ValidateInput
 {
@@ -38,6 +39,7 @@ class Game : public ValidateInput
 
     private:
     FileManager* fManager_;
+    Logger* gameLog_;
     std::vector <std::unordered_map<Player*, Bet*>> playersAndBetsSave_;
     std::vector<Player*> playersAlive_;
     std::vector<Player*> playersEliminated_;

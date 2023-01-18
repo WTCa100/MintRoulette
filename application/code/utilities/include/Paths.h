@@ -19,3 +19,5 @@
 
 // File extensions
 #define EXT_PLAYER_STATS ".pl"
+#define EXT_GAME_LOG ".gm"
+#define EXT_GAME_LOG_DEBUG ".gmdb"

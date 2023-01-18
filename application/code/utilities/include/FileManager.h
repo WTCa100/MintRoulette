@@ -40,7 +40,8 @@ class FileManager{
     void touch(const FileType& fTypem, const std::string& fileName);
     void appendPlayerSaveFile(const Player& appPlayerStat);
     std::vector <std::string> loadFileContent(const std::string& path, const std::string& fileName);
-    Player* makePlayerFromLoadedFile(const std::string& name, 
+    Player* makePlayerFromLoadedFile(const std::string& name,
+                                     const uint16_t playerNumber = 0, 
                                      const uint32_t initialBankBalance = 0);
 
     FileManager() = default;

@@ -50,7 +50,7 @@ void FileManager::touch(const FileType& fType, const std::string& fileName)
         makeFile.close();
         break;
     case GameSave:
-        createFile(FILE_GAME_SAVE_LOG, fileName);
+        createFile(FILE_GAME_SAVE_LOG, "GameNr" + fileName + EXT_GAME_LOG);
         break;
     case GameSaveDbg:
         createFile(FILE_GAME_SAVES_LOG_DBG, fileName);
@@ -134,6 +134,7 @@ std::vector <std::string> FileManager::loadFileContent(const std::string& path, 
 /// @param initialBankBalance 
 /// @return Player instance with setup values
 Player* FileManager::makePlayerFromLoadedFile(const std::string& name,
+                                              const uint16_t playerNumber,
                                               const uint32_t initialBankBalance)
 {
     std::vector<std::string> playerValues = loadFileContent(FILE_PLAYER_STATS_PATH, name + EXT_PLAYER_STATS);
@@ -169,6 +170,6 @@ Player* FileManager::makePlayerFromLoadedFile(const std::string& name,
         }
     }
 
-    Player* returnPlayer = new Player(name, totalMoneyGained, goodBetCount, betCount, passCount, initialBankBalance);
+    Player* returnPlayer = new Player(name, totalMoneyGained, goodBetCount, betCount, passCount, playerNumber, initialBankBalance);
     return returnPlayer;    
 }

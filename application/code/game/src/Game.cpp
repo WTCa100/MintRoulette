@@ -12,6 +12,7 @@
 // Get source
 #include "./Turn.cpp"
 #include "../src/Player.cpp"
+#include "../../utilities/src/Logger.cpp"
 
 /// @brief Sets up information about number of players and initial bank account
 void Game::setGameConfig()
@@ -70,6 +71,11 @@ void Game::setGameConfig()
         } while (!isInputGood);
         setInitialBankBalance(std::stoi(userInput));
     }
+
+    gameLog_->addLog(
+        gameLog_->logInitialGameConfig(1, numberOfPlayers_, initBankBalance_)
+    );
+
 }
 
 /// @brief  Checks if player is a returning one or not
@@ -112,15 +118,19 @@ void Game::startGame()
         // Check if player is returning one or not
         if(checkIfPlayerExists(tmpNicknameHolder))
         {
-            roulettePlayer = fManager_->makePlayerFromLoadedFile(tmpNicknameHolder, initBankBalance_);
+            roulettePlayer = fManager_->makePlayerFromLoadedFile(tmpNicknameHolder, i, initBankBalance_);
         }
         else
         {
-            roulettePlayer = new Player(initBankBalance_);
+            roulettePlayer = new Player(initBankBalance_, i);
             roulettePlayer->setNickName(tmpNicknameHolder);
         }
-        
         players_.push_back(roulettePlayer);
+
+        gameLog_->addLog(
+            gameLog_->logGamePlayerCreation(roulettePlayer->getNickName(), roulettePlayer->getPlayerOrderNumber())
+        );
+
     }
     playersAlive_ = players_;
     std::cout <<"there are " << playersAlive_.size() << " players\n";
@@ -236,6 +246,12 @@ Game::Game(const FileManager* fManager)
 {
     // For checking and manipulating files
     fManager_ = new FileManager;
+
+    // For creating logs
+    gameLog_ = new Logger(fManager_);
+    // Dummy value for now
+    gameLog_->touchLog(1);
+
     // For proper setup
     setGameConfig();
 }
@@ -246,6 +262,9 @@ Game::~Game()
     // Summarize game
     endScreen();
 
+    // Save game logs
+    gameLog_->buildLogs();
+    
     // Save player progress
      for(auto i = 0; i < players_.size(); i++)
     {
@@ -286,8 +305,7 @@ Game::~Game()
         delete players_[i];
     }
 
-
-    
+    delete gameLog_;
 }
 
 /// @brief Saves player statistis into a file with .pl extension.
