@@ -6,8 +6,10 @@
 #include "../include/Bet.h"
 #include "../../utilities/include/MaxValues.h"
 
+
 // Get source
 #include "./Bet.cpp"
+#include "../../utilities/src/Logger.cpp"
 
 /// @brief Get random number from specified range
 /// @return Random number from range 0 to 36 as uint_16
@@ -25,6 +27,12 @@ void Turn::bettingPhase()
         std::cout << "Debug info: " << currentPlayers_[i]->getNickName() << " turn has started\n";
         std::cout << "It's " << currentPlayers_[i]->getNickName() << "'s turn\n";
         std::cout << "You have: " << currentPlayers_[i]->getBalance() << " worth of balance\n";
+
+        gameLog_->addLog(
+            gameLog_->logGameTurnStartPlayerState(currentPlayers_[i]->getNickName(),
+                                                  currentPlayers_[i]->getBalance())
+        );
+
         // Aske player if he wants to bet
         if(askForBet())
         {
@@ -32,12 +40,23 @@ void Turn::bettingPhase()
             playerBet->buildBet(*currentPlayers_[i]);
             playerAndBets_.insert(std::make_pair(currentPlayers_[i], playerBet));
             currentPlayers_[i]->setBetCount(currentPlayers_[i]->getBetCount() + 1);
+
+            gameLog_->addLog(
+                gameLog_->logGamePlayerPlacedBet(currentPlayers_[i],
+                                                 playerBet->getAmmountBetted()) + " " +
+                gameLog_->logGamePlayerBetDetails(currentPlayers_[i],
+                                                  playerBet)
+            );
         }        
         else
         {
             Bet* playerPass = new Bet(*currentPlayers_[i]);
             playerAndBets_.insert(std::make_pair(currentPlayers_[i], playerPass));
             currentPlayers_[i]->setPassCount(currentPlayers_[i]->getPassCount() + 1);
+
+            gameLog_->addLog(
+                gameLog_->logGamePlayerPassed(currentPlayers_[i]->getNickName())
+            );
         }
         std::cout << "Debug Info: playerAndBets: size: " << playerAndBets_.size() << std::endl;
         std::cout << "Debug info: " << currentPlayers_[i]->getNickName() << " turn has ended\n";
@@ -65,6 +84,10 @@ void Turn::rollTheRoulette()
     std::cout << "The lucky number is: ";
     Sleep(1000);
     std::cout << luckyNumber_ << std::endl;
+
+    gameLog_->addLog(
+        gameLog_->logGameLuckyNumberGen(luckyNumber_)
+    );
 
     for(auto i : playerAndBets_)
     {
@@ -199,6 +222,7 @@ void Turn::summaryPhase()
                 player.first->setBalance(currentPlayerBalance + static_cast<int>(winAmmount));
                 player.first->setMoneyAccumulated(player.first->getMoneyAccumulated() + static_cast<int>(winAmmount));
                 player.first->setGoodBetCount(player.first->getGoodBetCount() + 1);
+
             }
             else
             {
@@ -207,8 +231,19 @@ void Turn::summaryPhase()
                 player.first->setBalance(currentPlayerBalance - player.second->getAmmountBetted());
                 player.first->setMoneyAccumulated(player.first->getMoneyAccumulated() - player.second->getAmmountBetted());
             }
+
+            gameLog_->addLog(
+                gameLog_->logGamePlayerBetSummarize(player.first,
+                                                    player.second,
+                                                    winAmmount)
+            );
+
         }
+
+
     }
+
+
     std::cout << "End of turn: " << turnNumber_ << "!\n";
     
 }

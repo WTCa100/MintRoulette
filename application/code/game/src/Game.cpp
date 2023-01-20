@@ -8,11 +8,12 @@
 #include "../include/Turn.h"
 #include "../../utilities/include/InputValidator.h"
 #include "../../utilities/include/MaxValues.h"
+#include "../../utilities/include/Paths.h"
+
 
 // Get source
 #include "./Turn.cpp"
 #include "../src/Player.cpp"
-#include "../../utilities/src/Logger.cpp"
 
 /// @brief Sets up information about number of players and initial bank account
 void Game::setGameConfig()
@@ -118,11 +119,11 @@ void Game::startGame()
         // Check if player is returning one or not
         if(checkIfPlayerExists(tmpNicknameHolder))
         {
-            roulettePlayer = fManager_->makePlayerFromLoadedFile(tmpNicknameHolder, i, initBankBalance_);
+            roulettePlayer = fManager_->makePlayerFromLoadedFile(tmpNicknameHolder, i + 1, initBankBalance_);
         }
         else
         {
-            roulettePlayer = new Player(initBankBalance_, i);
+            roulettePlayer = new Player(initBankBalance_, i + 1);
             roulettePlayer->setNickName(tmpNicknameHolder);
         }
         players_.push_back(roulettePlayer);
@@ -147,7 +148,7 @@ void Game::startGame()
     {
         turnId ++;
         bool stopGameEarly = false;
-        Turn* currentTurn = new Turn(playersAlive_, turnId);
+        Turn* currentTurn = new Turn(playersAlive_, turnId, gameLog_);
         currentTurn->playTurn();
         gameTurns_.push_back(currentTurn);
         playersAndBetsSave_.push_back(currentTurn->getPlayersBets());
@@ -159,6 +160,8 @@ void Game::startGame()
             stopGameEarly = askForStopGameEarly(stopGameEarly);
         }
         canGameProgress = checkGameCondition(stopGameEarly);
+
+        gameLog_->buildLogs();
     }
 }
 
@@ -172,6 +175,11 @@ void Game::eliminatePlayers()
         {
             std::cout << "Player: " << checkPlayer->getNickName() << " got eliminated!\n";
             playersEliminated_.push_back(checkPlayer);
+
+            gameLog_->addLog(
+                gameLog_->logGamePlayerElimination(checkPlayer->getNickName())
+            );
+
         }
     }
     for(auto& killPlayer : playersEliminated_)
@@ -232,12 +240,22 @@ bool Game::checkGameCondition(const bool& stopEarly)
 /// @brief Summerizes game progress. Display how much money player lost and how many bets and passes they have placed
 void Game::endScreen()
 {
+
+    gameLog_->addLog(
+        gameLog_->logGameHasEnded()
+    );
+
     std::cout << "Game summary\n";
     for(auto& players : players_)
     {
         players->displayMoneyWonLoss();
         players->displayBetPassCounts();
         players->moveToGlobalStats();
+
+        gameLog_->addLog(
+            gameLog_->logGamePlayerSummerizeGame(players)
+        );
+
     }
 }
 
@@ -319,4 +337,27 @@ void Game::savePlayerStats(const Player& savePlayer)
         fManager_->touch(FileType::PlayerStat, savePlayer.getNickName() + EXT_PLAYER_STATS);
     }
     fManager_->appendPlayerSaveFile(savePlayer);
+}
+
+uint16_t Game::loadNextGameId()
+{
+    // Find init.cfg
+    {
+    if (fManager_->isFileGood(INIT_CONFIG_PATH, INIT_CONFIG_PATH))
+    {
+        std::string path = INIT_CONFIG_PATH;
+        std::ifstream initFile;
+        initFile.open(path + "/" + INIT_CONFIG_FILE);
+        std::string configLine;
+        while(std::getline(initFile, configLine))
+        {
+            if(configLine.find("NextGameNumber") != std::string::npos)
+            {
+                configLine.erase(configLine.begin(), configLine.begin() + configLine.rfind(":"));
+            }
+        }
+    }
+    }
+    // Check if there are any save files.
+
 }

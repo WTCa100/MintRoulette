@@ -47,7 +47,7 @@ class Bet : public ValidateInput
     // Getters
     const double getWinningOdds() {return winningOdds_;}
     const bool getBetSucces() {return wasBetSuccesful_;}
-    const BetType getBetType() { return betType_;}
+    const BetType getBetType() { return betType_;} 
     const int getAmmountBetted() {return ammountBetted_;}
     const size_t getGuessedNumber() {return guessedNumber_;}
     const GuessedNumberRangeType getGuessedNumberRange() {return GuessedNumberRange_;}

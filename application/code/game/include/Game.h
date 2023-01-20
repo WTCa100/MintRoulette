@@ -24,12 +24,18 @@ class Game : public ValidateInput
     bool askForStopGameEarly(bool& stopEarly);
     bool isStringValid(const std::string& userInput) override;
     bool checkIfPlayerExists(const std::string& name) const;
+    uint16_t loadNextGameId();
 
     // Setters
     // Config
     void setPlayerCount(const uint16_t& numberOfPlayers) {numberOfPlayers_ = numberOfPlayers;}
+    void setGameId(const uint16_t& gameId) {gameId_ = gameId;}
     // Default value is 1000 but player can change it
     void setInitialBankBalance(const int& initialBankBalance = 1000) {initBankBalance_ = initialBankBalance;}
+
+    // Getters
+    uint16_t getPlayerCount() {return numberOfPlayers_;}
+    uint16_t getGameId() {return gameId_;}
 
     // Saving
     void savePlayerStats(const Player& savePlayer);
@@ -38,6 +44,7 @@ class Game : public ValidateInput
     ~Game();
 
     private:
+    uint16_t gameId_;
     FileManager* fManager_;
     Logger* gameLog_;
     std::vector <std::unordered_map<Player*, Bet*>> playersAndBetsSave_;

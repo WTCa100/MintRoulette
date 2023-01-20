@@ -6,8 +6,8 @@
 
 // Get headers
 #include "./FileManager.h"
+#include "../../game/include/Bet.h"
 #include "../../game/include/Player.h"
-#include "../../game/include/Turn.h"
 
 
 class Logger
@@ -27,6 +27,23 @@ class Logger
                                      const uint32_t& initBankBalance) const;
     std::string logGamePlayerCreation(const std::string& playerName,
                                       const uint16_t& playerNumber) const;
+    std::string logGameTurnStart(const uint16_t& turnId) const;
+    std::string logGameTurnStartPlayerState(const std::string& playerName,
+                                            const uint32_t& currentBankBalance) const;
+    std::string logGamePlayerPlacedBet(const Player* whoPlacedBet,
+                                       const uint32_t& betAmmount) const;
+    std::string logGamePlayerBetDetails(const Player* whoPlacedBet,
+                                        Bet* betPlaced) const;
+    std::string logGamePlayerPassed(const std::string& playerName) const;                                       
+    std::string logGameLuckyNumberGen(const uint16_t& luckyNumber) const;
+    std::string logGamePlayerBetSummarize(const Player* targetPlayer,
+                                          Bet* betPlaced,
+                                          const double& winAmmount = 0) const;
+    std::string logGameTurnEnd(const uint16_t& turnId) const;
+    std::string logGamePlayerElimination(const std::string& playerEliminated) const;
+    std::string logGamePlayerSummerizeGame(const Player* playerToSum) const;
+    std::string logGameHasEnded() const;
+    std::string logGameEndedEarly() const;
 
     Logger(FileManager* fManager) {fManager_ = fManager;};
     ~Logger();
