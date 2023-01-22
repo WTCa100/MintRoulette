@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <windows.h>
+#include <algorithm>
 
 #include "../include/AppBuilder.h"
 #include "../include/Paths.h"
@@ -58,13 +59,49 @@ void AppBuilder::checkDirectories()
 /// @brief 
 void AppBuilder::buildInitConfig()
 {
+    // Check if any games already exists
+    std::vector<std::string> potentialGameSaves;
+    if(isDirectoryGood(FILE_GAME_SAVE_LOG))
+    {
+        potentialGameSaves = fileMgmt_->loadFilesFromPath(FILE_GAME_SAVE_LOG);
+    }
+
+    std::vector<uint16_t>* potentialGameSavesId = new std::vector<uint16_t>;
+    if(!potentialGameSaves.empty())
+    {
+        for(const auto entry : potentialGameSaves)
+        {
+            if(fileMgmt_->isEntryFolder(entry))
+            {
+                continue;
+            }
+
+            std::cout << entry << std::endl;
+            std::string gameId = fileMgmt_->trimPath(entry);
+            gameId.erase(gameId.begin(), gameId.begin() + 6);
+            potentialGameSavesId->push_back(std::stoi(gameId));
+
+        }
+    }
+
+    uint16_t nextGameId = 1;
+
+    if(!potentialGameSavesId->empty())
+    {
+        nextGameId = *std::max_element(std::begin(*potentialGameSavesId), std::end(*potentialGameSavesId)) + 1;
+    }
+    else
+    {
+        delete potentialGameSavesId;
+    }
+
     std::string initConfigPath = INIT_CONFIG_PATH;
     std::fstream initConfig;
     initConfig.open(initConfigPath + "/" + INIT_CONFIG_FILE);
     if(initConfig.is_open())
     {
         initConfig << "isInit         :1\n";
-        initConfig << "NextGameNumber :1\n";
+        initConfig << "NextGameNumber :" + std::to_string(nextGameId) + "\n";
         initConfig << "gameVersion    :0.1v\n";
         initConfig << "dummy          :text\n";
     }
@@ -72,6 +109,12 @@ void AppBuilder::buildInitConfig()
     {
         std::cout << "Could not open " << initConfigPath << " !" <<std::endl;
     }
+
+    if(potentialGameSavesId)
+    {
+        delete potentialGameSavesId;
+    }
+
     initConfig.close();
 }
 
