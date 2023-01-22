@@ -268,7 +268,9 @@ Game::Game(const FileManager* fManager)
     // For creating logs
     gameLog_ = new Logger(fManager_);
     // Dummy value for now
-    gameLog_->touchLog(1);
+
+    gameId_ = loadNextGameId();
+    gameLog_->touchLog(gameId_);
 
     // For proper setup
     setGameConfig();
@@ -323,6 +325,7 @@ Game::~Game()
         delete players_[i];
     }
 
+    fManager_->iterateGameIdConfig(gameId_ + 1);
     delete gameLog_;
 }
 
@@ -342,22 +345,63 @@ void Game::savePlayerStats(const Player& savePlayer)
 uint16_t Game::loadNextGameId()
 {
     // Find init.cfg
-    {
-    if (fManager_->isFileGood(INIT_CONFIG_PATH, INIT_CONFIG_PATH))
-    {
+    if (fManager_->isFileGood(INIT_CONFIG_PATH, INIT_CONFIG_FILE))
+    {   
         std::string path = INIT_CONFIG_PATH;
-        std::ifstream initFile;
-        initFile.open(path + "/" + INIT_CONFIG_FILE);
-        std::string configLine;
-        while(std::getline(initFile, configLine))
+        std::vector<std::string> configFileContent = fManager_->loadFileContent(INIT_CONFIG_PATH, INIT_CONFIG_FILE);
+        for(auto line : configFileContent)
         {
-            if(configLine.find("NextGameNumber") != std::string::npos)
+            if(line.find("NextGameNumber") != std::string::npos)
             {
-                configLine.erase(configLine.begin(), configLine.begin() + configLine.rfind(":"));
+                line.erase(line.begin(), line.begin() + line.rfind(":") + 1);
+                return std::stoi(line);
             }
         }
     }
+    // If nothing found check game folder for any game registered
+    else
+    {
+        std::vector<std::string> gameFiles = fManager_->loadFilesFromPath(FILE_GAME_SAVE_LOG);
+        
+        // Make sure that there are no folders inside the container
+        for(auto checkFolder : gameFiles)
+        {
+            if(fManager_->isEntryFolder(checkFolder))
+            {
+                gameFiles.erase(std::remove(gameFiles.begin(), gameFiles.end(), checkFolder), gameFiles.end());
+            }
+        }
+
+        if(!gameFiles.empty())
+        {
+            // If there are any entries we need to get a specific numbers and save them to a vector
+            std::vector<uint16_t> gameIds;
+
+
+            for(auto gFile : gameFiles)
+            {
+                std::cout << "Debug: Game: Files: Game: Plain: " << gFile << std::endl;
+                // Check if entry is a folder
+                if(fManager_->isEntryFolder(gFile))
+                {
+                    continue;
+                }
+                std::string numberText = fManager_->trimPath(gFile);
+                std::cout << "Debug: Game: Files: Game: Trimmed: " << numberText << std::endl;
+                numberText.erase(numberText.begin(), numberText.begin() + 6);
+                gameIds.push_back(std::stoi(numberText));
+            }
+            gameFiles.clear();
+            return *std::max_element(std::begin(gameIds), std::end(gameIds)) + 1;
+        }
+        // if none has been found return 1
+        else 
+        {
+            return 1;
+        }
     }
-    // Check if there are any save files.
+
+    // In case something is missing return 1
+    return 1;
 
 }
