@@ -81,8 +81,7 @@ void Menu::playerList()
     // List all players bit withouth pathing
     for(auto& player : avilableFiles)
     {
-        player.erase(player.begin(), player.begin() + player.rfind("\\") + 1);
-        player.erase(player.begin() + player.rfind('.'), player.end());
+        fManager_->trimPath(player);
         std::cout << "Debug: List: Players: File: Name: " << player << std::endl;
         savedPlayers.push_back(fManager_->makePlayerFromLoadedFile(player));
     }
@@ -139,13 +138,7 @@ void Menu::confirmExit()
 
 std::vector <std::string> Menu::getPlayerStatsFiles()
 {
-    std::vector<std::string> files;
-    const std::string statsPath = FILE_PLAYER_STATS_PATH;
-    for(const auto& entry : std::experimental::filesystem::directory_iterator(statsPath))
-    {
-        std::string strPath{entry.path().string()};
-        files.push_back(strPath);
-    }
+    std::vector<std::string> files = fManager_->loadFilesFromPath(FILE_PLAYER_STATS_PATH);
     for(auto test : files)
     {
         std::cout << "Debug: Files: Path: Display: " << test << std::endl;

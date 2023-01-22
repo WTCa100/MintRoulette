@@ -1,5 +1,6 @@
 #include <iostream> // For debug
 #include <fstream>
+#include <experimental/filesystem>
 
 #include "../include/FileManager.h"
 
@@ -172,4 +173,56 @@ Player* FileManager::makePlayerFromLoadedFile(const std::string& name,
 
     Player* returnPlayer = new Player(name, totalMoneyGained, goodBetCount, betCount, passCount, playerNumber, initialBankBalance);
     return returnPlayer;    
+}
+
+std::vector<std::string> FileManager::loadFilesFromPath(const std::string path)
+{
+    std::vector<std::string> files;
+    for(const auto& entry : std::experimental::filesystem::directory_iterator(path))
+    {
+        files.push_back(entry.path().string());
+    }
+    return files;
+}
+
+std::string FileManager::trimPath(const std::string& rawFile)
+{
+    std::string plainFile = rawFile;
+    plainFile.erase(plainFile.begin(), plainFile.begin() + plainFile.rfind("\\") + 1);
+    plainFile.erase(plainFile.begin() + plainFile.rfind('.'), plainFile.end());
+    return plainFile;
+}
+
+bool FileManager::isEntryFolder(const std::string& path)
+{
+    struct stat buffer;
+    if( stat(path.c_str(), &buffer) == 0)
+    {
+        return buffer.st_mode & S_IFDIR;
+    }
+    
+    return false;
+}
+
+void FileManager::iterateGameIdConfig(const uint16_t& nextGameId)
+{
+    std::string initConfigPath = INIT_CONFIG_PATH;
+    std::vector<std::string> initContent = loadFileContent(INIT_CONFIG_PATH, INIT_CONFIG_FILE);
+    std::cout << "Next game Id " << nextGameId << std::endl;
+    for(auto& lineContent : initContent)
+    {
+        if(lineContent.find("NextGameNumber") != std::string::npos)
+        {
+            std::cout << "Debug: Here: " << lineContent << std::endl;
+            lineContent = "NextGameNumber :" + std::to_string(nextGameId);
+        }
+    }
+    std::fstream configEdit;
+    configEdit.open(initConfigPath + "/" + INIT_CONFIG_FILE);
+    {  
+        for(auto saveLineContent : initContent)
+        {
+            configEdit << saveLineContent << std::endl;
+        }
+    }
 }

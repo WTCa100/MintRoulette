@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <sys/stat.h>
 
 #include "./Paths.h"
 #include "../../game/include/Player.h"
@@ -43,6 +44,10 @@ class FileManager{
     Player* makePlayerFromLoadedFile(const std::string& name,
                                      const uint16_t playerNumber = 0, 
                                      const uint32_t initialBankBalance = 0);
+    void iterateGameIdConfig(const uint16_t& nextGameId);
+    std::vector<std::string> loadFilesFromPath(const std::string path);
+    std::string trimPath(const std::string& rawFile);
+    bool isEntryFolder(const std::string& path);
 
     FileManager() = default;
 };
