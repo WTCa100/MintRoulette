@@ -15,7 +15,7 @@ class Logger
     public:
     // Operating on log file and log content
     // Create log file
-    void touchLog(const uint32_t& gameNumber);
+    virtual void touchLog(const uint32_t& gameNumber);
     // Add log message to all logs stored
     void addLog(const std::string& log);
     // Prints logs into file

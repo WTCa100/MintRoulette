@@ -128,6 +128,21 @@ void Menu::playerList()
 void Menu::gameList()
 {
     std::cout << "Game list!\n";
+    std::vector<std::string> gamesFiles = fManager_->loadFilesFromPath(FILE_GAME_SAVE_LOG);
+    for(auto gamePath : gamesFiles)
+    {
+        if(fManager_->isEntryFolder(gamePath))
+        {
+            continue;
+        }
+
+        gamePath = fManager_->trimPath(gamePath);
+        std::cout << gamePath << std::endl;
+    }
+
+    // Dummy display for now
+    showGameSave(1);
+    showGameSave(100);
 }
 
 /// @brief Prompt user to double check 
@@ -203,3 +218,22 @@ void Menu::displayFullList(const std::vector<Player*>& listToDisplay)
             }
         } while (ValidateInput::stringToLower(checkForDetails) != "q");
  }
+
+void Menu::showGameSave(const uint16_t& gameId)
+{
+    std::ifstream gameSaveFile;
+    std::string gameSavePath = FILE_GAME_SAVE_LOG;
+    gameSaveFile.open(gameSavePath + "/GameNr" + std::to_string(gameId) + EXT_GAME_LOG);
+    if(!gameSaveFile.is_open())
+    {
+        std::cout << "No Game with number " + std::to_string(gameId) + " found!\n";
+        return;
+    }
+
+    std::string showLine;
+    while(std::getline(gameSaveFile, showLine))
+    {
+        ///@todo Improve displaying functions (add for example pages)
+        std::cout << showLine << std::endl;
+    }
+}

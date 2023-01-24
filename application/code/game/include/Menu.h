@@ -30,6 +30,7 @@ class Menu
     void confirmExit();
     std::vector <std::string> getPlayerStatsFiles();
     void showPlayerStats(const Player& showPlayer);
+    void showGameSave(const uint16_t& gameId);
     void displayFullList(const std::vector<Player*>& listToDisplay);
     void choosePlayerToDisplayDetails(const std::vector<Player*>& listToDisplay);
     
