@@ -109,7 +109,7 @@ void Menu::playerList()
             break;
         case PlayerListsOptions::ShowFullList:
             std::cout << "Showing full list:\n";
-            displayFullList(savedPlayers);
+            displayFullPlayerList(savedPlayers);
             break;
         case PlayerListsOptions::ExitListDisplay:
         default:
@@ -140,9 +140,15 @@ void Menu::gameList()
         std::cout << gamePath << std::endl;
     }
 
-    // Dummy display for now
-    showGameSave(1);
-    showGameSave(100);
+    std::vector<std::string> gameIDs = gamesFiles;
+    for(auto& Id : gameIDs)
+    {
+        Id.erase(Id.begin(), Id.begin() + 6);
+        std::cout << Id << std::endl;
+    }
+
+    chooseGameToDisplayLogs(gameIDs);
+
 }
 
 /// @brief Prompt user to double check 
@@ -170,7 +176,7 @@ void Menu::showPlayerStats(const Player& showPlayer)
     std::cout <<"And accumulated " << showPlayer.getGlobalMoneyAccumulated() << " ammount of money!\n";
 }
 
-void Menu::displayFullList(const std::vector<Player*>& listToDisplay)
+void Menu::displayFullPlayerList(const std::vector<Player*>& listToDisplay)
 {
     for(int entryNo = 0; entryNo < listToDisplay.size(); entryNo++)
     {
@@ -236,4 +242,29 @@ void Menu::showGameSave(const uint16_t& gameId)
         ///@todo Improve displaying functions (add for example pages)
         std::cout << showLine << std::endl;
     }
+}
+
+void Menu::chooseGameToDisplayLogs(const std::vector<std::string>& fullGameList)
+{
+    std::cout << "If you want to see detailed logs please enter a game id\n";
+    std::cout << "Take note that it is case sensitive\n";
+    std::cout << "If you want to exit from this section simply type 'q'\n";
+    std::string checkForDetails;
+    do
+    {
+        std::cout << "Provide game id: \n";
+        checkForDetails.clear();
+        std::getline(std::cin, checkForDetails);
+        if(ValidateInput::stringToLower(checkForDetails) != "q")
+        {
+            if(ValidateInput::isStringNumber(checkForDetails))
+            {
+                showGameSave(static_cast<uint16_t>(std::stoi(checkForDetails)));
+            }
+            else
+            {
+                std::cout << "Please provide a numeric value!\n";
+            }    
+        }
+    } while (ValidateInput::stringToLower(checkForDetails) != "q");
 }
