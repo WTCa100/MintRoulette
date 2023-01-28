@@ -170,6 +170,11 @@ void Turn::summaryPhase()
 {
     // Todo send message in summary 
     std::cout << "Summary!\n"; 
+
+    gameLog_->addLog(
+        gameLog_->logGameTurnSummaryBeginMessage()
+    );
+
     for(auto& player : playerAndBets_)
     {
         std::cout << player.first->getNickName() << " ";
@@ -212,12 +217,12 @@ void Turn::summaryPhase()
         }
         if(player.second->getBetType() != BetType::Pass)
         {
+            std::cout <<  player.second->getAmmountBetted() << "/" << player.second->getWinningOdds() << std::endl;
             double winAmmount = player.second->getAmmountBetted() / player.second->getWinningOdds();
             int currentPlayerBalance = player.first->getBalance();
             if(player.second->getBetSucces())
             {
                 std::cout << "and got it!\n";
-                // Dummy value for now
                 std::cout << player.first->getNickName() <<" won " << static_cast<int>(winAmmount)  <<"!\n";
                 player.first->setBalance(currentPlayerBalance + static_cast<int>(winAmmount));
                 player.first->setMoneyAccumulated(player.first->getMoneyAccumulated() + static_cast<int>(winAmmount));
@@ -229,7 +234,7 @@ void Turn::summaryPhase()
                 std::cout << "and did not got it right!\n";
                 std::cout << player.first->getNickName() <<" lost " << player.second->getAmmountBetted() <<"!\n";
                 player.first->setBalance(currentPlayerBalance - player.second->getAmmountBetted());
-                player.first->setMoneyAccumulated(player.first->getMoneyAccumulated() - player.second->getAmmountBetted());
+                player.first->setMoneyLost(player.first->getMoneyLost() + player.second->getAmmountBetted());
             }
 
             gameLog_->addLog(
@@ -243,6 +248,9 @@ void Turn::summaryPhase()
 
     }
 
+    gameLog_->addLog(
+        gameLog_->logGameTurnSummaryEndMessage()
+    );
 
     std::cout << "End of turn: " << turnNumber_ << "!\n";
     

@@ -40,6 +40,8 @@ class Logger
                                           Bet* betPlaced,
                                           const double& winAmmount = 0) const;
     std::string logGameTurnEnd(const uint16_t& turnId) const;
+    std::string logGameTurnSummaryBeginMessage() const;
+    std::string logGameTurnSummaryEndMessage() const;                                         
     std::string logGamePlayerElimination(const std::string& playerEliminated) const;
     std::string logGamePlayerSummerizeGame(const Player* playerToSum) const;
     std::string logGameHasEnded() const;

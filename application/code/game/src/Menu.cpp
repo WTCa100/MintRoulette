@@ -81,7 +81,7 @@ void Menu::playerList()
     // List all players bit withouth pathing
     for(auto& player : avilableFiles)
     {
-        fManager_->trimPath(player);
+        player = fManager_->trimPath(player);
         std::cout << "Debug: List: Players: File: Name: " << player << std::endl;
         savedPlayers.push_back(fManager_->makePlayerFromLoadedFile(player));
     }
@@ -173,7 +173,8 @@ void Menu::showPlayerStats(const Player& showPlayer)
     std::cout <<"Managed to placed " << showPlayer.getGlobalGoodBetCount() << " bets right\n";
     std::cout <<"Placed " << showPlayer.getGlobalBetCount() << " bets\n";
     std::cout <<"Passed " << showPlayer.getGlobalPassCount() << " times!\n";
-    std::cout <<"And accumulated " << showPlayer.getGlobalMoneyAccumulated() << " ammount of money!\n";
+    std::cout <<"Accumulated " << showPlayer.getGlobalMoneyAccumulated() << " ammount of money!\n";
+    std::cout <<"And lost " << showPlayer.getGlobalMoneyLost() << " ammount of money!\n";
 }
 
 void Menu::displayFullPlayerList(const std::vector<Player*>& listToDisplay)

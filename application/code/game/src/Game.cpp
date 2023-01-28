@@ -248,7 +248,7 @@ void Game::endScreen()
     std::cout << "Game summary\n";
     for(auto& players : players_)
     {
-        players->displayMoneyWonLoss();
+        players->displayMoneyWonLoss(initBankBalance_);
         players->displayBetPassCounts();
         players->moveToGlobalStats();
 
@@ -325,7 +325,8 @@ Game::~Game()
         delete players_[i];
     }
 
-    fManager_->iterateGameIdConfig(gameId_ + 1);
+    fManager_->iterateGameIdConfig(fManager_->nextGameSaveId());
+    
     delete gameLog_;
 }
 

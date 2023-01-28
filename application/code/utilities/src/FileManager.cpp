@@ -47,7 +47,7 @@ void FileManager::touch(const FileType& fType, const std::string& fileName)
         tmpPathHolder = FILE_PLAYER_STATS_PATH;
         filePath = tmpPathHolder + "/" + fileName;
         makeFile.open(filePath);
-        makeFile << "Name:\nGoodBetCount:\nPassCount:\nBetCount:\nTotalMoneyGained:\n";
+        makeFile << "Name:\nGoodBetCount:\nPassCount:\nBetCount:\nTotalMoneyGained:\nTotalMoneyLost:\n";
         makeFile.close();
         break;
     case GameSave:
@@ -96,7 +96,9 @@ void FileManager::appendPlayerSaveFile(const Player& appPlayerStat)
         case PlayerAttribute::plTotalMoneyGained:
             appendTheSave << appPlayerStat.getGlobalMoneyAccumulated();
             break;
-        
+        case PlayerAttribute::plTotalMoneyLost:
+            appendTheSave << appPlayerStat.getGlobalMoneyLost();
+            break;    
         default:
         // Eof
             break;
@@ -144,11 +146,11 @@ Player* FileManager::makePlayerFromLoadedFile(const std::string& name,
     {
         //std::cout << "Debug: Player: Load: Attrval: " << line << std::endl;
         line.erase(line.begin(), line.begin() + line.rfind(':') + 1);
-        //std::cout << "Debug: Player: Load: Attrval: Trimmed: " << line << std::endl;
+        std::cout << "Debug: Player: Load: Attrval: Trimmed: " << line << std::endl;
     }
 
     // Initialize temporary values
-    uint32_t goodBetCount; uint32_t passCount; uint32_t betCount; int totalMoneyGained;
+    uint32_t goodBetCount; uint32_t passCount; uint32_t betCount; int totalMoneyGained; int totalMoneyLost;
     for(int attribute = 0; attribute < playerValues.size(); attribute++)
     {
         switch(static_cast<PlayerAttribute>(attribute))
@@ -168,10 +170,14 @@ Player* FileManager::makePlayerFromLoadedFile(const std::string& name,
             break;
             case PlayerAttribute::plTotalMoneyGained:
             totalMoneyGained = std::stoi(playerValues[attribute]);
+            break;
+            case PlayerAttribute::plTotalMoneyLost:
+            totalMoneyLost = std::stoi(playerValues[attribute]);
+            break;
         }
     }
 
-    Player* returnPlayer = new Player(name, totalMoneyGained, goodBetCount, betCount, passCount, playerNumber, initialBankBalance);
+    Player* returnPlayer = new Player(name, totalMoneyGained, totalMoneyLost, goodBetCount, betCount, passCount, playerNumber, initialBankBalance);
     return returnPlayer;    
 }
 
@@ -187,6 +193,7 @@ std::vector<std::string> FileManager::loadFilesFromPath(const std::string path)
 
 std::string FileManager::trimPath(const std::string& rawFile)
 {
+    std::cout << "Check me here!\n";
     std::string plainFile = rawFile;
     plainFile.erase(plainFile.begin(), plainFile.begin() + plainFile.rfind("\\") + 1);
     plainFile.erase(plainFile.begin() + plainFile.rfind('.'), plainFile.end());
@@ -213,7 +220,6 @@ void FileManager::iterateGameIdConfig(const uint16_t& nextGameId)
     {
         if(lineContent.find("NextGameNumber") != std::string::npos)
         {
-            std::cout << "Debug: Here: " << lineContent << std::endl;
             lineContent = "NextGameNumber :" + std::to_string(nextGameId);
         }
     }
@@ -225,4 +231,30 @@ void FileManager::iterateGameIdConfig(const uint16_t& nextGameId)
             configEdit << saveLineContent << std::endl;
         }
     }
+}
+
+uint16_t FileManager::nextGameSaveId()
+{
+    uint16_t nextId = 1;
+    // Check folder for game files
+    std::vector<std::string> gameSaveFolder = loadFilesFromPath(FILE_GAME_SAVE_LOG);
+    std::vector<uint16_t> gameSaveIds;
+    for(auto& file : gameSaveFolder)
+    {
+        std::cout << file << std::endl;
+        if(isEntryFolder(file))
+        {
+            continue;
+        }
+        file = trimPath(file);
+        file.erase(file.begin(), file.begin() + 6);
+        gameSaveIds.push_back(std::stoi(file));
+    }
+    
+    while(isFileGood(FILE_GAME_SAVE_LOG, "GameNr" + std::to_string(nextId) + EXT_GAME_LOG))
+    {
+        nextId++;
+    }
+
+    return nextId;
 }

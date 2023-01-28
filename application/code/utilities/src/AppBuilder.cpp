@@ -88,7 +88,7 @@ void AppBuilder::buildInitConfig()
 
     if(!potentialGameSavesId->empty())
     {
-        nextGameId = *std::max_element(std::begin(*potentialGameSavesId), std::end(*potentialGameSavesId)) + 1;
+        nextGameId = fileMgmt_->nextGameSaveId();
     }
     else
     {

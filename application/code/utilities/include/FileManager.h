@@ -29,7 +29,8 @@ enum PlayerAttribute{
     plGoodBetCount = 1,
     plPassCount = 2,
     plBetCount = 3,
-    plTotalMoneyGained = 4
+    plTotalMoneyGained = 4,
+    plTotalMoneyLost = 5
 };
 
 class FileManager{
@@ -48,6 +49,7 @@ class FileManager{
     std::vector<std::string> loadFilesFromPath(const std::string path);
     std::string trimPath(const std::string& rawFile);
     bool isEntryFolder(const std::string& path);
+    uint16_t nextGameSaveId();
 
     FileManager() = default;
 };

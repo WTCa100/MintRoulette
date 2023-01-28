@@ -35,7 +35,6 @@ void Logger::buildLogs()
 
     for(auto log : logLines_)
     {
-        std::cout << "Debug: Logger: Log: Write: " << log << std::endl;
         logFile_ << log << std::endl;
     }
     
@@ -78,7 +77,7 @@ std::string Logger::logGamePlayerBetDetails(const Player* whoPlacedBet,
     switch (betPlaced->getBetType())
     {
     case BetType::StraightUp:
-        logMsg += " picked straight up with " + std::to_string(betPlaced->getGuessedNumber()) + " as lucky number!\n"; 
+        logMsg += " picked straight up with " + std::to_string(betPlaced->getGuessedNumber()) + " as lucky number!"; 
         break;
     case BetType::DozenBet:
         logMsg += " picked dozen bet with guessing that the lucky number is between ";
@@ -165,6 +164,16 @@ std::string Logger::logGameTurnEnd(const uint16_t& turnId) const
     return "Turn " + std::to_string(turnId) + " has ended";    
 }
 
+std::string Logger::logGameTurnSummaryBeginMessage() const
+{
+    return "Begining of turn summary";
+}
+
+std::string Logger::logGameTurnSummaryEndMessage() const
+{
+    return "End of turn summary";
+}
+
 std::string Logger::logGamePlayerElimination(const std::string& playerEliminated) const
 {
     return playerEliminated + " got eliminated!";
@@ -186,23 +195,43 @@ std::string Logger::logGamePlayerSummerizeGame(const Player* playerToSum) const
     if(playerToSum->getPassCount())
     {
         logMsg += "\nPassed " + std::to_string(playerToSum->getPassCount());
+        if(playerToSum->getPassCount() == 1)
+        {
+            logMsg += " turn";
+        }
+        else
+        {
+            logMsg += " turns";
+        }
     }
     else
     {
         logMsg += "\nPassed no turn! (what a crazy person!)";
     }
 
-    if(playerToSum->getMoneyAccumulated() > 0)
-    {
-        logMsg += "\nManaged to obtain " + std::to_string(playerToSum->getMoneyAccumulated()) + " additional ammount of money";
-    }
-    else if(playerToSum->getMoneyAccumulated() < 0)
-    {
-        logMsg += "\nLost " +  std::to_string(playerToSum->getMoneyAccumulated()) + " worth of money";
-    }
-    else
+    if(playerToSum->getMoneyAccumulated() == 0 && playerToSum->getMoneyLost() == 0)
     {
         logMsg += "\nNeither lost nor won any money";
+    }
+    else 
+    {
+        if(playerToSum->getMoneyAccumulated() > 0)
+        {
+            logMsg += "\nManaged to obtain " + std::to_string(playerToSum->getMoneyAccumulated()) + " additional ammount of money";
+        }
+        else
+        {
+            logMsg += "\nDid not won any money!";
+        }
+
+        if(playerToSum->getMoneyLost() > 0)
+        {
+            logMsg += "\nLost " +  std::to_string(playerToSum->getMoneyLost()) + " worth of money";        
+        }
+        else
+        {
+            logMsg == "\nDid not lost any money!";
+        }
     }
 
     return logMsg;
