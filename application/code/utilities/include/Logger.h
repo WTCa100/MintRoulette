@@ -15,13 +15,14 @@ class Logger
     public:
     // Operating on log file and log content
     // Create log file
-    virtual void touchLog(const uint32_t& gameNumber);
+    void touchLog(const uint32_t& gameNumber);
     // Add log message to all logs stored
     void addLog(const std::string& log);
     // Prints logs into file
     void buildLogs();
 
     // Log messages
+    std::string logAddTimeStamp();
     std::string logInitialGameConfig(const uint16_t& gameNum,
                                      const uint16_t& numOfPlayers,
                                      const uint32_t& initBankBalance) const;

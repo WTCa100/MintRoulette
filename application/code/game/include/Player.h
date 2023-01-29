@@ -18,6 +18,7 @@ class Player
     void setBetCount(const uint32_t& betCount) {betCount_ = betCount;}
     void setPassCount(const uint32_t& passCount) {passCount_ = passCount;}
     void setPlayerOrderNumber(const uint16_t& playerOrderNumber) {playerOrderNumber_ = playerOrderNumber;}
+    void setPlayerIsBot(const bool& isPlayerBot) {isPlayerBot_ = isPlayerBot;}
     // Globals
     void setNickName(const std::string& nickName) { nickName_ = nickName;}
     void setGlobalMoneyAccumulated(const int& globMoneyAccumulated) {globMoneyAccumulated_ = globMoneyAccumulated;}
@@ -35,6 +36,7 @@ class Player
     uint32_t getBetCount() const {return betCount_;}
     uint32_t getPassCount() const {return passCount_;}
     uint16_t getPlayerOrderNumber() const {return playerOrderNumber_;}
+    bool getPlayerIsBot() const {return isPlayerBot_;}
     // Globals
     std::string getNickName() const {return nickName_;}
     int getGlobalMoneyAccumulated() const {return globMoneyAccumulated_;}
@@ -45,7 +47,7 @@ class Player
 
     Player() = default;
     Player(int balance, int playerOrder);
-    Player(const std::string nickName, int balance, int playerOrder = 0);                                    
+    Player(const std::string nickName, int balance, bool isPlayerBot = false, int playerOrder = 0);                                    
     Player(const std::string nickName, int globMoneyAccumulated, int globMoneyLost, uint32_t goodBetCount, uint32_t betCount,
            uint32_t passCount, int playerOrder = 0, int balance = 0);
 
@@ -58,6 +60,7 @@ class Player
     uint32_t betCount_;
     uint32_t passCount_;
     uint16_t playerOrderNumber_;
+    bool isPlayerBot_;
 
     // Global variables
     std::string nickName_;
@@ -66,5 +69,4 @@ class Player
     uint32_t globGoodBetCount_;
     uint32_t globBetCount_;
     uint32_t globPassCount_;
-
 };

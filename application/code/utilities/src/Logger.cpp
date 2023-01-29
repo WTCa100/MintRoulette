@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ctime>
 
 #include "../include/Logger.h"
 #include "../include/Paths.h"
@@ -43,6 +44,21 @@ void Logger::buildLogs()
 }
 
 // Log Messages
+
+std::string Logger::logAddTimeStamp()
+{
+  time_t rawTime;
+  struct tm * timeInfo;
+  char buffer[80];
+
+  time (&rawTime);
+  timeInfo = localtime(&rawTime);
+
+  strftime(buffer,sizeof(buffer),"%d-%m-%Y:%H:%M:%S: ",timeInfo);
+  std::string timeStamp(buffer);
+
+    return timeStamp;
+}
 
 std::string Logger::logInitialGameConfig(const uint16_t& gameNum,
                                          const uint16_t& numOfPlayers,

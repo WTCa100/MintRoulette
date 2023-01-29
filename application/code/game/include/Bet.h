@@ -43,6 +43,9 @@ class Bet : public ValidateInput
     void setBetType(const BetType& betType) {betType_ = betType;}
     void setAmmountBetted(const int& ammountBetted) {ammountBetted_ = ammountBetted;}
     void setWinningOdds(const double& winningOdds) {winningOdds_ = winningOdds;}
+    void setGuessedNumber(const size_t& guessedNumber) {guessedNumber_ = guessedNumber;}
+    void setGuessedNumberRangeType(const GuessedNumberRangeType& guessedNumberRange) {GuessedNumberRange_ = guessedNumberRange;}
+    void setIsOddChoosen(const bool& isOddChoosen) {isOddChoosen_ = isOddChoosen;}
 
     // Getters
     const double getWinningOdds() {return winningOdds_;}
