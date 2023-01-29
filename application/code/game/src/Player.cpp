@@ -99,7 +99,7 @@ Player::Player(const std::string nickName, int globMoneyAccumulated,
 
 /// @brief Constructor used as default when initial value of balance is set
 /// @param balance inistial value of bank ammount 
-Player::Player(int balance, int playerOrder)
+Player::Player(int balance, int playerOrder, bool isPlayerBot)
 {
     // Global
     nickName_ = "";
@@ -118,12 +118,13 @@ Player::Player(int balance, int playerOrder)
     passCount_ = 0;
     goodBetCount_ = 0;
     playerOrderNumber_ = playerOrder;
+    isPlayerBot_ = isPlayerBot;
 }
 
 /// @brief Constructor currently with no use
 /// @param nickName player name
 /// @param balance inital bank balance
-Player::Player(const std::string nickName, int balance, int playerOrder)
+Player::Player(const std::string nickName, int balance, bool isPlayerBot, int playerOrder)
 {
     // Global
     nickName_ = nickName; 
@@ -141,6 +142,7 @@ Player::Player(const std::string nickName, int balance, int playerOrder)
     passCount_ = 0;
     goodBetCount_ = 0;
     playerOrderNumber_ = playerOrder;
+    isPlayerBot_ = isPlayerBot;
 }
 
 /// @brief Assings current local stats of player to it's global equivalents

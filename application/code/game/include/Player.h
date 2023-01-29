@@ -46,7 +46,7 @@ class Player
     uint32_t getGlobalPassCount() const {return globPassCount_;}
 
     Player() = default;
-    Player(int balance, int playerOrder);
+    Player(int balance, int playerOrder, bool isPlayerBot = false);
     Player(const std::string nickName, int balance, bool isPlayerBot = false, int playerOrder = 0);                                    
     Player(const std::string nickName, int globMoneyAccumulated, int globMoneyLost, uint32_t goodBetCount, uint32_t betCount,
            uint32_t passCount, int playerOrder = 0, int balance = 0);
