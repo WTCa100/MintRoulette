@@ -12,11 +12,6 @@ enum BetType{
     EvenOdd = 3
 };
 
-// The following code is enum-like version of predefined winning odds.
-constexpr double PassOdd = -1.0;
-constexpr double StraightUpOdd = 0.028; // Equal to 1/35
-constexpr double DozenBetOdd = 0.333; // Equal to 1/3
-constexpr double EvenOddOdd = 0.5; // Equal to 1/2
 
 enum GuessedNumberRangeType{
     LowerRange = 1,
@@ -27,6 +22,12 @@ enum GuessedNumberRangeType{
 class Bet : public ValidateInput
 {
     public:
+    // The following code is enum-like version of predefined winning odds.
+    const double PassOdd = -1.0;
+    const double StraightUpOdd = 0.028; // Equal to 1/35
+    const double DozenBetOdd = 0.333; // Equal to 1/3
+    const double EvenOddOdd = 0.5; // Equal to 1/2
+
     void askForBetType();
     void Pass();
     void buildBet(const Player& whoPlacedBet);
