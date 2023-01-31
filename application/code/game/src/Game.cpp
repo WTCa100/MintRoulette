@@ -79,7 +79,7 @@ void Game::setGameConfig()
             
             if(std::stoi(userInput) == 0)
             {
-                std::cout << "There must be at least 1 human player\n";
+                std::cout << "It's AI only match!\n";
             }
             else if(std::stoi(userInput) > numberOfPlayers_)
             {
@@ -91,7 +91,7 @@ void Game::setGameConfig()
                 hasBots_ = false;
             }
 
-        } while (std::stoi(userInput) <= 0 || std::stoi(userInput) > numberOfPlayers_);
+        } while (std::stoi(userInput) < 0 || std::stoi(userInput) > numberOfPlayers_);
         
         if(hasBots_)
         {
