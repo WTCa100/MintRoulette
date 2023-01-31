@@ -139,6 +139,7 @@ void AppBuilder::setupGameFiles()
     {
         // Only check required
         checkDirectories();
+        fileMgmt_->iterateGameIdConfig(fileMgmt_->nextGameSaveId());
     }
 
 }
