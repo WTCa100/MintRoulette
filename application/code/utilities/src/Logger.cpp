@@ -7,7 +7,7 @@
 
 void Logger::touchLog(const uint32_t& gameNumber)
 {
-    std::string logsPath = FILE_GAME_SAVE_LOG;
+    std::string logsPath = FILE_GAME_SAVE_LOG_PATH;
     std::string logFileExt = EXT_GAME_LOG;
     logFileName_ = "GameNr" + std::to_string(gameNumber) + logFileExt;
     fManager_->touch(FileType::GameSave, std::to_string(gameNumber));

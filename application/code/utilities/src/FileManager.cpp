@@ -3,6 +3,7 @@
 #include <experimental/filesystem>
 
 #include "../include/FileManager.h"
+#include "../include/NameList.h"
 
 /// @brief Checks whether or not a provided file exists
 /// @param path location of file 
@@ -40,6 +41,7 @@ void FileManager::touch(const FileType& fType, const std::string& fileName)
     std::string tmpPathHolder;
     std::string filePath;
     std::ofstream makeFile;    
+    std::set<std::string> nameOutput;
     switch (fType)
     {
     case PlayerStat:
@@ -51,10 +53,21 @@ void FileManager::touch(const FileType& fType, const std::string& fileName)
         makeFile.close();
         break;
     case GameSave:
-        createFile(FILE_GAME_SAVE_LOG, "GameNr" + fileName + EXT_GAME_LOG);
+        createFile(FILE_GAME_SAVE_LOG_PATH, "GameNr" + fileName + EXT_GAME_LOG);
         break;
     case GameSaveDbg:
-        createFile(FILE_GAME_SAVES_LOG_DBG, fileName);
+        createFile(FILE_GAME_SAVES_LOG_DBG_PATH, fileName);
+        break;
+    case AiNameList:
+        createFile(FILE_GAME_AI_NAME_LIST_PATH, FILE_AI_NAME_LIST);
+        tmpPathHolder = FILE_GAME_AI_NAME_LIST_PATH;
+        filePath = tmpPathHolder + "/" + fileName;
+        makeFile.open(filePath);
+        nameOutput = NameList::names;
+        for(auto& name : nameOutput)
+        {
+            makeFile << name << std::endl;
+        }
         break;
     default:
         std::cout << "No such file type in preset templates. Use createFile!\n";
@@ -191,6 +204,18 @@ std::vector<std::string> FileManager::loadFilesFromPath(const std::string path)
     return files;
 }
 
+std::vector<std::string> FileManager::makeFileContentUnique(std::vector<std::string> fileContent)
+{
+    std::set<std::string> tmpLinesHolder;
+    for(auto line : fileContent)
+    {
+        tmpLinesHolder.insert(line);
+    }
+    std::vector <std::string> uniqueContent;
+    uniqueContent.assign(tmpLinesHolder.begin(), tmpLinesHolder.end());
+    return uniqueContent;
+}
+
 std::string FileManager::trimPath(const std::string& rawFile)
 {
     std::cout << "Check me here!\n";
@@ -237,7 +262,7 @@ uint16_t FileManager::nextGameSaveId()
 {
     uint16_t nextId = 1;
     // Check folder for game files
-    std::vector<std::string> gameSaveFolder = loadFilesFromPath(FILE_GAME_SAVE_LOG);
+    std::vector<std::string> gameSaveFolder = loadFilesFromPath(FILE_GAME_SAVE_LOG_PATH);
     std::vector<uint16_t> gameSaveIds;
     for(auto& file : gameSaveFolder)
     {
@@ -251,7 +276,7 @@ uint16_t FileManager::nextGameSaveId()
         gameSaveIds.push_back(std::stoi(file));
     }
     
-    while(isFileGood(FILE_GAME_SAVE_LOG, "GameNr" + std::to_string(nextId) + EXT_GAME_LOG))
+    while(isFileGood(FILE_GAME_SAVE_LOG_PATH, "GameNr" + std::to_string(nextId) + EXT_GAME_LOG))
     {
         nextId++;
     }

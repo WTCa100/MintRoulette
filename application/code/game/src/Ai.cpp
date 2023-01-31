@@ -1,4 +1,7 @@
 #include "../include/Ai.h"
+#include "../../utilities/include/Paths.h"
+
+#include <vector>
 
 /// @brief 
 /// @return 0 - pass, 1 - bet
@@ -32,4 +35,10 @@ bool Ai::chooseOddOrEven()
 int Ai::chooseBetSize(int botBalance)
 {
     return rand() % botBalance + 1;
+}
+
+std::string Ai::pickBotName(FileManager* fManager)
+{
+    std::vector<std::string> names = fManager->makeFileContentUnique(fManager->loadFileContent(FILE_GAME_AI_NAME_LIST_PATH, FILE_AI_NAME_LIST));
+    return names[rand() % names.size()];
 }

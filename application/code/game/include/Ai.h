@@ -1,7 +1,12 @@
 #pragma once
 
+#include <string>
+#include <vector>
+
+// Get Header
 #include "./Player.h"
 #include "./Bet.h"
+#include "../../utilities/include/FileManager.h"
 
 /// @brief Ai class contains every action that the user could have taken during a game
 /// but picked as a random by an Ai.
@@ -15,6 +20,8 @@ class Ai
     static GuessedNumberRangeType chooseLuckyNumberRange();
     static bool chooseOddOrEven();
     static int chooseBetSize(int botBalance);
+    static std::string pickBotName(FileManager* fManager /*This will be implemented later on in non-static version of the class*/);
+
    /*Draft
    /// @brief This function generates seed that is core to decision making in Ai 
    /// @param botBalance is used as reference on what action should be done 

@@ -61,9 +61,9 @@ void AppBuilder::buildInitConfig()
 {
     // Check if any games already exists
     std::vector<std::string> potentialGameSaves;
-    if(isDirectoryGood(FILE_GAME_SAVE_LOG))
+    if(isDirectoryGood(FILE_GAME_SAVE_LOG_PATH))
     {
-        potentialGameSaves = fileMgmt_->loadFilesFromPath(FILE_GAME_SAVE_LOG);
+        potentialGameSaves = fileMgmt_->loadFilesFromPath(FILE_GAME_SAVE_LOG_PATH);
     }
 
     std::vector<uint16_t>* potentialGameSavesId = new std::vector<uint16_t>;
@@ -134,11 +134,16 @@ void AppBuilder::setupGameFiles()
         checkDirectories();
         fileMgmt_->createFile(INIT_CONFIG_PATH, INIT_CONFIG_FILE);
         buildInitConfig();
+        fileMgmt_->touch(FileType::AiNameList, FILE_AI_NAME_LIST);
     }
     else
     {
         // Only check required
         checkDirectories();
+        if(!fileMgmt_->isFileGood(FILE_GAME_AI_NAME_LIST_PATH, FILE_AI_NAME_LIST))
+        {
+            fileMgmt_->touch(FileType::AiNameList, FILE_AI_NAME_LIST);    
+        }
         fileMgmt_->iterateGameIdConfig(fileMgmt_->nextGameSaveId());
     }
 
