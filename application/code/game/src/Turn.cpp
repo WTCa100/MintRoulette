@@ -4,12 +4,13 @@
 // Get header
 #include "../include/Turn.h"
 #include "../include/Bet.h"
+#include "../include/Ai.h"
 #include "../../utilities/include/MaxValues.h"
-
 
 // Get source
 #include "./Bet.cpp"
 #include "../../utilities/src/Logger.cpp"
+#include "./Ai.cpp"
 
 /// @brief Get random number from specified range
 /// @return Random number from range 0 to 36 as uint_16
@@ -27,40 +28,87 @@ void Turn::bettingPhase()
         std::cout << "Debug info: " << currentPlayers_[i]->getNickName() << " turn has started\n";
         std::cout << "It's " << currentPlayers_[i]->getNickName() << "'s turn\n";
         std::cout << "You have: " << currentPlayers_[i]->getBalance() << " worth of balance\n";
-
         gameLog_->addLog(
             gameLog_->logGameTurnStartPlayerState(currentPlayers_[i]->getNickName(),
                                                   currentPlayers_[i]->getBalance())
         );
-
-        // Aske player if he wants to bet
-        if(askForBet())
+        if(!currentPlayers_[i]->getPlayerIsBot())
         {
-            Bet* playerBet = new Bet();
-            playerBet->buildBet(*currentPlayers_[i]);
-            playerAndBets_.insert(std::make_pair(currentPlayers_[i], playerBet));
-            currentPlayers_[i]->setBetCount(currentPlayers_[i]->getBetCount() + 1);
+            // Aske player if he wants to bet
+            if(askForBet())
+            {
+                Bet* playerBet = new Bet();
+                playerBet->buildBet(*currentPlayers_[i]);
+                playerAndBets_.insert(std::make_pair(currentPlayers_[i], playerBet));
+                currentPlayers_[i]->setBetCount(currentPlayers_[i]->getBetCount() + 1);
 
-            gameLog_->addLog(
-                gameLog_->logGamePlayerPlacedBet(currentPlayers_[i],
-                                                 playerBet->getAmmountBetted()) + " " +
-                gameLog_->logGamePlayerBetDetails(currentPlayers_[i],
-                                                  playerBet)
-            );
-        }        
+                gameLog_->addLog(
+                    gameLog_->logGamePlayerPlacedBet(currentPlayers_[i],
+                                                    playerBet->getAmmountBetted()) + " " +
+                    gameLog_->logGamePlayerBetDetails(currentPlayers_[i],
+                                                    playerBet)
+                );
+            }        
+            else
+            {
+                Bet* playerPass = new Bet(*currentPlayers_[i]);
+                playerAndBets_.insert(std::make_pair(currentPlayers_[i], playerPass));
+                currentPlayers_[i]->setPassCount(currentPlayers_[i]->getPassCount() + 1);
+
+                gameLog_->addLog(
+                    gameLog_->logGamePlayerPassed(currentPlayers_[i]->getNickName())
+                );
+            }
+            std::cout << "Debug Info: playerAndBets: size: " << playerAndBets_.size() << std::endl;
+            std::cout << "Debug info: " << currentPlayers_[i]->getNickName() << " turn has ended\n";
+        }
         else
         {
-            Bet* playerPass = new Bet(*currentPlayers_[i]);
-            playerAndBets_.insert(std::make_pair(currentPlayers_[i], playerPass));
-            currentPlayers_[i]->setPassCount(currentPlayers_[i]->getPassCount() + 1);
+            if(Ai::chooseActionBetOrPass())
+            {
+                Bet* botBet = new Bet();
+                botBet->setAmmountBetted(Ai::chooseBetSize(currentPlayers_[i]->getBalance()));
+                botBet->setBetType(Ai::chooseBetType());
+                switch (botBet->getBetType())
+                {
+                case BetType::StraightUp:
+                    botBet->setGuessedNumber(Ai::chooseLuckynumber());
+                    botBet->setWinningOdds(botBet->StraightUpOdd);
+                    break;
+                case BetType::DozenBet:
+                    botBet->setGuessedNumberRangeType(Ai::chooseLuckyNumberRange());
+                    botBet->setWinningOdds(botBet->DozenBetOdd);
+                    break;
+                case BetType::EvenOdd:
+                    botBet->setIsOddChoosen(Ai::chooseOddOrEven());
+                    botBet->setWinningOdds(botBet->EvenOddOdd);
+                    break;
+                }
 
-            gameLog_->addLog(
-                gameLog_->logGamePlayerPassed(currentPlayers_[i]->getNickName())
-            );
+                playerAndBets_.insert(std::make_pair(currentPlayers_[i], botBet));
+                currentPlayers_[i]->setBetCount(currentPlayers_[i]->getBetCount() + 1);
+
+                gameLog_->addLog(
+                    gameLog_->logGamePlayerPlacedBet(currentPlayers_[i],
+                                                    botBet->getAmmountBetted()) + " " +
+                    gameLog_->logGamePlayerBetDetails(currentPlayers_[i],
+                                                    botBet)
+                );               
+
+            }
+            else
+            {
+                Bet* playerPass = new Bet(*currentPlayers_[i]);
+                playerAndBets_.insert(std::make_pair(currentPlayers_[i], playerPass));
+                currentPlayers_[i]->setPassCount(currentPlayers_[i]->getPassCount() + 1);
+
+                gameLog_->addLog(
+                    gameLog_->logGamePlayerPassed(currentPlayers_[i]->getNickName())
+                );
+            }
         }
-        std::cout << "Debug Info: playerAndBets: size: " << playerAndBets_.size() << std::endl;
-        std::cout << "Debug info: " << currentPlayers_[i]->getNickName() << " turn has ended\n";
-    }
+
+        }
 }
 
 void Turn::rollTheRoulette()
@@ -217,8 +265,9 @@ void Turn::summaryPhase()
         }
         if(player.second->getBetType() != BetType::Pass)
         {
-            std::cout <<  player.second->getAmmountBetted() << "/" << player.second->getWinningOdds() << std::endl;
-            double winAmmount = player.second->getAmmountBetted() / player.second->getWinningOdds();
+            double winAmmount = static_cast<double>(player.second->getAmmountBetted()) / 
+                                static_cast<double>(player.second->getWinningOdds());
+            std::cout << "Debug: Player: WinAmmount: " << winAmmount << std::endl;
             int currentPlayerBalance = player.first->getBalance();
             if(player.second->getBetSucces())
             {
