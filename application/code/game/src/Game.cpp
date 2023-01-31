@@ -79,7 +79,7 @@ void Game::setGameConfig()
             
             if(std::stoi(userInput) == 0)
             {
-                std::cout << "There must be at least 1 human player\n";
+                std::cout << "It's AI only match!\n";
             }
             else if(std::stoi(userInput) > numberOfPlayers_)
             {
@@ -91,7 +91,7 @@ void Game::setGameConfig()
                 hasBots_ = false;
             }
 
-        } while (std::stoi(userInput) <= 0 || std::stoi(userInput) > numberOfPlayers_);
+        } while (std::stoi(userInput) < 0 || std::stoi(userInput) > numberOfPlayers_);
         
         if(hasBots_)
         {
@@ -198,7 +198,13 @@ void Game::startGame()
         else
         {
             roulettePlayer = new Player(initBankBalance_, i + 1, isThisPlayerBot);
-            roulettePlayer->setNickName("Player" + std::to_string(i));
+            std::string* randomlyPickedName = new std::string; 
+            do
+            {
+                *randomlyPickedName = Ai::pickBotName(fManager_);
+                roulettePlayer->setNickName(*randomlyPickedName);
+            }while(ValidateInput::isADuplicatePlayer(players_, *randomlyPickedName));
+            delete randomlyPickedName;
         }
         players_.push_back(roulettePlayer);
 
@@ -449,7 +455,7 @@ uint16_t Game::loadNextGameId()
     // If nothing found check game folder for any game registered
     else
     {
-        std::vector<std::string> gameFiles = fManager_->loadFilesFromPath(FILE_GAME_SAVE_LOG);
+        std::vector<std::string> gameFiles = fManager_->loadFilesFromPath(FILE_GAME_SAVE_LOG_PATH);
         
         // Make sure that there are no folders inside the container
         for(auto checkFolder : gameFiles)

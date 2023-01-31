@@ -128,7 +128,7 @@ void Menu::playerList()
 void Menu::gameList()
 {
     std::cout << "Game list!\n";
-    std::vector<std::string> gamesFiles = fManager_->loadFilesFromPath(FILE_GAME_SAVE_LOG);
+    std::vector<std::string> gamesFiles = fManager_->loadFilesFromPath(FILE_GAME_SAVE_LOG_PATH);
     for(auto gamePath : gamesFiles)
     {
         if(fManager_->isEntryFolder(gamePath))
@@ -229,7 +229,7 @@ void Menu::displayFullPlayerList(const std::vector<Player*>& listToDisplay)
 void Menu::showGameSave(const uint16_t& gameId)
 {
     std::ifstream gameSaveFile;
-    std::string gameSavePath = FILE_GAME_SAVE_LOG;
+    std::string gameSavePath = FILE_GAME_SAVE_LOG_PATH;
     gameSaveFile.open(gameSavePath + "/GameNr" + std::to_string(gameId) + EXT_GAME_LOG);
     if(!gameSaveFile.is_open())
     {

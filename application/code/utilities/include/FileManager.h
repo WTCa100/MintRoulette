@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <set>
 #include <map>
 #include <sys/stat.h>
 
@@ -20,7 +21,8 @@ std::map<const std::string, const std::string> _filesToCheck{
 enum FileType{
     PlayerStat  = 1,
     GameSave    = 2,
-    GameSaveDbg = 3
+    GameSaveDbg = 3,
+    AiNameList = 4
 };
 
 
@@ -47,6 +49,7 @@ class FileManager{
                                      const uint32_t initialBankBalance = 0);
     void iterateGameIdConfig(const uint16_t& nextGameId);
     std::vector<std::string> loadFilesFromPath(const std::string path);
+    std::vector<std::string> makeFileContentUnique(std::vector<std::string> fileContent);
     std::string trimPath(const std::string& rawFile);
     bool isEntryFolder(const std::string& path);
     uint16_t nextGameSaveId();
