@@ -45,6 +45,60 @@ void Game::setGameConfig()
         // Everything in order we can set config count
         setPlayerCount(std::stoi(userInput));
     }
+    // Allow bots
+    {
+        std::cout << "Would you like Ai companions? (y/n)\n";
+        do
+        {
+            std::getline(std::cin, userInput);
+            if(!this->isStringValid(userInput))
+            {
+                std::cout << "It's either yes or no\n";
+            } 
+           
+        } while (!this->isStringValid(userInput));
+
+        if(tolower(userInput[0]) == 'y')
+        {
+            hasBots_ = true;
+        }   
+    }
+    // Setup bots if necessery
+    {
+        std::cout << "How many human players will be playing?\n";
+        do
+        {
+            do
+            {
+                std::getline(std::cin, userInput);
+                if(!ValidateInput::isStringNumber(userInput))
+                {
+                    std::cout << "Please enter a numeric value\n";
+                }
+            } while (!ValidateInput::isStringNumber(userInput));
+            
+            if(std::stoi(userInput) == 0)
+            {
+                std::cout << "There must be at least 1 human player\n";
+            }
+            else if(std::stoi(userInput) > numberOfPlayers_)
+            {
+                std::cout << "There cannot be more players than perviosly declared!\n";
+            }
+            else if(std::stoi(userInput) == numberOfPlayers_)
+            {
+                std::cout << "No space for bots, removing.\n";
+                hasBots_ = false;
+            }
+
+        } while (std::stoi(userInput) <= 0 || std::stoi(userInput) > numberOfPlayers_);
+        
+        if(hasBots_)
+        {
+            numOfBots_ = numberOfPlayers_ - std::stoi(userInput);
+        }
+    }
+
     // Ask for player initial bank balance info
     {
         isInputGood = false;
@@ -94,39 +148,57 @@ void Game::startGame()
     std::cout << "Player count: " << numberOfPlayers_ << std::endl;
     std::cout << "Init balance: " << initBankBalance_ << std::endl;
 
+    bool isThisPlayerBot = false;
+
     // ask for names
     for(int i = 0; i < numberOfPlayers_; i++)
     {
-        std::string tmpNicknameHolder = "";
-        Player* roulettePlayer;
-        std::cout << "Please provide name for player " << i + 1 << std::endl;
-        do
+        // Check if there will be a bot setup.
+        if(i == numberOfPlayers_ - numOfBots_)
         {
+            isThisPlayerBot = true;
+        }
+        
+        Player* roulettePlayer;
+
+        if(!isThisPlayerBot)
+        {
+            std::string tmpNicknameHolder = "";
+            std::cout << "Please provide name for player " << i + 1 << std::endl;
             do
             {
-                std::getline(std::cin, tmpNicknameHolder);
-                if(tmpNicknameHolder.empty())
+                do
                 {
-                    std::cout << "Player must have a name!\n";
+                    std::getline(std::cin, tmpNicknameHolder);
+                    if(tmpNicknameHolder.empty())
+                    {
+                        std::cout << "Player must have a name!\n";
+                    }
+                } while (tmpNicknameHolder.size() < MIN_NICKNAME_LENGTH || tmpNicknameHolder.size() > MAX_NICKNAME_LENGTH);
+                if(ValidateInput::isADuplicatePlayer(players_, tmpNicknameHolder))
+                {
+                    std::cout << "2 Players cannot have the same nickname!\n";
                 }
-            } while (tmpNicknameHolder.size() < MIN_NICKNAME_LENGTH || tmpNicknameHolder.size() > MAX_NICKNAME_LENGTH);
-            if(ValidateInput::isADuplicatePlayer(players_, tmpNicknameHolder))
-            {
-                std::cout << "2 Players cannot have the same nickname!\n";
-            }
-        } while (ValidateInput::isADuplicatePlayer(players_, tmpNicknameHolder));
+            } while (ValidateInput::isADuplicatePlayer(players_, tmpNicknameHolder));
 
-        // Check if player is returning one or not
-        if(checkIfPlayerExists(tmpNicknameHolder))
-        {
-            roulettePlayer = fManager_->makePlayerFromLoadedFile(tmpNicknameHolder, i + 1, initBankBalance_);
-            // @todo add variable that will make sure that the player is bot or not.
-            // roulettePlayer->setPlayerIsBot(false);
+            // Check if player is returning one or not
+            if(checkIfPlayerExists(tmpNicknameHolder))
+            {
+                roulettePlayer = fManager_->makePlayerFromLoadedFile(tmpNicknameHolder, i + 1, initBankBalance_);
+                // @todo add variable that will make sure that the player is bot or not.
+                // roulettePlayer->setPlayerIsBot(false);
+            }
+            else
+            {
+                roulettePlayer = new Player(initBankBalance_, i + 1, isThisPlayerBot);
+                roulettePlayer->setNickName(tmpNicknameHolder);
+            }
+
         }
         else
         {
-            roulettePlayer = new Player(initBankBalance_, i + 1);
-            roulettePlayer->setNickName(tmpNicknameHolder);
+            roulettePlayer = new Player(initBankBalance_, i + 1, isThisPlayerBot);
+            roulettePlayer->setNickName("Player" + std::to_string(i));
         }
         players_.push_back(roulettePlayer);
 
@@ -135,6 +207,7 @@ void Game::startGame()
         );
 
     }
+
     playersAlive_ = players_;
     std::cout <<"there are " << playersAlive_.size() << " players\n";
     for(auto i : players_)
@@ -252,7 +325,10 @@ void Game::endScreen()
     {
         players->displayMoneyWonLoss(initBankBalance_);
         players->displayBetPassCounts();
-        players->moveToGlobalStats();
+        if(!players->getPlayerIsBot())
+        {
+            players->moveToGlobalStats();
+        }
 
         gameLog_->addLog(
             gameLog_->logGamePlayerSummerizeGame(players)
@@ -274,6 +350,8 @@ Game::Game(const FileManager* fManager)
     gameId_ = loadNextGameId();
     gameLog_->touchLog(gameId_);
 
+    hasBots_ = false;
+    inProgress_ = false;
     // For proper setup
     setGameConfig();
 }
@@ -291,7 +369,14 @@ Game::~Game()
      for(auto i = 0; i < players_.size(); i++)
     {
         std::cout << "Debug Info: Player: Save: " << i + 1 << std::endl;
-        savePlayerStats(*players_[i]);
+        if(!players_[i]->getPlayerIsBot())
+        {
+            savePlayerStats(*players_[i]);
+        }
+        else
+        {
+            std::cout << "Debug Info: Player: Save: Bot skipping...\n";
+        }
     }   
     std::cout << "Teardown game\n";
     std::cout << "Debug: Info: Players: Alive: Clear\n";

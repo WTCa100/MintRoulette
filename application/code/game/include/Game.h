@@ -44,6 +44,8 @@ class Game : public ValidateInput
     ~Game();
 
     private:
+    bool inProgress_;
+    bool hasBots_;
     uint16_t gameId_;
     FileManager* fManager_;
     Logger* gameLog_;
@@ -54,4 +56,5 @@ class Game : public ValidateInput
     std::vector<Turn*> gameTurns_;
     uint16_t numberOfPlayers_;
     int initBankBalance_;
+    uint16_t numOfBots_;
 };
