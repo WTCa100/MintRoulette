@@ -64,8 +64,12 @@ void Turn::bettingPhase()
         }
         else
         {
+
+            std::cout << "Bot player " << currentPlayers_[i]->getNickName();
+
             if(Ai::chooseActionBetOrPass())
             {
+                std::cout << " decided to bet: ";
                 Bet* botBet = new Bet();
                 botBet->setAmmountBetted(Ai::chooseBetSize(currentPlayers_[i]->getBalance()));
                 botBet->setBetType(Ai::chooseBetType());
@@ -74,14 +78,31 @@ void Turn::bettingPhase()
                 case BetType::StraightUp:
                     botBet->setGuessedNumber(Ai::chooseLuckynumber());
                     botBet->setWinningOdds(botBet->StraightUpOdd);
+                    std::cout << " straight up with " << botBet->getGuessedNumber() << " as lucky number\n";
                     break;
                 case BetType::DozenBet:
                     botBet->setGuessedNumberRangeType(Ai::chooseLuckyNumberRange());
                     botBet->setWinningOdds(botBet->DozenBetOdd);
+                    std::cout << " dozen with ";
+                    switch (botBet->getGuessedNumberRange())
+                    {
+                    case GuessedNumberRangeType::UpperRange:
+                        std::cout << MIN_UPPER_RANGE << " and " << MAX_UPPER_RANGE << " as lucky number range\n";
+                        /* code */
+                        break;
+                    case GuessedNumberRangeType::MiddleRange:
+                        std::cout << MIN_MIDDLE_RANGE << " and " << MAX_MIDDLE_RANGE << " as lucky number range\n";
+                        break;
+                    case GuessedNumberRangeType::LowerRange:
+                        std::cout << MIN_LOWER_RANGE << " and " << MAX_LOWER_RANGE << " as lucky number range\n";
+                        break;
+                    }
                     break;
                 case BetType::EvenOdd:
                     botBet->setIsOddChoosen(Ai::chooseOddOrEven());
                     botBet->setWinningOdds(botBet->EvenOddOdd);
+                    std::cout << " even/odd with ";
+                    botBet->getIsOddChoosen() ? std::cout << " thinking that the lucky number is odd\n" : std::cout << " thinking that the lucky number is even\n";
                     break;
                 }
 
@@ -101,11 +122,13 @@ void Turn::bettingPhase()
                 Bet* playerPass = new Bet(*currentPlayers_[i]);
                 playerAndBets_.insert(std::make_pair(currentPlayers_[i], playerPass));
                 currentPlayers_[i]->setPassCount(currentPlayers_[i]->getPassCount() + 1);
+                std::cout << " decided to pass this turn\n";
 
                 gameLog_->addLog(
                     gameLog_->logGamePlayerPassed(currentPlayers_[i]->getNickName())
                 );
             }
+            Sleep(100);
         }
 
         }
