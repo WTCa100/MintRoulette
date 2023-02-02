@@ -14,6 +14,7 @@
 class Ai
 {
     public:
+    uint32_t generateActionSeed();
     static bool chooseActionBetOrPass();
     static BetType chooseBetType();
     static int chooseLuckynumber();
@@ -23,7 +24,7 @@ class Ai
     static std::string pickBotName(FileManager* fManager /*This will be implemented later on in non-static version of the class*/);
 
 
-    Ai(FileManager* fManager);
+    Ai(FileManager* fManager, Player* self);
 
    /*Draft
    /// @brief This function generates seed that is core to decision making in Ai 
@@ -31,7 +32,8 @@ class Ai
    /// @return Seed */
    int generateSeed(int botBalance);
    private:
-   uint32_t actionSeed;
-   Bet botsBet;
-   FileManager* fManager;
+   uint32_t actionSeed_;
+   Bet botsBet_;
+   FileManager* fManager_;
+   Player* self_;
 };

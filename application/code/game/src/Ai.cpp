@@ -42,3 +42,17 @@ std::string Ai::pickBotName(FileManager* fManager)
     std::vector<std::string> names = fManager->makeFileContentUnique(fManager->loadFileContent(FILE_GAME_AI_NAME_LIST_PATH, FILE_AI_NAME_LIST));
     return names[rand() % names.size()];
 }
+
+Ai::Ai(FileManager* fManager, Player* self)
+{
+    fManager_ = fManager;
+    self_ = self;
+}
+
+uint32_t Ai::generateActionSeed()
+{
+    int seedRoot = self_->getBalance();
+
+    actionSeed_ = rand() % seedRoot;
+
+}
