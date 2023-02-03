@@ -93,7 +93,7 @@ Every bet, ammount won/lost ect. are registered in non-bot `Player` instances, a
 - init
 ```C++
 // In void Game::startGame()
-{
+
   // Skipping unreleated entries
   for(int i = 0; i < numberOfPlayers_; i++)
   {
@@ -130,6 +130,6 @@ Every bet, ammount won/lost ect. are registered in non-bot `Player` instances, a
       // Skipping unrelated entries
     }
   }
-}
+
 ```
 <!-- TODO: Describe utilities -->
