@@ -184,8 +184,6 @@ void Game::startGame()
             if(checkIfPlayerExists(tmpNicknameHolder))
             {
                 roulettePlayer = fManager_->makePlayerFromLoadedFile(tmpNicknameHolder, i + 1, initBankBalance_);
-                // @todo add variable that will make sure that the player is bot or not.
-                // roulettePlayer->setPlayerIsBot(false);
             }
             else
             {
