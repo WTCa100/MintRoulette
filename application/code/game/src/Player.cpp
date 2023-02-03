@@ -65,6 +65,24 @@ void Player::displayBetPassCounts()
     }
 }
 
+/**
+ * @brief Changes the global bet value dividing globGoodBetCount by globBetCount
+ * 
+ * @param globGoodBetCount 
+ * @param globBetCount 
+ */
+void Player::setGlobalGoodBetRatio(const uint32_t& globGoodBetCount, const uint32_t& globBetCount)
+{
+    if(globBetCount == 0)
+    {
+        std::cout << "Cannot devide by zero\n";
+        return;
+    }
+
+    double_t newValue = static_cast<double_t>(globGoodBetCount) / static_cast<double_t>(globBetCount);
+    setGlobalGoodBetRatio(newValue);
+}
+
 /// @brief Constructor used for saving and loading player data from and to file
 /// @param nickName user name
 /// @param globMoneyAccumulated how many player have accumulated during all of his playthroughs
@@ -153,4 +171,5 @@ void Player::moveToGlobalStats()
     globGoodBetCount_ += goodBetCount_;
     globMoneyAccumulated_ += moneyAccumulated_;
     globMoneyLost_ += moneyLost_;
+    setGlobalGoodBetRatio(globGoodBetCount_, globBetCount_);
 }

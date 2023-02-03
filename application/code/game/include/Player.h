@@ -26,6 +26,8 @@ class Player
     void setGlobalGoodBetCount(const uint32_t& globGoodBetCount) {globGoodBetCount_ = globGoodBetCount;}
     void setGlobalBetCount(const uint32_t& globBetCount) {globBetCount_ = globBetCount;}
     void setGlobalPassCount(const uint32_t& globPassCount) {globPassCount_ = globPassCount;}
+    void setGlobalGoodBetRatio(const uint32_t& globGoodBetCount, const uint32_t& globBetCount);
+    void setGlobalGoodBetRatio(const double_t& globGoodBetRatio) {globGoodBetRatio_ = globGoodBetRatio;}
 
     // Getters
     // Locals
@@ -44,6 +46,7 @@ class Player
     uint32_t getGlobalGoodBetCount() const {return globGoodBetCount_;}
     uint32_t getGlobalBetCount() const {return globBetCount_;}
     uint32_t getGlobalPassCount() const {return globPassCount_;}
+    double getGlobalGoodBetRatio() const {return globGoodBetCount_;}
 
     Player() = default;
     Player(int balance, int playerOrder, bool isPlayerBot = false);
@@ -69,4 +72,5 @@ class Player
     uint32_t globGoodBetCount_;
     uint32_t globBetCount_;
     uint32_t globPassCount_;
+    double_t globGoodBetRatio_;
 };
