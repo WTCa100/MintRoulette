@@ -94,8 +94,8 @@ void Player::setGlobalGoodBetRatio(const uint32_t& globGoodBetCount, const uint3
 /// @note balance is optional flag
 Player::Player(const std::string nickName, int globMoneyAccumulated,
                int globMoneyLost, uint32_t globGoodBetCount, 
-               uint32_t globBetCount, uint32_t globPassCount,
-               int playerOrder, int balance)
+               uint32_t globBetCount, uint32_t globPassCount, 
+               double_t globGoodBetRatio = 0.0, int playerOrder, int balance)
 {
     // Setup global variables
     nickName_ = nickName;
@@ -104,6 +104,7 @@ Player::Player(const std::string nickName, int globMoneyAccumulated,
     globPassCount_ = globPassCount;
     globMoneyAccumulated_ = globMoneyAccumulated;
     globMoneyLost_ = globMoneyLost;
+    globGoodBetRatio_ = globGoodBetRatio;
 
     // Setup local variables
     balance_ = balance;

@@ -22,17 +22,18 @@ enum FileType{
     PlayerStat  = 1,
     GameSave    = 2,
     GameSaveDbg = 3,
-    AiNameList = 4
+    AiNameList  = 4
 };
 
 
 enum PlayerAttribute{
-    plName = 0,
-    plGoodBetCount = 1,
-    plPassCount = 2,
-    plBetCount = 3,
+    plName             = 0,
+    plGoodBetCount     = 1,
+    plPassCount        = 2,
+    plBetCount         = 3,
     plTotalMoneyGained = 4,
-    plTotalMoneyLost = 5
+    plTotalMoneyLost   = 5,
+    plGoodBetRatio     = 6
 };
 
 class FileManager{

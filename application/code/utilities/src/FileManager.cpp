@@ -112,6 +112,8 @@ void FileManager::appendPlayerSaveFile(const Player& appPlayerStat)
         case PlayerAttribute::plTotalMoneyLost:
             appendTheSave << appPlayerStat.getGlobalMoneyLost();
             break;    
+        case PlayerAttribute::plGoodBetRatio:
+            appendTheSave << appPlayerStat.getGlobalGoodBetRatio();
         default:
         // Eof
             break;
@@ -164,6 +166,7 @@ Player* FileManager::makePlayerFromLoadedFile(const std::string& name,
 
     // Initialize temporary values
     uint32_t goodBetCount; uint32_t passCount; uint32_t betCount; int totalMoneyGained; int totalMoneyLost;
+    double_t goodBetRatio;
     for(int attribute = 0; attribute < playerValues.size(); attribute++)
     {
         switch(static_cast<PlayerAttribute>(attribute))
@@ -186,6 +189,8 @@ Player* FileManager::makePlayerFromLoadedFile(const std::string& name,
             break;
             case PlayerAttribute::plTotalMoneyLost:
             totalMoneyLost = std::stoi(playerValues[attribute]);
+            case PlayerAttribute::plGoodBetRatio:
+            goodBetRatio = std::stod(playerValues[attribute]);
             break;
         }
     }
