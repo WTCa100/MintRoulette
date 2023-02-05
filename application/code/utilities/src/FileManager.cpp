@@ -1,5 +1,8 @@
 #include <iostream> // For debug
 #include <fstream>
+#include <sstream>
+#include <stdexcept>
+#include <cctype>
 #include <experimental/filesystem>
 
 #include "../include/FileManager.h"
@@ -287,4 +290,29 @@ uint16_t FileManager::nextGameSaveId()
     }
 
     return nextId;
+}
+
+template<typename T>
+T FileManager::extractConfigValueFromTag(const std::string& tag)
+{
+    std::vector<std::string> configTags = loadFileContent(INIT_CONFIG_PATH, INIT_CONFIG_FILE);
+
+    for(auto configTag : configTags)
+    {
+        if(configTag.find(tag) != std::string::npos)
+        {
+            // remove whitespaces
+            std::string tagValue = configTag;
+            std::cout << "Debug: FManager: Config: Tag: Trimmed: Not: " << tagValue << " : this is a check for whitespace ignore\n";   
+            tagValue.erase(std::remove_if(tagValue.begin(), tagValue.end(), ::isspace), tagValue.end());
+            std::cout << "Debug: FManager: Config: Tag: Trimmed: " << tagValue << " : this is a check for whitespace ignore\n";
+            std::istringstream iss(tagValue);
+            T extractedValue;
+            iss >> tagValue >> extractedValue;
+            return extractedValue; 
+        }
+    }
+    
+     throw std::runtime_error("No such tag found in file " + INIT_CONFIG_FILE + " tag: " + tag);
+
 }
