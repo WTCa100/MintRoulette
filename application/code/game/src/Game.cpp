@@ -65,36 +65,35 @@ void Game::setGameConfig()
     }
     // Setup bots if necessery
     {
-        std::cout << "How many human players will be playing?\n";
-        do
-        {
-            do
-            {
-                std::getline(std::cin, userInput);
-                if(!ValidateInput::isStringNumber(userInput))
-                {
-                    std::cout << "Please enter a numeric value\n";
-                }
-            } while (!ValidateInput::isStringNumber(userInput));
-            
-            if(std::stoi(userInput) == 0)
-            {
-                std::cout << "It's AI only match!\n";
-            }
-            else if(std::stoi(userInput) > numberOfPlayers_)
-            {
-                std::cout << "There cannot be more players than perviosly declared!\n";
-            }
-            else if(std::stoi(userInput) == numberOfPlayers_)
-            {
-                std::cout << "No space for bots, removing.\n";
-                hasBots_ = false;
-            }
-
-        } while (std::stoi(userInput) < 0 || std::stoi(userInput) > numberOfPlayers_);
-        
         if(hasBots_)
         {
+            std::cout << "How many human players will be playing?\n";
+            do
+            {
+                do
+                {
+                    std::getline(std::cin, userInput);
+                    if(!ValidateInput::isStringNumber(userInput))
+                    {
+                        std::cout << "Please enter a numeric value\n";
+                    }
+                } while (!ValidateInput::isStringNumber(userInput));
+
+                if(std::stoi(userInput) == 0)
+                {
+                    std::cout << "It's AI only match!\n";
+                }
+                else if(std::stoi(userInput) > numberOfPlayers_)
+                {
+                    std::cout << "There cannot be more players than perviosly declared!\n";
+                }
+                else if(std::stoi(userInput) == numberOfPlayers_)
+                {
+                    std::cout << "No space for bots, removing.\n";
+                    hasBots_ = false;
+                }
+        } while (std::stoi(userInput) < 0 || std::stoi(userInput) > numberOfPlayers_);
+        
             numOfBots_ = numberOfPlayers_ - std::stoi(userInput);
         }
     }
@@ -185,8 +184,6 @@ void Game::startGame()
             if(checkIfPlayerExists(tmpNicknameHolder))
             {
                 roulettePlayer = fManager_->makePlayerFromLoadedFile(tmpNicknameHolder, i + 1, initBankBalance_);
-                // @todo add variable that will make sure that the player is bot or not.
-                // roulettePlayer->setPlayerIsBot(false);
             }
             else
             {

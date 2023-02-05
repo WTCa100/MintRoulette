@@ -27,7 +27,14 @@ void Turn::bettingPhase()
     {
         std::cout << "Debug info: " << currentPlayers_[i]->getNickName() << " turn has started\n";
         std::cout << "It's " << currentPlayers_[i]->getNickName() << "'s turn\n";
-        std::cout << "You have: " << currentPlayers_[i]->getBalance() << " worth of balance\n";
+        if(!currentPlayers_[i]->getPlayerIsBot())
+        {
+            std::cout << "You have: " << currentPlayers_[i]->getBalance() << " worth of balance\n";
+        }
+        else
+        {
+            std::cout << "This bot have: " << currentPlayers_[i]->getBalance() << " worth of balance\n";
+        }
         gameLog_->addLog(
             gameLog_->logGameTurnStartPlayerState(currentPlayers_[i]->getNickName(),
                                                   currentPlayers_[i]->getBalance())
@@ -65,30 +72,26 @@ void Turn::bettingPhase()
         else
         {
 
+            Ai* botBrain = new Ai(currentPlayers_[i]);
+
             std::cout << "Bot player " << currentPlayers_[i]->getNickName();
 
             if(Ai::chooseActionBetOrPass())
             {
-                std::cout << " decided to bet: ";
+                std::cout << " decided to bet:";
                 Bet* botBet = new Bet();
-                botBet->setAmmountBetted(Ai::chooseBetSize(currentPlayers_[i]->getBalance()));
-                botBet->setBetType(Ai::chooseBetType());
+                botBet = botBrain->buildBet(botBet);
                 switch (botBet->getBetType())
                 {
                 case BetType::StraightUp:
-                    botBet->setGuessedNumber(Ai::chooseLuckynumber());
-                    botBet->setWinningOdds(botBet->StraightUpOdd);
                     std::cout << " straight up with " << botBet->getGuessedNumber() << " as lucky number\n";
                     break;
                 case BetType::DozenBet:
-                    botBet->setGuessedNumberRangeType(Ai::chooseLuckyNumberRange());
-                    botBet->setWinningOdds(botBet->DozenBetOdd);
                     std::cout << " dozen with ";
                     switch (botBet->getGuessedNumberRange())
                     {
                     case GuessedNumberRangeType::UpperRange:
                         std::cout << MIN_UPPER_RANGE << " and " << MAX_UPPER_RANGE << " as lucky number range\n";
-                        /* code */
                         break;
                     case GuessedNumberRangeType::MiddleRange:
                         std::cout << MIN_MIDDLE_RANGE << " and " << MAX_MIDDLE_RANGE << " as lucky number range\n";
@@ -99,12 +102,12 @@ void Turn::bettingPhase()
                     }
                     break;
                 case BetType::EvenOdd:
-                    botBet->setIsOddChoosen(Ai::chooseOddOrEven());
-                    botBet->setWinningOdds(botBet->EvenOddOdd);
-                    std::cout << " even/odd with ";
+                    std::cout << " even/odd ";
                     botBet->getIsOddChoosen() ? std::cout << " thinking that the lucky number is odd\n" : std::cout << " thinking that the lucky number is even\n";
                     break;
                 }
+
+                std::cout << " worth " << botBet->getAmmountBetted() << std::endl;
 
                 playerAndBets_.insert(std::make_pair(currentPlayers_[i], botBet));
                 currentPlayers_[i]->setBetCount(currentPlayers_[i]->getBetCount() + 1);
@@ -129,6 +132,8 @@ void Turn::bettingPhase()
                 );
             }
             Sleep(100);
+
+            delete botBrain;
         }
 
         }
@@ -290,7 +295,6 @@ void Turn::summaryPhase()
         {
             double winAmmount = static_cast<double>(player.second->getAmmountBetted()) / 
                                 static_cast<double>(player.second->getWinningOdds());
-            std::cout << "Debug: Player: WinAmmount: " << winAmmount << std::endl;
             int currentPlayerBalance = player.first->getBalance();
             if(player.second->getBetSucces())
             {
