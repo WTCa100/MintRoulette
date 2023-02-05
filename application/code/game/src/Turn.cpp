@@ -76,7 +76,7 @@ void Turn::bettingPhase()
 
             std::cout << "Bot player " << currentPlayers_[i]->getNickName();
 
-            if(Ai::chooseActionBetOrPass())
+            if(botBrain->chooseActionBetOrPass())
             {
                 std::cout << " decided to bet:";
                 Bet* botBet = new Bet();

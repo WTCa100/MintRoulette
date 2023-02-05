@@ -2,12 +2,35 @@
 #include "../../utilities/include/Paths.h"
 
 #include <vector>
+#include <iostream>
 
 /// @brief 
 /// @return 0 - pass, 1 - bet
 bool Ai::chooseActionBetOrPass()
 {
-    return chooseYesOrNo();
+    // Bot shall choose depending on ammount of money he has wether pass or not
+    // First let's check ammount of money player have (it's fixed since it will make the game flow much faster)
+    // This will determine the highest odds
+    if(self_->getBalance() > 1500)
+    {
+        // Now depending on ability to modulate balance we will determine if player want to bet or not
+        // Fist case will have ratio 80% for bet and 20% for pass
+        return actionSeed_ % 100 <= 80;
+    }
+    else if(self_->getBalance() > 150 && self_->getBalance() <= 1500)
+    {
+        // 50/50 ratio
+        return actionSeed_ % 100 <= 50;
+    }
+    else
+    {
+        // 20% for bet and 80% for pass.
+        return actionSeed_% 100 <= 20;
+    }
+    
+    // Make sure we return something even if none of the condisions are met
+    std::cout << "Some error occured!\n";
+    return 0;
 }
 
 BetType Ai::chooseBetType()
@@ -29,13 +52,9 @@ GuessedNumberRangeType Ai::chooseLuckyNumberRange()
 /// @return 0 - even, 1 - odd 
 bool Ai::chooseOddOrEven()
 {
-    return chooseYesOrNo();
+    return static_cast<bool>(rand() % 2);
 }
 
-bool Ai::chooseYesOrNo()
-{
-    return static_cast<bool>(rand() % 2); 
-}
 
 bool Ai::chooseGoAllIn()
 {

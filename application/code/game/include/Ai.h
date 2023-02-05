@@ -15,8 +15,7 @@ class Ai
 {
     public:
     uint32_t generateActionSeed();
-    static bool chooseActionBetOrPass();
-    static bool chooseYesOrNo();
+    bool chooseActionBetOrPass();
     bool chooseGoAllIn();
     BetType chooseBetType();
     int chooseLuckynumber();
@@ -25,7 +24,13 @@ class Ai
     int chooseBetSize(int botBalance);
     static std::string pickBotName(FileManager* fManager);
     Bet* buildBet(Bet*& botBet);
+   int generateSeed(int botBalance);
 
+
+    // Setters
+    void setInitialBankBalance(int* initialBankBalance) {initialBankBalance_ = initialBankBalance;}
+    // Getters
+    int* getInitialBankBalance() {return initialBankBalance_;}
 
     Ai(Player* self);
 
@@ -33,8 +38,8 @@ class Ai
    /// @brief This function generates seed that is core to decision making in Ai 
    /// @param botBalance is used as reference on what action should be done 
    /// @return Seed */
-   int generateSeed(int botBalance);
    private:
    uint32_t actionSeed_;
    Player* self_;
+   int* initialBankBalance_;
 };
