@@ -22,15 +22,16 @@ class Ai
     static int chooseBetSize(int botBalance);
     static std::string pickBotName(FileManager* fManager /*This will be implemented later on in non-static version of the class*/);
 
+
+    Ai(FileManager* fManager);
+
    /*Draft
    /// @brief This function generates seed that is core to decision making in Ai 
    /// @param botBalance is used as reference on what action should be done 
-   /// @return Seed 
+   /// @return Seed */
    int generateSeed(int botBalance);
    private:
-   /// @brief This is core nu
    uint32_t actionSeed;
    Bet botsBet;
-   */
-   
+   FileManager* fManager;
 };
