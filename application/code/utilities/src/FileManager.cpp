@@ -16,7 +16,7 @@ bool FileManager::isFileGood(const std::string& path, const std::string& fileNam
     return fileCheck.good();
 }
 
-/// @brief Creates file in given directory and nickname
+/// @brief Creates an empty file
 /// @param path destination where file should be saved
 /// @param fileName filename
 void FileManager::createFile(const std::string& path, const std::string& fileName)
@@ -31,6 +31,24 @@ void FileManager::createFile(const std::string& path, const std::string& fileNam
     }
     
     std::cout << "Could not create the file!\n";
+}
+
+void FileManager::checkFiles(std::map<FileType, std::pair<std::string, std::string>> filesToCheck)
+{
+    std::cout << "Checking files:\n";
+    for(const auto file : filesToCheck)
+    {
+        std::cout << "Checking " << file.second.first + "/" + file.second.first << "...\n";
+        if(!isFileGood(file.second.first, file.second.second))
+        {
+            std::cout << "Not found!\nCreating...\n";
+            touch(file.first, file.second.second);
+        }
+        else
+        {
+            std::cout << "Found!\n";
+        }
+    }
 }
 
 /// @brief Creates file using simple template.
@@ -61,7 +79,7 @@ void FileManager::touch(const FileType& fType, const std::string& fileName)
     case AiNameList:
         createFile(FILE_GAME_AI_NAME_LIST_PATH, FILE_AI_NAME_LIST);
         tmpPathHolder = FILE_GAME_AI_NAME_LIST_PATH;
-        filePath = tmpPathHolder + "/" + fileName;
+        filePath = tmpPathHolder + "/" + FILE_AI_NAME_LIST;
         makeFile.open(filePath);
         nameOutput = NameList::names;
         for(auto& name : nameOutput)
@@ -69,6 +87,13 @@ void FileManager::touch(const FileType& fType, const std::string& fileName)
             makeFile << name << std::endl;
         }
         break;
+    case Highscores:
+        createFile(FILE_PLAYER_HIGHSCORES_PATH, FILE_PLAYER_HIGHSCORES);
+        tmpPathHolder = FILE_PLAYER_HIGHSCORES_PATH;
+        filePath = tmpPathHolder + "/" + FILE_PLAYER_HIGHSCORES;
+        makeFile.open(filePath);
+        makeFile << "Position,GoodBetRatio,PlayerName\n";
+        makeFile.close();
     default:
         std::cout << "No such file type in preset templates. Use createFile!\n";
         break;

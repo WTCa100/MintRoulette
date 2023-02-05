@@ -22,7 +22,8 @@ enum FileType{
     PlayerStat  = 1,
     GameSave    = 2,
     GameSaveDbg = 3,
-    AiNameList  = 4
+    AiNameList  = 4,
+    Highscores  = 5
 };
 
 
@@ -42,6 +43,7 @@ class FileManager{
     void createFile(const std::string& path, const std::string& fileName);
 
     // Touch function is used to create already presseted file 
+    void checkFiles(std::map<FileType, std::pair<std::string, std::string>> filesToCheck);
     void touch(const FileType& fTypem, const std::string& fileName);
     void appendPlayerSaveFile(const Player& appPlayerStat);
     std::vector <std::string> loadFileContent(const std::string& path, const std::string& fileName);

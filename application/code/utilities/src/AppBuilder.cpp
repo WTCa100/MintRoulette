@@ -80,7 +80,6 @@ void AppBuilder::buildInitConfig()
             std::string gameId = fileMgmt_->trimPath(entry);
             gameId.erase(gameId.begin(), gameId.begin() + 6);
             potentialGameSavesId->push_back(std::stoi(gameId));
-
         }
     }
 
@@ -134,16 +133,16 @@ void AppBuilder::setupGameFiles()
         checkDirectories();
         fileMgmt_->createFile(INIT_CONFIG_PATH, INIT_CONFIG_FILE);
         buildInitConfig();
-        fileMgmt_->touch(FileType::AiNameList, FILE_AI_NAME_LIST);
+        for(const auto file : _filesToCheck)
+        {
+            fileMgmt_->touch(file.first, file.second.second);
+        }
     }
     else
     {
         // Only check required
         checkDirectories();
-        if(!fileMgmt_->isFileGood(FILE_GAME_AI_NAME_LIST_PATH, FILE_AI_NAME_LIST))
-        {
-            fileMgmt_->touch(FileType::AiNameList, FILE_AI_NAME_LIST);    
-        }
+        fileMgmt_->checkFiles(_filesToCheck);
         fileMgmt_->iterateGameIdConfig(fileMgmt_->nextGameSaveId());
     }
 
