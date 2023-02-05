@@ -25,7 +25,10 @@ bool Ai::chooseActionBetOrPass()
     else
     {
         // 20% for bet and 80% for pass.
-        return actionSeed_% 100 <= 20;
+        // Use addition to actionSeed_ since actionSeed_ might be actually lower than 100, because it's based on player balance.
+        // It is possible that if we leave actionSeed_ % 100 <= 20, that it will stuck on pass when for player balance will be lower than 20.
+        // Thus we have to add certain components to the action generation to make it work as intended.
+        return (rand() % actionSeed_ + rand() % 900 + 101) % 100 <= 20;
     }
     
     // Make sure we return something even if none of the condisions are met
