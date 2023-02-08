@@ -1,9 +1,12 @@
 import subprocess
 import os
+from pathlib import Path
 import sys
 
-def get_config_version():
-    with open("./bin/init.cfg", "r") as config_lines:
+relativeGitHookConfigPath = "../../application/bin/init.cfg"
+
+def get_config_version(path):
+    with open(path, "r") as config_lines:
         lines = config_lines.readlines()
         for i, line in enumerate(lines):
             if line.startswith("gameVersion    :"):
@@ -26,17 +29,39 @@ def build_new_version(oldVersion, pathWeight):
 
     return f"{major}.{minor}.{patch}"
 
-def update_version(version):
-    with open("./bin/init.cfg", "r") as f:
+def update_version(version, path):
+    with open(path, "r") as f:
         lines = f.readlines()
     for i, line in enumerate(lines):
         if line.startswith("gameVersion    :"):
             lines[i] = f"gameVersion    :{version}\n"
-    with open("./bin/init.cfg", "w") as f:
+    with open(relativeGitHookConfigPath, "w") as f:
         f.writelines(lines)
         
 if __name__ == "__main__":
+    
+    # check for errors
     print(len(sys.argv))
-    version = build_new_version(get_config_version(), sys.argv[1]) 
-    print(version)
-    #update_version(version)
+    if not len(sys.argv) == 3:
+        print("There must be an argument specifying update weight and init.cfg path! Game version will remain the same.")
+        print("Usage: py makeVersion.py [init.cfg path] [patchWeight]")
+        quit()
+    
+    extractedPath = Path(sys.argv[1])
+    if not extractedPath.is_file():
+        print(f"No such file in directory {extractedPath}. Game version will remain the same.")
+        quit()
+    
+    extractedPatchWeight = sys.argv[2].lower()
+    if not(extractedPatchWeight == "major" or extractedPatchWeight == "minor" or extractedPatchWeight == "patch"):
+        print("Forbidden argument. Allowed argunments are: \"major\" , \"minor\" and \"patch\". Game version will remain the same.")
+        quit()
+
+    oldVersion = get_config_version(extractedPath)
+    version = build_new_version(get_config_version(extractedPath), extractedPatchWeight)
+    if oldVersion == version:
+        quit()
+    else:
+        print(version)
+        update_version(version, extractedPath)
+        
