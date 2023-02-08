@@ -27,7 +27,7 @@ class Player
     void setGlobalBetCount(const uint32_t& globBetCount) {globBetCount_ = globBetCount;}
     void setGlobalPassCount(const uint32_t& globPassCount) {globPassCount_ = globPassCount;}
     void setGlobalGoodBetRatio(const uint32_t& globGoodBetCount, const uint32_t& globBetCount);
-    void setGlobalGoodBetRatio(const double_t& globGoodBetRatio) {globGoodBetRatio_ = globGoodBetRatio;}
+    void setGlobalGoodBetRatio(const double& globGoodBetRatio) {globGoodBetRatio_ = globGoodBetRatio;}
 
     // Getters
     // Locals
@@ -52,7 +52,7 @@ class Player
     Player(int balance, int playerOrder, bool isPlayerBot = false);
     Player(const std::string nickName, int balance, bool isPlayerBot = false, int playerOrder = 0);                                    
     Player(const std::string nickName, int globMoneyAccumulated, int globMoneyLost, uint32_t goodBetCount, uint32_t betCount,
-           uint32_t passCount, double_t globGoodBetRatio = 0.0, int playerOrder = 0, int balance = 0);
+           uint32_t passCount, double globGoodBetRatio = 0.0, int playerOrder = 0, int balance = 0);
 
     private:
     // Local variables related to one session
@@ -72,5 +72,5 @@ class Player
     uint32_t globGoodBetCount_;
     uint32_t globBetCount_;
     uint32_t globPassCount_;
-    double_t globGoodBetRatio_;
+    double globGoodBetRatio_;
 };

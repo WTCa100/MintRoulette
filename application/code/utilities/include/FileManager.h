@@ -54,8 +54,7 @@ class FileManager{
     std::string trimPath(const std::string& rawFile);
     bool isEntryFolder(const std::string& path);
     uint16_t nextGameSaveId();
-    template<typename T>
-    T extractConfigValueFromTag(const std::string& tag);
+    std::string extractConfigValueFromTag(const std::string& tag);
 
     FileManager() = default;
 };

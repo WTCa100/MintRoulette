@@ -169,7 +169,7 @@ Player* FileManager::makePlayerFromLoadedFile(const std::string& name,
 
     // Initialize temporary values
     uint32_t goodBetCount; uint32_t passCount; uint32_t betCount; int totalMoneyGained; int totalMoneyLost;
-    double_t goodBetRatio;
+    double goodBetRatio;
     for(int attribute = 0; attribute < playerValues.size(); attribute++)
     {
         switch(static_cast<PlayerAttribute>(attribute))
@@ -292,10 +292,11 @@ uint16_t FileManager::nextGameSaveId()
     return nextId;
 }
 
-template<typename T>
-T FileManager::extractConfigValueFromTag(const std::string& tag)
+std::string FileManager::extractConfigValueFromTag(const std::string& tag)
 {
     std::vector<std::string> configTags = loadFileContent(INIT_CONFIG_PATH, INIT_CONFIG_FILE);
+
+    std::cout << std::endl; // debug purposes
 
     for(auto configTag : configTags)
     {
@@ -303,16 +304,14 @@ T FileManager::extractConfigValueFromTag(const std::string& tag)
         {
             // remove whitespaces
             std::string tagValue = configTag;
-            std::cout << "Debug: FManager: Config: Tag: Trimmed: Not: " << tagValue << " : this is a check for whitespace ignore\n";   
-            tagValue.erase(std::remove_if(tagValue.begin(), tagValue.end(), ::isspace), tagValue.end());
-            std::cout << "Debug: FManager: Config: Tag: Trimmed: " << tagValue << " : this is a check for whitespace ignore\n";
-            std::istringstream iss(tagValue);
-            T extractedValue;
-            iss >> tagValue >> extractedValue;
-            return extractedValue; 
+            std::cout << "Debug: FManager: Config: Tag: Name: " << tagValue << std::endl;
+            tagValue.erase(tagValue.begin(), tagValue.begin() + tagValue.rfind(":") + 1);
+            std::cout << "Debug: FManager: Config: Tag: Value: " << tagValue << std::endl;
+            return tagValue; 
         }
     }
     
-     throw std::runtime_error("No such tag found in file " + INIT_CONFIG_FILE + " tag: " + tag);
+    std::string errMsg = "No such tag found in file";
+    throw std::runtime_error(errMsg);
 
 }

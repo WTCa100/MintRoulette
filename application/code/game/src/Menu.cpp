@@ -16,6 +16,7 @@
 /// @brief Shows main menu with asking which action user wants to take next
 void Menu::mainMenuDisplay()
 {
+
     std::string choosenOption = "";
     do
     {
