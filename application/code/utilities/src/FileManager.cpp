@@ -310,8 +310,47 @@ std::string FileManager::extractConfigValueFromTag(const std::string& tag)
             return tagValue; 
         }
     }
-    
+
     std::string errMsg = "No such tag found in file";
     throw std::runtime_error(errMsg);
+
+}
+
+void FileManager::changeConfigTagValue(const std::string& tag, const std::string& newValue)
+{
+    if(!isFileGood(INIT_CONFIG_PATH, INIT_CONFIG_FILE))
+    {
+        throw std::runtime_error("No init.cfg file found! Aborting.");
+    }
+
+    if(extractConfigValueFromTag(tag) == newValue)
+    {
+        std::cout << "Debug: Config: Edit: Message: Already the same value.\n";
+    }
+
+    std::string initPath = INIT_CONFIG_PATH;
+    std::vector<std::string> oldConfigValues = loadFileContent(INIT_CONFIG_PATH, INIT_CONFIG_FILE);
+
+    std::fstream initFile;
+    initFile.open(initPath + "/" + INIT_CONFIG_FILE, std::ios::out);
+
+    for(auto& oldConfigLine : oldConfigValues)
+    {
+        if(oldConfigLine.find(tag) != std::string::npos)
+        {
+            std::string lineTag = oldConfigLine;
+            lineTag.erase(lineTag.begin() + lineTag.rfind(":") + 1, lineTag.end());
+            std::string newConfigLine = lineTag += newValue;
+            oldConfigLine = newConfigLine;
+            break;
+        }
+    }
+
+    for(auto& newConfgLine : oldConfigValues)
+    {
+        initFile << newConfgLine << "\n";
+    }
+
+    std::cout << "Debug: Config: Edit: Message: New value has been succesfully added\n";
 
 }

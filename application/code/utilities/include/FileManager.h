@@ -55,6 +55,7 @@ class FileManager{
     bool isEntryFolder(const std::string& path);
     uint16_t nextGameSaveId();
     std::string extractConfigValueFromTag(const std::string& tag);
+    void changeConfigTagValue(const std::string& tag, const std::string& newValue);
 
     FileManager() = default;
 };
