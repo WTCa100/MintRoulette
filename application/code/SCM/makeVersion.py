@@ -63,6 +63,3 @@ if __name__ == "__main__":
         quit()
     else:
         update_version(version, extractedPath)
-        
-#Testing comment please 
-#This line is used to check if GitHook works

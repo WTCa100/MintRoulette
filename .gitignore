@@ -37,4 +37,3 @@ application/bin/
 
 # Custom files
 application/Makefile.bat
-*pre-push*
