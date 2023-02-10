@@ -31,6 +31,7 @@ def build_new_version(oldVersion, pathWeight):
     return f"{major}.{minor}.{patch}"
 
 def update_version(version, path):
+    #update init.cfg
     with open(path, "r") as f:
         lines = f.readlines()
     for i, line in enumerate(lines):
@@ -38,6 +39,9 @@ def update_version(version, path):
             lines[i] = f"gameVersion    :{version}\n"
     with open(path, "w") as f:
         f.writelines(lines)
+    #update version.txt
+    with open("./version.game", "w") as helper:
+        helper.writelines(f"gameVersion:{version}")
         
 if __name__ == "__main__":
     

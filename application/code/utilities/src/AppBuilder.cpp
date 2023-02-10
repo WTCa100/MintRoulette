@@ -59,7 +59,7 @@ void AppBuilder::checkDirectories()
 /// @brief 
 void AppBuilder::buildInitConfig()
 {
-    // Check if any games already exists
+    // Handle next game ID
     std::vector<std::string> potentialGameSaves;
     if(isDirectoryGood(FILE_GAME_SAVE_LOG_PATH))
     {
@@ -95,6 +95,31 @@ void AppBuilder::buildInitConfig()
         delete potentialGameSavesId;
     }
 
+    // Handle game version
+    std::string gameVersion;
+    if(fileMgmt_->isFileGood(FILE_VERSION_PATH, FILE_VERSION))
+    {
+        std::vector<std::string> gameVersionContent = fileMgmt_->loadFileContent(FILE_VERSION_PATH, FILE_VERSION);
+        if(!gameVersionContent.empty())
+        {
+            std::string tmp = gameVersionContent[0];
+            tmp.erase(tmp.begin(), tmp.begin() + tmp.rfind(":") + 1);
+            gameVersion = tmp;
+        }
+        else
+        {
+            gameVersion = "1.0.0";
+        }
+        
+    }
+    else
+    {
+        std::cout << "No game.version file found! Cannot properly load game version\n";
+        gameVersion = "1.0.0";
+    }
+
+
+    // Build game config
     std::string initConfigPath = INIT_CONFIG_PATH;
     std::fstream initConfig;
     initConfig.open(initConfigPath + "/" + INIT_CONFIG_FILE);
@@ -102,7 +127,7 @@ void AppBuilder::buildInitConfig()
     {
         initConfig << "isInit         :1\n";
         initConfig << "NextGameNumber :" + std::to_string(nextGameId) + "\n";
-        initConfig << "gameVersion    :0.1v\n";
+        initConfig << "gameVersion    :" + gameVersion + "\n";
         initConfig << "dummy          :text\n";
     }
     else

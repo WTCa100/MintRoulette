@@ -13,11 +13,13 @@
 #define FILE_GAME_SAVE_LOG_PATH "bin/saves"
 #define FILE_GAME_SAVES_LOG_DBG_PATH "bin/saves/debug"
 #define FILE_GAME_AI_NAME_LIST_PATH "bin/ai"
+#define FILE_VERSION_PATH "../"
 
 // File names
 #define INIT_CONFIG_FILE "init.cfg"
 #define FILE_PLAYER_HIGHSCORES "highscores.csv"
 #define FILE_AI_NAME_LIST "names.list"
+#define FILE_VERSION "version.game"
 
 
 // File extensions
