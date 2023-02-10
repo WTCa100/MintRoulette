@@ -79,7 +79,7 @@ void Player::setGlobalGoodBetRatio(const uint32_t& globGoodBetCount, const uint3
         return;
     }
 
-    double_t newValue = static_cast<double_t>(globGoodBetCount) / static_cast<double_t>(globBetCount);
+    double newValue = static_cast<double>(globGoodBetCount) / static_cast<double>(globBetCount);
     setGlobalGoodBetRatio(newValue);
 }
 
@@ -95,7 +95,7 @@ void Player::setGlobalGoodBetRatio(const uint32_t& globGoodBetCount, const uint3
 Player::Player(const std::string nickName, int globMoneyAccumulated,
                int globMoneyLost, uint32_t globGoodBetCount, 
                uint32_t globBetCount, uint32_t globPassCount, 
-               double_t globGoodBetRatio = 0.0, int playerOrder, int balance)
+               double globGoodBetRatio, int playerOrder, int balance)
 {
     // Setup global variables
     nickName_ = nickName;

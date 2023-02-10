@@ -1,5 +1,8 @@
 #include <iostream> // For debug
 #include <fstream>
+#include <sstream>
+#include <stdexcept>
+#include <cctype>
 #include <experimental/filesystem>
 
 #include "../include/FileManager.h"
@@ -166,7 +169,7 @@ Player* FileManager::makePlayerFromLoadedFile(const std::string& name,
 
     // Initialize temporary values
     uint32_t goodBetCount; uint32_t passCount; uint32_t betCount; int totalMoneyGained; int totalMoneyLost;
-    double_t goodBetRatio;
+    double goodBetRatio;
     for(int attribute = 0; attribute < playerValues.size(); attribute++)
     {
         switch(static_cast<PlayerAttribute>(attribute))
@@ -287,4 +290,67 @@ uint16_t FileManager::nextGameSaveId()
     }
 
     return nextId;
+}
+
+std::string FileManager::extractConfigValueFromTag(const std::string& tag)
+{
+    std::vector<std::string> configTags = loadFileContent(INIT_CONFIG_PATH, INIT_CONFIG_FILE);
+
+    std::cout << std::endl; // debug purposes
+
+    for(auto configTag : configTags)
+    {
+        if(configTag.find(tag) != std::string::npos)
+        {
+            // remove whitespaces
+            std::string tagValue = configTag;
+            std::cout << "Debug: FManager: Config: Tag: Name: " << tagValue << std::endl;
+            tagValue.erase(tagValue.begin(), tagValue.begin() + tagValue.rfind(":") + 1);
+            std::cout << "Debug: FManager: Config: Tag: Value: " << tagValue << std::endl;
+            return tagValue; 
+        }
+    }
+
+    std::string errMsg = "No such tag found in file";
+    throw std::runtime_error(errMsg);
+
+}
+
+void FileManager::changeConfigTagValue(const std::string& tag, const std::string& newValue)
+{
+    if(!isFileGood(INIT_CONFIG_PATH, INIT_CONFIG_FILE))
+    {
+        throw std::runtime_error("No init.cfg file found! Aborting.");
+    }
+
+    if(extractConfigValueFromTag(tag) == newValue)
+    {
+        std::cout << "Debug: Config: Edit: Message: Already the same value.\n";
+    }
+
+    std::string initPath = INIT_CONFIG_PATH;
+    std::vector<std::string> oldConfigValues = loadFileContent(INIT_CONFIG_PATH, INIT_CONFIG_FILE);
+
+    std::fstream initFile;
+    initFile.open(initPath + "/" + INIT_CONFIG_FILE, std::ios::out);
+
+    for(auto& oldConfigLine : oldConfigValues)
+    {
+        if(oldConfigLine.find(tag) != std::string::npos)
+        {
+            std::string lineTag = oldConfigLine;
+            lineTag.erase(lineTag.begin() + lineTag.rfind(":") + 1, lineTag.end());
+            std::string newConfigLine = lineTag += newValue;
+            oldConfigLine = newConfigLine;
+            break;
+        }
+    }
+
+    for(auto& newConfgLine : oldConfigValues)
+    {
+        initFile << newConfgLine << "\n";
+    }
+
+    std::cout << "Debug: Config: Edit: Message: New value has been succesfully added\n";
+
 }

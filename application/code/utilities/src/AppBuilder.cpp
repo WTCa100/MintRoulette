@@ -135,6 +135,7 @@ void AppBuilder::setupGameFiles()
         fileMgmt_->createFile(INIT_CONFIG_PATH, INIT_CONFIG_FILE);
         buildInitConfig();
         fileMgmt_->touch(FileType::AiNameList, FILE_AI_NAME_LIST);
+        fileMgmt_->changeConfigTagValue("isInit", "0");
     }
     else
     {
@@ -154,7 +155,12 @@ void AppBuilder::setupGameFiles()
 /// @return State of init.cfg file
 bool AppBuilder::isInitRequired()
 {
-    return !fileMgmt_->isFileGood(INIT_CONFIG_PATH, INIT_CONFIG_FILE);
+    if(!fileMgmt_->isFileGood(INIT_CONFIG_PATH, INIT_CONFIG_FILE))
+    {
+        return true;
+    }
+
+    return (fileMgmt_->extractConfigValueFromTag("isInit") == "1");
 }
 
 
