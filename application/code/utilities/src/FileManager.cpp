@@ -75,7 +75,7 @@ void FileManager::touch(const FileType& fType, const std::string& fileName)
         break;
     case Highscores:
         createFile(FILE_PLAYER_HIGHSCORES_PATH, FILE_PLAYER_HIGHSCORES);
-        tmpPathHolder = FILE_PLAYER_HIGHSCORES;
+        tmpPathHolder = FILE_PLAYER_HIGHSCORES_PATH;
         filePath = tmpPathHolder + "/" + FILE_PLAYER_HIGHSCORES;
         makeFile.open(filePath);
         makeFile << "PlaceNo,BetRatio,Name\n";
