@@ -22,17 +22,18 @@ enum FileType{
     PlayerStat  = 1,
     GameSave    = 2,
     GameSaveDbg = 3,
-    AiNameList = 4
+    AiNameList  = 4
 };
 
 
 enum PlayerAttribute{
-    plName = 0,
-    plGoodBetCount = 1,
-    plPassCount = 2,
-    plBetCount = 3,
+    plName             = 0,
+    plGoodBetCount     = 1,
+    plPassCount        = 2,
+    plBetCount         = 3,
     plTotalMoneyGained = 4,
-    plTotalMoneyLost = 5
+    plTotalMoneyLost   = 5,
+    plGoodBetRatio     = 6
 };
 
 class FileManager{
@@ -53,6 +54,8 @@ class FileManager{
     std::string trimPath(const std::string& rawFile);
     bool isEntryFolder(const std::string& path);
     uint16_t nextGameSaveId();
+    std::string extractConfigValueFromTag(const std::string& tag);
+    void changeConfigTagValue(const std::string& tag, const std::string& newValue);
 
     FileManager() = default;
 };
