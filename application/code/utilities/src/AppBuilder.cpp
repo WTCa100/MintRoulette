@@ -159,17 +159,21 @@ void AppBuilder::setupGameFiles()
         checkDirectories();
         fileMgmt_->createFile(INIT_CONFIG_PATH, INIT_CONFIG_FILE);
         buildInitConfig();
-        fileMgmt_->touch(FileType::AiNameList, FILE_AI_NAME_LIST);
+        
+        // Check files
+        for(auto file : fileMgmt_->_filesToCheck)
+        {
+            fileMgmt_->touch(file.first, file.second.second);
+        }
+
+        fileMgmt_->checkFiles();
         fileMgmt_->changeConfigTagValue("isInit", "0");
     }
     else
     {
         // Only check required
         checkDirectories();
-        if(!fileMgmt_->isFileGood(FILE_GAME_AI_NAME_LIST_PATH, FILE_AI_NAME_LIST))
-        {
-            fileMgmt_->touch(FileType::AiNameList, FILE_AI_NAME_LIST);    
-        }
+        fileMgmt_->checkFiles();
         fileMgmt_->iterateGameIdConfig(fileMgmt_->nextGameSaveId());
     }
 

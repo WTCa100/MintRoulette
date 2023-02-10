@@ -7,13 +7,14 @@
 #define FOLDER_BIN_AI "bin\\ai"
 
 // Files paths
+#define FILE_AI_NAME_LIST_PATH "bin/ai"
 #define INIT_CONFIG_PATH "bin"
 #define FILE_PLAYER_HIGHSCORES_PATH "bin/player"
 #define FILE_PLAYER_STATS_PATH "bin/player/stats"
 #define FILE_GAME_SAVE_LOG_PATH "bin/saves"
 #define FILE_GAME_SAVES_LOG_DBG_PATH "bin/saves/debug"
 #define FILE_GAME_AI_NAME_LIST_PATH "bin/ai"
-#define FILE_VERSION_PATH "../"
+#define FILE_VERSION_PATH ".."
 
 // File names
 #define INIT_CONFIG_FILE "init.cfg"

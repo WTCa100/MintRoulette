@@ -64,13 +64,22 @@ void FileManager::touch(const FileType& fType, const std::string& fileName)
     case AiNameList:
         createFile(FILE_GAME_AI_NAME_LIST_PATH, FILE_AI_NAME_LIST);
         tmpPathHolder = FILE_GAME_AI_NAME_LIST_PATH;
-        filePath = tmpPathHolder + "/" + fileName;
+        filePath = tmpPathHolder + "/" + FILE_AI_NAME_LIST;
         makeFile.open(filePath);
         nameOutput = NameList::names;
         for(auto& name : nameOutput)
         {
             makeFile << name << std::endl;
         }
+        makeFile.close();
+        break;
+    case Highscores:
+        createFile(FILE_PLAYER_HIGHSCORES_PATH, FILE_PLAYER_HIGHSCORES);
+        tmpPathHolder = FILE_PLAYER_HIGHSCORES;
+        filePath = tmpPathHolder + "/" + FILE_PLAYER_HIGHSCORES;
+        makeFile.open(filePath);
+        makeFile << "PlaceNo,BetRatio,Name\n";
+        makeFile.close();
         break;
     default:
         std::cout << "No such file type in preset templates. Use createFile!\n";
@@ -353,4 +362,15 @@ void FileManager::changeConfigTagValue(const std::string& tag, const std::string
 
     std::cout << "Debug: Config: Edit: Message: New value has been succesfully added\n";
 
+}
+
+void FileManager::checkFiles()
+{
+    for(auto file : _filesToCheck)
+    {
+        if(!isFileGood(file.second.first, file.second.second))
+        {
+            touch(file.first, file.second.second);
+        }
+    }
 }

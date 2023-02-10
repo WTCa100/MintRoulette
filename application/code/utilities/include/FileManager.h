@@ -9,20 +9,14 @@
 #include "./Paths.h"
 #include "../../game/include/Player.h"
 
-/*
-/// @brief This map stores all the information about every file necessery to launch the game.
-/// @note Every file added or deleted must be stored here along with its path
-/// @warning Init.cfg is not included in this list
-/// @details Map stores information about the following: expected file path (key value); file name decleared as pair (second value)
-std::map<const std::string, const std::string> _filesToCheck{
 
-};*/
 
 enum FileType{
     PlayerStat  = 1,
     GameSave    = 2,
     GameSaveDbg = 3,
-    AiNameList  = 4
+    AiNameList  = 4,
+    Highscores  = 5
 };
 
 
@@ -36,13 +30,27 @@ enum PlayerAttribute{
     plGoodBetRatio     = 6
 };
 
+
 class FileManager{
     public:
+
+    /// @brief This map stores all the information about every file necessery to launch the game.
+    /// @note Every file added or deleted must be stored here along with its path
+    /// @warning Init.cfg is not included in this list
+    /// @details Map stores information about the following: fileType (key value), expected file path file name decleared as pair (second value)
+    std::map<const FileType, const std::pair<const std::string, const std::string>> _filesToCheck{
+        std::pair<const FileType, const std::pair<const std::string, const std::string>>(FileType::Highscores,
+                                                                                      std::pair<std::string, std::string>(FILE_PLAYER_HIGHSCORES_PATH, FILE_PLAYER_HIGHSCORES)),
+        std::pair<const FileType, const std::pair<const std::string, const std::string>>(FileType::AiNameList,
+                                                                                      std::pair<std::string, std::string>(FILE_AI_NAME_LIST_PATH, FILE_AI_NAME_LIST))                                                                                      
+    };
+
     bool isFileGood(const std::string& path, const std::string& fileName);
     void createFile(const std::string& path, const std::string& fileName);
 
     // Touch function is used to create already presseted file 
     void touch(const FileType& fTypem, const std::string& fileName);
+    void checkFiles();
     void appendPlayerSaveFile(const Player& appPlayerStat);
     std::vector <std::string> loadFileContent(const std::string& path, const std::string& fileName);
     Player* makePlayerFromLoadedFile(const std::string& name,
