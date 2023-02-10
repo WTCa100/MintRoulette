@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 import sys
 
-relativeGitHookConfigPath = "./application/bin/init.cfg"
+relativeGitHookConfigPath = "../../application/bin/init.cfg"
 
 def get_config_version(path):
     with open(path, "r") as config_lines:
@@ -18,8 +18,11 @@ def build_new_version(oldVersion, pathWeight):
     major, minor, patch = [int(x) for x in oldVersion.split(".")]
     if pathWeight == "major":
         major += 1
+        minor = 0
+        patch = 0
     elif pathWeight == "minor":
         minor += 1
+        patch = 0
     elif pathWeight == "patch":
         patch += 1
     else:
@@ -35,13 +38,12 @@ def update_version(version, path):
     for i, line in enumerate(lines):
         if line.startswith("gameVersion    :"):
             lines[i] = f"gameVersion    :{version}\n"
-    with open(relativeGitHookConfigPath, "w") as f:
+    with open(path, "w") as f:
         f.writelines(lines)
         
 if __name__ == "__main__":
     
     # check for errors
-    print(len(sys.argv))
     if not len(sys.argv) == 3:
         print("There must be an argument specifying update weight and init.cfg path! Game version will remain the same.")
         print("Usage: py makeVersion.py [init.cfg path] [patchWeight]")
@@ -62,7 +64,5 @@ if __name__ == "__main__":
     if oldVersion == version:
         quit(1)
     else:
-        print(version)
         update_version(version, extractedPath)
-        quit(0)
         
