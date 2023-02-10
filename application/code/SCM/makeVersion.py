@@ -3,8 +3,6 @@ import os
 from pathlib import Path
 import sys
 
-relativeGitHookConfigPath = "../../application/bin/init.cfg"
-
 def get_config_version(path):
     with open(path, "r") as config_lines:
         lines = config_lines.readlines()
@@ -65,4 +63,5 @@ if __name__ == "__main__":
         quit(1)
     else:
         update_version(version, extractedPath)
+        quit(0)
         
