@@ -44,8 +44,8 @@ def update_version(version, path):
         helper.writelines(f"gameVersion:{version}")
         
 if __name__ == "__main__":
-    
     # check for errors
+    print(sys.argv[2])
     if not len(sys.argv) == 3:
         print("There must be an argument specifying update weight and init.cfg path! Game version will remain the same.")
         print("Usage: py makeVersion.py [init.cfg path] [patchWeight]")
@@ -64,8 +64,10 @@ if __name__ == "__main__":
     oldVersion = get_config_version(extractedPath)
     version = build_new_version(get_config_version(extractedPath), extractedPatchWeight)
     if oldVersion == version:
+        print("Old version is the same as new version, no changes applied")
         quit(1)
     else:
+        print(f"Swapped game from {oldVersion} to {version}")
         update_version(version, extractedPath)
         quit(0)
         
