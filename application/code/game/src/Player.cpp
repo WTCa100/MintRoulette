@@ -79,7 +79,10 @@ void Player::setGlobalGoodBetRatio(const uint32_t& globGoodBetCount, const uint3
         return;
     }
 
+
     double newValue = static_cast<double>(globGoodBetCount) / static_cast<double>(globBetCount);
+    std::cout << "GoodBet: " << globGoodBetCount << std::endl;
+    std::cout << "BetCount: " << globBetCount << std::endl;
     setGlobalGoodBetRatio(newValue);
 }
 
@@ -182,4 +185,5 @@ void Player::moveToGlobalStats()
     {
         globGoodBetRatio_ = 0;
     }
+        std::cout << "GoodBetRatio: " << globGoodBetRatio_ << std::endl;
 }

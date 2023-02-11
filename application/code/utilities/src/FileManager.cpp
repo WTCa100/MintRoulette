@@ -1,4 +1,5 @@
 #include <iostream> // For debug
+#include <algorithm>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
@@ -373,4 +374,61 @@ void FileManager::checkFiles()
             touch(file.first, file.second.second);
         }
     }
+}
+
+std::vector<std::pair<double, std::string>> FileManager::loadHighscores()
+ {
+    // Load file content to a different container 
+    std::vector<std::string> rawFileContent = loadFileContent(FILE_PLAYER_HIGHSCORES_PATH, FILE_PLAYER_HIGHSCORES);
+    std::vector<std::pair<double, std::string>> finalHighscores;
+    // Handle splitting values
+    for(auto line : rawFileContent)
+    {
+        if(line == "PlaceNo,BetRatio,Name")
+        {
+            continue;
+        }
+        // Handle splitting
+        std::string ratio, name;
+        ratio = line; name = line;
+        std::cout << "Debug: Game: Highscores: Line: " << line << std::endl; 
+        std::cout << "Debug: Game: HighScores: Name:" << name <<std::endl;
+        std::cout << "Debug: Game: HighScores: Ratio:" << ratio <<std::endl;
+        ratio.erase(ratio.begin(), ratio.begin() + ratio.find(',') + 1);
+        ratio.erase(ratio.begin() + ratio.find(","), ratio.end());
+        name.erase(name.begin(), name.begin() + name.rfind(",") + 1);
+
+        std::cout << "Debug: Game: HighScores: Name:" << name <<std::endl;
+        std::cout << "Debug: Game: HighScores: Ratio:" << ratio <<std::endl;
+        finalHighscores.push_back(std::make_pair(std::stod(ratio), name));
+    }
+
+    std::sort(finalHighscores.begin(), finalHighscores.end());
+
+    return finalHighscores;
+ }
+
+bool FileManager::alreadyInHighscores(const std::string& playerName, std::vector<std::pair<double, std::string>> highscores)
+{
+    for(auto entry : highscores)
+    {
+        if(playerName == entry.second)
+        {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+void FileManager::updateHighscores(std::vector<std::pair<double, std::string>> highscores)
+{
+    std::string highscoresPath = FILE_PLAYER_HIGHSCORES_PATH;
+    std::ofstream highscoreFile(highscoresPath + "/" + FILE_PLAYER_HIGHSCORES);
+    highscoreFile << "PlaceNo,BetRatio,Name\n";
+    for(int i = 0 ; i < highscores.size(); i++)
+    {
+        highscoreFile << i + 1 << "," << highscores[i].first << "," << highscores[i].second << std::endl;
+    }
+    highscoreFile.close();
 }

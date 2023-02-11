@@ -64,6 +64,9 @@ class FileManager{
     uint16_t nextGameSaveId();
     std::string extractConfigValueFromTag(const std::string& tag);
     void changeConfigTagValue(const std::string& tag, const std::string& newValue);
+    bool alreadyInHighscores(const std::string& playerName, std::vector<std::pair<double, std::string>> highscores);
+    std::vector<std::pair<double, std::string>> loadHighscores();
+    void updateHighscores(std::vector<std::pair<double, std::string>> highscores);
 
     FileManager() = default;
 };

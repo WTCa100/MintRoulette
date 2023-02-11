@@ -352,6 +352,7 @@ Game::Game(const FileManager* fManager)
 
     gameId_ = loadNextGameId();
     gameLog_->touchLog(gameId_);
+    highscores_ = fManager_->loadHighscores();
 
     hasBots_ = false;
     inProgress_ = false;
@@ -381,6 +382,9 @@ Game::~Game()
             std::cout << "Debug Info: Player: Save: Bot skipping...\n";
         }
     }   
+
+    Game::updateHighscores();
+
     std::cout << "Teardown game\n";
     std::cout << "Debug: Info: Players: Alive: Clear\n";
     playersAlive_.clear(); 
@@ -496,3 +500,55 @@ uint16_t Game::loadNextGameId()
     return 1;
 
 }
+
+void Game::updateHighscores()
+{  
+    std::vector<std::pair<double, std::string>> fullPlayerList = highscores_;
+
+    //std::sort(players_.begin(), players_.end());
+
+    for(auto sessionPlayer : players_)
+    {
+        fullPlayerList.push_back(std::make_pair<double, std::string>(sessionPlayer->getGlobalGoodBetRatio(), sessionPlayer->getNickName()));
+    }
+
+    // Sort ascending
+    std::sort(fullPlayerList.begin(), fullPlayerList.end());
+    fullPlayerList.erase(std::unique(fullPlayerList.begin(), fullPlayerList.end()), fullPlayerList.end());
+    // Remove duplicates
+    for(int playerPos = 0; playerPos < fullPlayerList.size(); playerPos++)
+    {
+        for(int checkPlayerPos = 0; checkPlayerPos < fullPlayerList.size(); checkPlayerPos++)
+        {
+            if(fullPlayerList[playerPos].second == fullPlayerList[checkPlayerPos].second)
+            {
+                if(fullPlayerList[playerPos].first < fullPlayerList[checkPlayerPos].first)
+                {
+                    fullPlayerList.erase(fullPlayerList.begin() + playerPos);
+                }
+                else if(fullPlayerList[playerPos].first > fullPlayerList[checkPlayerPos].first)
+                {
+                    fullPlayerList.erase(fullPlayerList.begin() + checkPlayerPos);
+                }
+                else
+                {
+                    continue;
+                }
+            }
+        }
+    }
+
+    // Make vector descending
+    std::reverse(fullPlayerList.begin(), fullPlayerList.end());
+
+    // Remove entries past 10
+    while(fullPlayerList.size() > 10)
+    {
+        fullPlayerList.pop_back();
+    }
+
+    // Update file content
+    fManager_->updateHighscores(fullPlayerList);
+
+}
+

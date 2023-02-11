@@ -25,6 +25,7 @@ class Game : public ValidateInput
     bool isStringValid(const std::string& userInput) override;
     bool checkIfPlayerExists(const std::string& name) const;
     uint16_t loadNextGameId();
+    void updateHighscores();
 
     // Setters
     // Config
@@ -44,6 +45,7 @@ class Game : public ValidateInput
     ~Game();
 
     private:
+    std::vector<std::pair<double, std::string>> highscores_;
     bool inProgress_;
     bool hasBots_;
     uint16_t gameId_;

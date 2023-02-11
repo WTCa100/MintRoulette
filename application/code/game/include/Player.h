@@ -46,13 +46,17 @@ class Player
     uint32_t getGlobalGoodBetCount() const {return globGoodBetCount_;}
     uint32_t getGlobalBetCount() const {return globBetCount_;}
     uint32_t getGlobalPassCount() const {return globPassCount_;}
-    double getGlobalGoodBetRatio() const {return globGoodBetCount_;}
+    double getGlobalGoodBetRatio() const {return globGoodBetRatio_;}
 
     Player() = default;
     Player(int balance, int playerOrder, bool isPlayerBot = false);
     Player(const std::string nickName, int balance, bool isPlayerBot = false, int playerOrder = 0);                                    
     Player(const std::string nickName, int globMoneyAccumulated, int globMoneyLost, uint32_t goodBetCount, uint32_t betCount,
            uint32_t passCount, double globGoodBetRatio = 0.0, int playerOrder = 0, int balance = 0);
+
+    bool operator<(const Player& other) const {
+        return globGoodBetRatio_ > other.getGlobalGoodBetRatio();
+    }
 
     private:
     // Local variables related to one session
