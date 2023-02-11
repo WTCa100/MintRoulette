@@ -127,6 +127,7 @@ Player::Player(int balance, int playerOrder, bool isPlayerBot)
     globMoneyAccumulated_ = 0;
     globMoneyLost_ = 0;    
     globPassCount_ = 0;
+    globGoodBetRatio_ = 0;
 
     // Local
     balance_ = balance;
@@ -152,6 +153,7 @@ Player::Player(const std::string nickName, int balance, bool isPlayerBot, int pl
     globMoneyAccumulated_ = 0;
     globMoneyLost_ = 0;
     globPassCount_ = 0;
+    globGoodBetRatio_ = 0;
     
     // Local
     balance_ = balance;
@@ -172,5 +174,12 @@ void Player::moveToGlobalStats()
     globGoodBetCount_ += goodBetCount_;
     globMoneyAccumulated_ += moneyAccumulated_;
     globMoneyLost_ += moneyLost_;
-    setGlobalGoodBetRatio(globGoodBetCount_, globBetCount_);
+    if(globBetCount_ != 0)
+    {
+        setGlobalGoodBetRatio(globGoodBetCount_, globBetCount_);
+    }
+    else
+    {
+        globGoodBetRatio_ = 0;
+    }
 }

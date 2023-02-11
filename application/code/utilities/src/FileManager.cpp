@@ -52,7 +52,7 @@ void FileManager::touch(const FileType& fType, const std::string& fileName)
         tmpPathHolder = FILE_PLAYER_STATS_PATH;
         filePath = tmpPathHolder + "/" + fileName;
         makeFile.open(filePath);
-        makeFile << "Name:\nGoodBetCount:\nPassCount:\nBetCount:\nTotalMoneyGained:\nTotalMoneyLost:\n";
+        makeFile << "Name:\nGoodBetCount:\nPassCount:\nBetCount:\nTotalMoneyGained:\nTotalMoneyLost:\nGoodBetRatio:\n";
         makeFile.close();
         break;
     case GameSave:
@@ -207,7 +207,7 @@ Player* FileManager::makePlayerFromLoadedFile(const std::string& name,
         }
     }
 
-    Player* returnPlayer = new Player(name, totalMoneyGained, totalMoneyLost, goodBetCount, betCount, passCount, playerNumber, initialBankBalance);
+    Player* returnPlayer = new Player(name, totalMoneyGained, totalMoneyLost, goodBetCount, betCount, passCount, goodBetRatio, playerNumber, initialBankBalance);
     return returnPlayer;    
 }
 

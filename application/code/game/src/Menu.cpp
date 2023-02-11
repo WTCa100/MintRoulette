@@ -175,7 +175,8 @@ void Menu::showPlayerStats(const Player& showPlayer)
     std::cout <<"Placed " << showPlayer.getGlobalBetCount() << " bets\n";
     std::cout <<"Passed " << showPlayer.getGlobalPassCount() << " times!\n";
     std::cout <<"Accumulated " << showPlayer.getGlobalMoneyAccumulated() << " ammount of money!\n";
-    std::cout <<"And lost " << showPlayer.getGlobalMoneyLost() << " ammount of money!\n";
+    std::cout <<"Lost " << showPlayer.getGlobalMoneyLost() << " ammount of money!\n";
+    std::cout <<"Good / Bad bet ratio: " << showPlayer.getGlobalGoodBetRatio() << std::endl;
 }
 
 void Menu::displayFullPlayerList(const std::vector<Player*>& listToDisplay)
