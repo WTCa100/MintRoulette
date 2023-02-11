@@ -74,18 +74,10 @@ void Menu::startNewGame()
 /// @brief Show lists of players and higscores
 void Menu::playerList()
 {
-    // Load information about every entry
-    std::vector <std::string> avilableFiles = getPlayerStatsFiles();
-    std::vector <Player*> savedPlayers;
-    // Used for latter input
+
+    std::vector <Player*> savedPlayers = loadEveryPlayerStat();
     std::string optionChoosen;
-    // List all players bit withouth pathing
-    for(auto& player : avilableFiles)
-    {
-        player = fManager_->trimPath(player);
-        std::cout << "Debug: List: Players: File: Name: " << player << std::endl;
-        savedPlayers.push_back(fManager_->makePlayerFromLoadedFile(player));
-    }
+
     
     do
     {
@@ -106,7 +98,8 @@ void Menu::playerList()
         switch (declearedOption)
         {
         case PlayerListsOptions::ShowHighscores:
-            std::cout << "No highscores currently WIP!\n";
+            std::cout << "Showing Top-10 users!\n";
+            showHighscores();
             break;
         case PlayerListsOptions::ShowFullList:
             std::cout << "Showing full list:\n";
@@ -124,6 +117,57 @@ void Menu::playerList()
         delete player;
     }
 }
+
+void Menu::showHighscores()
+{
+    // Load contents of highscores.csv
+    std::vector<std::string> highscoresContent = fManager_->loadFileContent(FILE_PLAYER_HIGHSCORES_PATH, FILE_PLAYER_HIGHSCORES);
+    
+    // In order style the text we need to separate informations from the highscores
+    std::cout << "Place:\tRatio:\tName:\n";
+    for(auto rawLine : highscoresContent)
+    {
+        if(rawLine == "PlaceNo,BetRatio,Name")
+        {
+            continue;
+        }
+        std::string place, ratio, name;
+        // Get place
+        place = rawLine;
+        place.erase(place.begin() + place.find(",") + 1, place.end());
+
+        // Get ratio
+        ratio = rawLine;
+        ratio.erase(ratio.begin(), ratio.begin() + ratio.find(",") + 1);
+        ratio.erase(ratio.begin() + ratio.rfind(",") + 1, ratio.end());
+
+        // Get name
+        name = rawLine;
+        name.erase(name.begin(), name.begin() + + name.rfind(",") + 1);
+
+        // Display properties 
+        std::cout << place << "\t" << ratio << "\t" << name << std::endl;
+    }
+
+    choosePlayerToDisplayDetails(loadEveryPlayerStat());
+}
+
+ std::vector<Player*> Menu::loadEveryPlayerStat()
+ {
+     // Load all avilable player files
+    std::vector <std::string> avilableFiles = getPlayerStatsFiles();
+    std::vector <Player*> savedPlayers;
+
+    // List all players bit withouth pathing
+    for(auto& player : avilableFiles)
+    {
+        player = fManager_->trimPath(player);
+        std::cout << "Debug: List: Players: File: Name: " << player << std::endl;
+        savedPlayers.push_back(fManager_->makePlayerFromLoadedFile(player));
+    }   
+
+    return savedPlayers;
+ }
 
 /// @brief Show lists of games and it's log
 void Menu::gameList()

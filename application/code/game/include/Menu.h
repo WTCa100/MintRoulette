@@ -31,6 +31,8 @@ class Menu
     std::vector <std::string> getPlayerStatsFiles();
     void showPlayerStats(const Player& showPlayer);
     void showGameSave(const uint16_t& gameId);
+    void showHighscores();
+    std::vector<Player*> loadEveryPlayerStat();
     void displayFullPlayerList(const std::vector<Player*>& listToDisplay);
     void chooseGameToDisplayLogs(const std::vector<std::string>& fullGameList);
     void choosePlayerToDisplayDetails(const std::vector<Player*>& listToDisplay);
