@@ -234,7 +234,7 @@ const std::string DebugLogger::dbLogPlayerInitializedValues(const std::string& n
                                                             const int& balance,  const double& globalGoodBetRatio, 
                                                             const int& playerOrder, const bool& isBot)
 {
-    std::string dbLogMsg = helperDbLogPositionGamedPlayer + "Initialized: WithValues: \n";
+    std::string dbLogMsg = helperDbLogPositionGamePlayer + "Initialized: WithValues: \n";
     if(!nickName.empty())
     {
         dbLogMsg += "PlayerName: " + nickName + "\n";

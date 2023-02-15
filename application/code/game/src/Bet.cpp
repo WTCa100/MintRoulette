@@ -8,6 +8,13 @@
 /// @brief Asks player to select desired bet type
 void Bet::askForBetType()
 {
+
+    dbLog_->addDebugLog(
+        {dbLog_->dbLogGameTurnBetBuildObtainBetType}
+    );
+
+    dbLog_->buildDebugLogs();
+
     std::string userInput;
     do
     {
@@ -15,35 +22,71 @@ void Bet::askForBetType()
         std::cout << "1. Straight Up - you may pick one number\n";
         std::cout << "2. Dozen Bet - you may range withing the lucky number might be\n";
         std::cout << "3 Even odd - you may guess whether the lucky number is odd or even\n";
+
+        dbLog_->addDebugLog(
+            {dbLog_->dbLogGameTurnBetBuildGetInput}
+        );
+
         do
         {
             std::getline(std::cin, userInput);
             if(!ValidateInput::isStringNumber(userInput))
             {
+                dbLog_->addDebugLog(
+                    {dbLog_->dbLogGameTurnBetBuildGetInputResult(userInput, ValidateInput::isStringNumber(userInput))}
+                );
+
                 std::cout << "You may only enter a numberic value\n!";
             }
         } while (!ValidateInput::isStringNumber(userInput));
 
+        dbLog_->addDebugLog(
+            {dbLog_->dbLogGameTurnBetBuildGetInputResult(userInput, ValidateInput::isStringNumber(userInput))}
+        );
+
         switch (std::stoi(userInput))
         {
         case BetType::StraightUp:
-            betType_ = BetType::StraightUp;
+            betType_ = BetType::StraightUp;            
             winningOdds_ = StraightUpOdd;
+
+            dbLog_->addDebugLog(
+                {dbLog_->dbLogGameTurnBetBuildSetBetType("StraightUp"),
+                 dbLog_->dbLogGameTurnBetBuildBetTypeWinningOdds("StraightUp", winningOdds_)}
+            );
+            
             break;
         case BetType::DozenBet:
             betType_ = BetType::DozenBet;
             winningOdds_ = DozenBetOdd;
+
+            dbLog_->addDebugLog(
+                {dbLog_->dbLogGameTurnBetBuildSetBetType("DozenBet"),
+                 dbLog_->dbLogGameTurnBetBuildBetTypeWinningOdds("DozenBet", winningOdds_)}
+            );
+
             break;
         case BetType::EvenOdd:
             betType_ = BetType::EvenOdd;
             winningOdds_ = EvenOddOdd;
+
+            dbLog_->addDebugLog(
+                {dbLog_->dbLogGameTurnBetBuildSetBetType("EvenOdd"),
+                 dbLog_->dbLogGameTurnBetBuildBetTypeWinningOdds("EvenOdd", winningOdds_)}
+            );
+
             break;
         default:
             std::cout << "No such bet type!\n";
             break;
         }
-        printf("Debug Info: Bet: WinningOdds: Value: %.3f\n", winningOdds_);
+
+        dbLog_->buildDebugLogs();
+
     } while (std::stoi(userInput) < 1 || std::stoi(userInput) > static_cast<int>(BetType::EvenOdd));
+
+
+
 }
 
 /// @brief Asks player how much money he want to bet from his bank
@@ -57,17 +100,36 @@ void Bet::askForBetAmmount(const Player& whoPlacedBet)
     {
         do
         {
-        std::getline(std::cin, *userInput);
-        if(!ValidateInput::isStringNumber(*userInput))
-        {
-            std::cout << "You may only place postivie numeric values\n";
-        }
-        } while (!ValidateInput::isStringNumber(*userInput));
-        if(std::stoi(*userInput) > whoPlacedBet.getBalance())
-        {
-            std::cout << "You cannot bet more money than you have\n";
-        }
+            std::getline(std::cin, *userInput);
+
+            dbLog_->addDebugLog(
+                {dbLog_->dbLogGameTurnGetInput}
+            );
+
+            if(!ValidateInput::isStringNumber(*userInput))
+            {
+                dbLog_->addDebugLog(
+                    {dbLog_->dbLogGameTurnBetBuildGetInputResult(*userInput, ValidateInput::isStringNumber(*userInput))}
+                );
+
+                std::cout << "You may only place postivie numeric values\n";
+            }
+            } while (!ValidateInput::isStringNumber(*userInput));
+            if(std::stoi(*userInput) > whoPlacedBet.getBalance())
+            {
+                std::cout << "You cannot bet more money than you have\n";
+                dbLog_->addDebugLog(
+                    {dbLog_->dbLogGameTurnBetBuildGetInputResult(*userInput, ValidateInput::isStringNumber(*userInput))}
+                );                
+            }
     } while (std::stoi(*userInput) > whoPlacedBet.getBalance());
+
+    dbLog_->addDebugLog(
+        {dbLog_->dbLogGameTurnBetBuildSetAmmountBetted(std::stoi(*userInput))}
+    );
+
+    dbLog_->buildDebugLogs();
+    
     ammountBetted_ = std::stoi(*userInput);
     delete userInput;
 }
@@ -77,6 +139,13 @@ void Bet::askForBetAmmount(const Player& whoPlacedBet)
 /// @param whoPlacedBet current Player 
 void Bet::buildBet(const Player& whoPlacedBet)
 {
+
+    dbLog_->addDebugLog(
+        {dbLog_->dbLogGaneTurnBetBetBuild}
+    );
+
+    dbLog_->buildDebugLogs();
+
     askForBetAmmount(whoPlacedBet);
     askForBetType();
     switch (betType_)
@@ -100,24 +169,53 @@ void Bet::buildBet(const Player& whoPlacedBet)
 /// @brief Builds straightUp type of bet
 void Bet::askStraightUp()
 {
+
+    dbLog_->addDebugLog(
+        {dbLog_->dbLogGameTurnBetGetDetails}
+    );
+
+    dbLog_->buildDebugLogs();
+
     std::string* userInput = new std::string;
     std::cout << "Choose your lucky number guess (pick from 0 to 36)\n";
     do
     {
+
+        dbLog_->addDebugLog(
+            {dbLog_->dbLogGameTurnBetBuildGetInput}
+        );
+
         do
         {
             std::getline(std::cin, *userInput);
             if(!ValidateInput::isStringNumber(*userInput))
             {
                 std::cout << "You may only place postivie numeric values\n";
+
+                dbLog_->addDebugLog(
+                    {dbLog_->dbLogGameTurnBetBuildGetInputResult(*userInput, ValidateInput::isStringNumber(*userInput))}
+                );
             }           
+
+        dbLog_->addDebugLog(
+            {dbLog_->dbLogGameTurnBetBuildGetInputResult(*userInput, ValidateInput::isStringNumber(*userInput))}
+        );
+
+
         } while (!ValidateInput::isStringNumber(*userInput));
         
         if(std::stoi(*userInput) > MAX_POSSIBLE_LUCKY_NUMBER)
         {
-            std::cout << "Your entry cannot be greater than " << MAX_POSSIBLE_LUCKY_NUMBER << std::endl;
+            std::cout << "Your entry cannot be greater than " << MAX_POSSIBLE_LUCKY_NUMBER << std::endl;            
         }
+
+        dbLog_->addDebugLog(
+            {dbLog_->dbLogGameTurnBetBuildGetInputResult(*userInput, ValidateInput::isStringNumber(*userInput))}
+        );
+
+        dbLog_->buildDebugLogs();
     } while (std::stoi(*userInput) > MAX_POSSIBLE_LUCKY_NUMBER);
+
     guessedNumber_ = std::stoi(*userInput);
     delete userInput;
 }
@@ -203,8 +301,16 @@ void Bet::Pass()
 
 /// @brief Passing constructor
 /// @param currentTurnPlayer 
-Bet::Bet(const Player& currentTurnPlayer)
-{
+Bet::Bet(const Player& currentTurnPlayer, DebugLogger* dbLog)
+{   
+    dbLog_ = dbLog;
+
+    dbLog_->addDebugLog(
+        {dbLog_->dbLogClassBetInitialize}
+    );
+
+    dbLog->buildDebugLogs();
+
     currentTurnPlayer_ = currentTurnPlayer;
     betType_ = BetType::Pass;
     winningOdds_ = -1.0;

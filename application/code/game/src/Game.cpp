@@ -306,6 +306,11 @@ void Game::startGame()
             {
                 roulettePlayer = new Player(initBankBalance_, i + 1, dbLog_, isThisPlayerBot);
                 roulettePlayer->setNickName(tmpNicknameHolder);
+
+                dbLog_->addDebugLog(
+                    {dbLog_->dbLogPlayerSetNickname(tmpNicknameHolder)}
+                );
+
             }
 
         }
@@ -317,10 +322,22 @@ void Game::startGame()
             {
                 *randomlyPickedName = Ai::pickBotName(fManager_);
                 roulettePlayer->setNickName(*randomlyPickedName);
+
+
             }while(ValidateInput::isADuplicatePlayer(players_, *randomlyPickedName));
+            
+            dbLog_->addDebugLog(
+                {dbLog_->dbLogPlayerSetNickname(*randomlyPickedName)}
+            );
+
             delete randomlyPickedName;
         }
         players_.push_back(roulettePlayer);
+
+        dbLog_->addDebugLog(
+            {dbLog_->dbLogGamePushPlayers(roulettePlayer->getNickName(), players_.size()),
+             dbLog_->dbLogLoggerGetMessage(gameLog_->logGamePlayerCreation(roulettePlayer->getNickName(), roulettePlayer->getPlayerOrderNumber()))}
+        );
 
         gameLog_->addLog(
             gameLog_->logGamePlayerCreation(roulettePlayer->getNickName(), roulettePlayer->getPlayerOrderNumber())
@@ -328,14 +345,20 @@ void Game::startGame()
 
     }
 
+    dbLog_->addDebugLog(
+        {dbLog_->dbLogGameSetPlayerAliveVector}
+    );
+
+    dbLog_->buildDebugLogs();
     playersAlive_ = players_;
-    std::cout <<"there are " << playersAlive_.size() << " players\n";
-    for(auto i : players_)
-    {
-        std::cout << "Player nick: " << i->getNickName() << std::endl;
-    }
 
     // Start turns
+    dbLog_->addDebugLog(
+        {dbLog_->dbLogGameFlowStarts}
+    );
+
+    dbLog_->buildDebugLogs();
+    
     std::cout << "Debug info: Start of turns\n";
     bool canGameProgress = true;
     uint16_t turnId = 0;
@@ -343,7 +366,7 @@ void Game::startGame()
     {
         turnId ++;
         bool stopGameEarly = false;
-        Turn* currentTurn = new Turn(playersAlive_, turnId, gameLog_);
+        Turn* currentTurn = new Turn(playersAlive_, turnId, gameLog_, dbLog_);
         currentTurn->playTurn();
         gameTurns_.push_back(currentTurn);
         playersAndBetsSave_.push_back(currentTurn->getPlayersBets());

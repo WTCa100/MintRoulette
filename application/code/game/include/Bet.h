@@ -4,6 +4,8 @@
 
 #include "./Player.h"
 #include "../../utilities/include/InputValidator.h"
+#include "../../utilities/include/DebugLogger.h"
+
 
 enum BetType{
     Pass = -1,
@@ -57,10 +59,11 @@ class Bet : public ValidateInput
     const GuessedNumberRangeType getGuessedNumberRange() {return GuessedNumberRange_;}
     const bool getIsOddChoosen() {return isOddChoosen_;}
 
-    Bet() = default;
+    Bet(DebugLogger* dbLog) : dbLog_(dbLog) { dbLog_->addDebugLog({dbLog_->dbLogClassBetInitialize}); }
     // Passing constructor
-    Bet(const Player& currentTurnPlayer);
+    Bet(const Player& currentTurnPlayer, DebugLogger* dbLog);
     private:
+    DebugLogger* dbLog_;
     int ammountBetted_;
     size_t guessedNumber_;
     GuessedNumberRangeType GuessedNumberRange_;

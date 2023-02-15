@@ -32,13 +32,15 @@ class Ai
     // Getters
     int* getInitialBankBalance() {return initialBankBalance_;}
 
-    Ai(Player* self);
+    Ai(Player* self, DebugLogger* dbLog);
+    ~Ai();
 
    /*Draft
    /// @brief This function generates seed that is core to decision making in Ai 
    /// @param botBalance is used as reference on what action should be done 
    /// @return Seed */
    private:
+   DebugLogger* dbLog_;
    uint32_t actionSeed_;
    Player* self_;
    int* initialBankBalance_;

@@ -1,5 +1,6 @@
 #include "../include/Ai.h"
 #include "../../utilities/include/Paths.h"
+#include "../../utilities/include/DebugLogger.h"
 
 #include <vector>
 #include <iostream>
@@ -99,30 +100,72 @@ Bet* Ai::buildBet(Bet*& botBet)
 {
     botBet->setAmmountBetted(chooseBetSize(self_->getBalance()));
     botBet->setBetType(chooseBetType());
+    dbLog_->addDebugLog(
+        {dbLog_->dbLogGameTurnBetBuildSetAmmountBetted(botBet->getAmmountBetted())}
+    );
+
     switch (botBet->getBetType())
     {
     case BetType::StraightUp:
         botBet->setGuessedNumber(chooseLuckynumber());
         botBet->setWinningOdds(botBet->StraightUpOdd);
+
+        dbLog_->addDebugLog(
+            {dbLog_->dbLogGameTurnBetBuildSetBetType("StraightUp"),
+             dbLog_->dbLogGameTurnBetBuildBetTypeWinningOdds("StraightUpOdd", botBet->getWinningOdds())}
+        );
+
+
         break;
     case BetType::DozenBet:
         botBet->setGuessedNumberRangeType(chooseLuckyNumberRange());
         botBet->setWinningOdds(botBet->DozenBetOdd);
+
+        dbLog_->addDebugLog(
+            {dbLog_->dbLogGameTurnBetBuildSetBetType("DozenBet"),
+             dbLog_->dbLogGameTurnBetBuildBetTypeWinningOdds("StraightUpOdd", botBet->getWinningOdds())}
+        );
+
         break;
     case BetType::EvenOdd:
         botBet->setIsOddChoosen(chooseOddOrEven());
         botBet->setWinningOdds(botBet->EvenOddOdd);
+
+        dbLog_->addDebugLog(
+            {dbLog_->dbLogGameTurnBetBuildSetBetType("EvenOdd"),
+             dbLog_->dbLogGameTurnBetBuildBetTypeWinningOdds("StraightUpOdd", botBet->getWinningOdds())}
+        );
+
         break;
     default:
         break;
     }
 
+    dbLog_->buildDebugLogs();
+
     return botBet;
 }
 
-Ai::Ai(Player* self)
+Ai::Ai(Player* self, DebugLogger* dbLog)
 {
-    self_ = self;
+    dbLog_ = dbLog;
 
+    dbLog_->addDebugLog(
+        {dbLog_->dbLogClassAiInitialize}
+    );
+
+    dbLog_->buildDebugLogs();
+
+    self_ = self;
     actionSeed_ = generateActionSeed();
+}
+
+Ai::~Ai()
+{
+    dbLog_->addDebugLog(
+        {dbLog_->dbLogClassAiDestruct}
+    );
+
+    dbLog_->buildDebugLogs();
+
 }
