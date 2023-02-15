@@ -12,6 +12,7 @@
 #include "../../utilities/include/InputValidator.h"
 #include "../../utilities/include/FileManager.h"
 #include "../../utilities/include/Logger.h"
+#include "../../utilities/include/DebugLogger.h"
 
 class Game : public ValidateInput
 {
@@ -41,16 +42,18 @@ class Game : public ValidateInput
     // Saving
     void savePlayerStats(const Player& savePlayer);
 
-    Game(const FileManager* fManager);
+    Game(DebugLogger* dbLog, const FileManager* fManager);
     ~Game();
 
     private:
+    Logger* gameLog_;
+    DebugLogger* dbLog_;
+
     std::vector<std::pair<double, std::string>> highscores_;
     bool inProgress_;
     bool hasBots_;
     uint16_t gameId_;
     FileManager* fManager_;
-    Logger* gameLog_;
     std::vector <std::unordered_map<Player*, Bet*>> playersAndBetsSave_;
     std::vector<Player*> playersAlive_;
     std::vector<Player*> playersEliminated_;

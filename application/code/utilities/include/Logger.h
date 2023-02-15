@@ -48,14 +48,13 @@ class Logger
     std::string logGameHasEnded() const;
     std::string logGameEndedEarly() const;
 
-    Logger(FileManager* fManager) {fManager_ = fManager;};
+    Logger() = default;
     ~Logger();
 
 
 
     private:
     std::string logFileName_;
-    FileManager* fManager_;
     std::ofstream logFile_;
     std::vector <std::string> logLines_;
 };

@@ -7,6 +7,7 @@
 // Get header
 #include "./Paths.h"
 #include "./FileManager.h"
+#include "./DebugLogger.h"
 
 // Get source
 #include "../src/FileManager.cpp"
@@ -18,7 +19,7 @@ const std::set<std::string> _pathsToCheck{
     FOLDER_BIN,
     FOLDER_BIN_SAVES,
     FOLDER_BIN_PLAYERS_STATS,
-    FOLDER_BIN_SAVES_DEBUG,
+    FOLDER_DEBUG,
     FOLDER_BIN_AI
 };
 
@@ -28,7 +29,9 @@ class AppBuilder
     void setupGameFiles();
     bool isDirectoryGood(const std::string& path);
 
-    AppBuilder();
+    void createDirectory(const std::string& path);
+
+    AppBuilder(DebugLogger* dbLog);
     ~AppBuilder();
 
     protected:
@@ -36,11 +39,10 @@ class AppBuilder
 
     void checkDirectories();
 
-    void createDirectory(const std::string& path);
-
     bool isInitRequired();
 
     private:
+    DebugLogger* dbLog_;
     bool isInitLaunch_;
     FileManager* fileMgmt_;
 };

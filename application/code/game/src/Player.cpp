@@ -1,7 +1,6 @@
 #include <iostream>
 
 #include "../include/Player.h"
-
 /// @brief displays if player lost or won money.
 void Player::displayMoneyWonLoss(int initBankBalance)
 {
@@ -98,7 +97,7 @@ void Player::setGlobalGoodBetRatio(const uint32_t& globGoodBetCount, const uint3
 Player::Player(const std::string nickName, int globMoneyAccumulated,
                int globMoneyLost, uint32_t globGoodBetCount, 
                uint32_t globBetCount, uint32_t globPassCount, 
-               double globGoodBetRatio, int playerOrder, int balance)
+               DebugLogger* dbLog, double globGoodBetRatio, int playerOrder, int balance)
 {
     // Setup global variables
     nickName_ = nickName;
@@ -117,11 +116,25 @@ Player::Player(const std::string nickName, int globMoneyAccumulated,
     betCount_ = 0;
     goodBetCount_ = 0;
     playerOrderNumber_ = playerOrder;
+
+    // Misc
+    dbLog_ = dbLog;
+
+    dbLog_->addDebugLog(
+        {dbLog_->dbLogPlayerInitializedValues(nickName_, globMoneyAccumulated_,
+                                              globMoneyLost_, globGoodBetCount_,
+                                              globBetCount_, globPassCount_,
+                                              balance, globGoodBetRatio_,
+                                              playerOrderNumber_, false)}
+    );
+
+    dbLog_->buildDebugLogs();
+
 }
 
 /// @brief Constructor used as default when initial value of balance is set
 /// @param balance inistial value of bank ammount 
-Player::Player(int balance, int playerOrder, bool isPlayerBot)
+Player::Player(int balance, int playerOrder, DebugLogger* dbLog, bool isPlayerBot)
 {
     // Global
     nickName_ = "";
@@ -142,12 +155,26 @@ Player::Player(int balance, int playerOrder, bool isPlayerBot)
     goodBetCount_ = 0;
     playerOrderNumber_ = playerOrder;
     isPlayerBot_ = isPlayerBot;
+
+    // Misc
+    dbLog_ = dbLog;
+
+    dbLog_->addDebugLog(
+        {dbLog_->dbLogPlayerInitializedValues(nickName_, globMoneyAccumulated_,
+                                              globMoneyLost_, globGoodBetCount_,
+                                              globBetCount_, globPassCount_,
+                                              balance, globGoodBetRatio_, 
+                                              playerOrderNumber_, isPlayerBot_)}
+    );
+
+    dbLog_->buildDebugLogs();
+
 }
 
 /// @brief Constructor currently with no use
 /// @param nickName player name
 /// @param balance inital bank balance
-Player::Player(const std::string nickName, int balance, bool isPlayerBot, int playerOrder)
+Player::Player(const std::string nickName, int balance, DebugLogger* dbLog, bool isPlayerBot, int playerOrder)
 {
     // Global
     nickName_ = nickName; 
@@ -167,6 +194,20 @@ Player::Player(const std::string nickName, int balance, bool isPlayerBot, int pl
     goodBetCount_ = 0;
     playerOrderNumber_ = playerOrder;
     isPlayerBot_ = isPlayerBot;
+    
+    // Misc
+    dbLog_ = dbLog;
+
+    dbLog_->addDebugLog(
+        {dbLog_->dbLogPlayerInitializedValues(nickName_, globMoneyAccumulated_,
+                                              globMoneyLost_, globGoodBetCount_,
+                                              globBetCount_, globPassCount_,
+                                              balance, globGoodBetRatio_, 
+                                              playerOrderNumber_, isPlayerBot_)}
+    );
+
+    dbLog_->buildDebugLogs(); 
+
 }
 
 /// @brief Assings current local stats of player to it's global equivalents

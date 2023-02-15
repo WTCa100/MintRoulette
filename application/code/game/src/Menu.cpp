@@ -16,6 +16,10 @@
 /// @brief Shows main menu with asking which action user wants to take next
 void Menu::mainMenuDisplay()
 {
+    dbLog_->addDebugLog(
+        {dbLog_->dbLogMenuMainMenuDisplay}
+    );
+    dbLog_->buildDebugLogs();
 
     std::string choosenOption = "";
     do
@@ -31,7 +35,17 @@ void Menu::mainMenuDisplay()
         std::cout << "Select and option and hit enter\n";
         do
         {
+
+
             std::getline(std::cin, choosenOption);
+
+            dbLog_->addDebugLog(
+                {dbLog_->dbLogMenuGetInput,
+                 dbLog_->dbLogMenuCheckUserInput(choosenOption, ValidateInput::isStringNumber(choosenOption))}
+            );
+
+            dbLog_->buildDebugLogs();
+
             if(!ValidateInput::isStringNumber(choosenOption))
             {
                 std::cout << "You may only enter a numeric value!\n";
@@ -41,21 +55,44 @@ void Menu::mainMenuDisplay()
         switch (std::stoi(choosenOption))
         {
         case options::StartNewGame:
+
+            dbLog_->addDebugLog(
+                {dbLog_->dbLogMenuChoosenOption("StartNewGame")}
+            );
+
             startNewGame();
             break;
         case options::ShowPlayerList:
             playerList();
+
+            dbLog_->addDebugLog(
+                {dbLog_->dbLogMenuChoosenOption("ShowPlayerList")}
+            );            
+
             break;
         case options::ShowGameList:
             gameList();
+
+            dbLog_->addDebugLog(
+                {dbLog_->dbLogMenuChoosenOption("ShowGameList")}
+            );
+
             break;
         case options::Exit:
+
+            dbLog_->addDebugLog(
+                {dbLog_->dbLogMenuChoosenOption("Exit")}
+            );
+
             confirmExit();
             break;
         default:
             std::cout << "No such option!\n";
             break;
         }
+
+        dbLog_->buildDebugLogs();
+        
     } while (std::stoi(choosenOption) != options::Exit);
     
 }
@@ -66,7 +103,7 @@ void Menu::startNewGame()
 
     std::cout << "Start new game!\n";
     std::cout << "WIP!\n";
-    Game* session = new Game(fManager_);
+    Game* session = new Game(dbLog_, fManager_);
     session->startGame();
     delete session;
 }
@@ -314,4 +351,16 @@ void Menu::chooseGameToDisplayLogs(const std::vector<std::string>& fullGameList)
             }    
         }
     } while (ValidateInput::stringToLower(checkForDetails) != "q");
+}
+
+Menu::Menu(DebugLogger* dbLog)
+{
+    dbLog_ = dbLog;
+    dbLog_->addDebugLog(
+        {dbLog_->dbLogClassMenuInitialize}
+    );
+
+    fManager_ = new FileManager(dbLog_);
+    dbLog_->buildDebugLogs();
+
 }

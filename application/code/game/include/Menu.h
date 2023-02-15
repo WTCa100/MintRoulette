@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "../../utilities/include/FileManager.h"
+#include "../../utilities/include/DebugLogger.h"
 
 enum options
 {
@@ -37,10 +38,11 @@ class Menu
     void chooseGameToDisplayLogs(const std::vector<std::string>& fullGameList);
     void choosePlayerToDisplayDetails(const std::vector<Player*>& listToDisplay);
     
-    Menu() {fManager_ = new FileManager;};
+    Menu(DebugLogger* dbLog);
     ~Menu() {delete fManager_;}
 
     private:
     FileManager* fManager_;
+    DebugLogger* dbLog_;
 
 };

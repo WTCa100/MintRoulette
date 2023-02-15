@@ -8,13 +8,14 @@
 
 #include "./Paths.h"
 #include "../../game/include/Player.h"
+#include "../include/DebugLogger.h"
 
 
 
 enum FileType{
     PlayerStat  = 1,
     GameSave    = 2,
-    GameSaveDbg = 3,
+    ProgramSaveDbg = 3,
     AiNameList  = 4,
     Highscores  = 5
 };
@@ -69,4 +70,9 @@ class FileManager{
     void updateHighscores(std::vector<std::pair<double, std::string>> highscores);
 
     FileManager() = default;
+    FileManager(DebugLogger* dbLog);
+    ~FileManager();
+
+    private:
+    DebugLogger* dbLog_;
 };

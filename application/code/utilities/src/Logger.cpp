@@ -10,7 +10,6 @@ void Logger::touchLog(const uint32_t& gameNumber)
     std::string logsPath = FILE_GAME_SAVE_LOG_PATH;
     std::string logFileExt = EXT_GAME_LOG;
     logFileName_ = "GameNr" + std::to_string(gameNumber) + logFileExt;
-    fManager_->touch(FileType::GameSave, std::to_string(gameNumber));
     std::cout << "Debug: Logger: File: Creation of: " << logsPath + "/" + logFileName_ << std::endl;
     logFile_.open(logsPath + "/" + logFileName_,
                   std::ios::out);
@@ -23,7 +22,7 @@ void Logger::touchLog(const uint32_t& gameNumber)
 
 void Logger::addLog(const std::string& log)
 {
-    logLines_.push_back(logAddTimeStamp() + log);
+    logLines_.push_back(logAddTimeStamp() + ": " + log);
 }
 
 Logger::~Logger()
@@ -54,7 +53,7 @@ std::string Logger::logAddTimeStamp()
   time (&rawTime);
   timeInfo = localtime(&rawTime);
 
-  strftime(buffer,sizeof(buffer),"%d-%m-%Y:%H:%M:%S: ",timeInfo);
+  strftime(buffer,sizeof(buffer),"%d-%m-%Y-%H-%M-%S",timeInfo);
   std::string timeStamp(buffer);
 
     return timeStamp;
