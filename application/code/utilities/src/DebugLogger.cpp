@@ -226,6 +226,11 @@ const std::string DebugLogger::dbLogMenuCheckUserInput(const std::string& userIn
 
 // Game
 
+const std::string DebugLogger::dbLogMenuMainGameListDisplay(const std::vector<std::string>& games)
+{
+    return helperDbLogLoopStringVector(dbLogMenuMainGameListChooseDetails, games);
+}
+
 // Player
 
 const std::string DebugLogger::dbLogPlayerInitializedValues(const std::string& nickName, const int& globalMoneyAccumulated,
@@ -276,6 +281,56 @@ const std::string DebugLogger::dbLogPlayerInitializedValues(const std::string& n
 
     return dbLogMsg;
 }
+
+const std::string DebugLogger::dbLogGamePlayerMoveToGlobal(const std::string& nickName, std::vector<int> globalStatsEarly, std::vector<int> newGlobalStats, const double& oldRatio)
+{
+    std::string dbLogMsg = helperDbLogPositionGameSpecifiedPlayer(nickName) + "Moving values to global scope\n";
+
+    double newRatio = 0;
+
+    // Value of bet count
+    if(globalStatsEarly[1] != 0)
+    {
+        newRatio = static_cast<double>(globalStatsEarly[2]) / static_cast<double>(globalStatsEarly[1]);
+    }
+
+    for(int i = 0; i < globalStatsEarly.size(); i++)
+    {
+        dbLogMsg += "Old val: " + std::to_string(globalStatsEarly[i]) + " ---> " + std::to_string(newGlobalStats[i]) + "\n";
+    }
+
+    dbLogMsg += "Old val: " + std::to_string(oldRatio) + " ---> " + std::to_string(newRatio) + "\n";
+
+    dbLogMsg += "Saving values in following format: \n";
+    
+    for(auto i = 0; i < globalStatsEarly.size(); i++)
+    {
+        dbLogMsg += "Value: " + std::to_string(globalStatsEarly[i] + newGlobalStats[i]) + "\n";
+    }
+
+    dbLogMsg += "Value: " + std::to_string(oldRatio + newRatio);
+
+    return dbLogMsg;
+}
+
+
+// Turn
+
+ const std::string DebugLogger::dbLogGameTurnSumPlayerWonMoney(const std::string& playerName, const int& currentMoney, const int& wonAmmount)
+ {
+    std::string dbLogMsg = dbLogGameTurnSummaryPhase + "Player: " + playerName + ": WonMoney\n";
+    dbLogMsg += "Curr: " + std::to_string(currentMoney) + " ---> " + std::to_string(wonAmmount) + "\n";
+    dbLogMsg += " NewVal: " + std::to_string(currentMoney + wonAmmount);
+    return dbLogMsg;
+ }
+
+ const std::string DebugLogger::dbLogGameTurnSumPlayerNotWonMoney(const std::string& playerName, const int& currentMoney, const int& lostMoney)
+ {
+    std::string dbLogMsg = dbLogGameTurnSummaryPhase + "Player: " + playerName + ": WonMoney\n";
+    dbLogMsg += "Curr: " + std::to_string(currentMoney) + " <--- " + std::to_string(lostMoney);
+    dbLogMsg += " NewVal: " + std::to_string(currentMoney - lostMoney);
+    return dbLogMsg;
+ }
 
 // Logger
 

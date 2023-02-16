@@ -213,6 +213,14 @@ Player::Player(const std::string nickName, int balance, DebugLogger* dbLog, bool
 /// @brief Assings current local stats of player to it's global equivalents
 void Player::moveToGlobalStats()
 {
+
+    dbLog_->addDebugLog(
+        {dbLog_->dbLogGamePlayerMoveToGlobal(nickName_,
+        {static_cast<int>(globPassCount_), static_cast<int>(globBetCount_), static_cast<int>(globGoodBetCount_), globMoneyAccumulated_, globMoneyLost_},
+        {static_cast<int>(passCount_), static_cast<int>(betCount_), static_cast<int>(goodBetCount_), moneyAccumulated_, moneyLost_},
+         globGoodBetRatio_)}
+    );
+
     globPassCount_ += passCount_;
     globBetCount_ += betCount_;
     globGoodBetCount_ += goodBetCount_;
@@ -226,5 +234,9 @@ void Player::moveToGlobalStats()
     {
         globGoodBetRatio_ = 0;
     }
-        std::cout << "GoodBetRatio: " << globGoodBetRatio_ << std::endl;
+
+    dbLog_->buildDebugLogs();
+
+
+
 }

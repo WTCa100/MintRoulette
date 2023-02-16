@@ -9,6 +9,13 @@
 /// @return 0 - pass, 1 - bet
 bool Ai::chooseActionBetOrPass()
 {
+
+    dbLog_->addDebugLog(
+        {dbLog_->dbLogGameTurnBetAiChooseActionWithBalance(self_->getBalance())}
+    );
+
+    dbLog_->buildDebugLogs();
+
     // Bot shall choose depending on ammount of money he has wether pass or not
     // First let's check ammount of money player have (it's fixed since it will make the game flow much faster)
     // This will determine the highest odds
@@ -150,14 +157,16 @@ Ai::Ai(Player* self, DebugLogger* dbLog)
 {
     dbLog_ = dbLog;
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogClassAiInitialize}
-    );
-
-    dbLog_->buildDebugLogs();
 
     self_ = self;
     actionSeed_ = generateActionSeed();
+
+    dbLog_->addDebugLog(
+        {dbLog_->dbLogClassAiInitialize,
+         dbLog_->dbLogGameTurnBetAiGeneratedSeed(actionSeed_)}
+    );
+
+    dbLog_->buildDebugLogs();
 }
 
 Ai::~Ai()

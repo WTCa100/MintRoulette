@@ -70,7 +70,14 @@
         "xlocmes": "cpp",
         "xlocmon": "cpp",
         "xloctime": "cpp",
-        "codecvt": "cpp"
+        "codecvt": "cpp",
+        "array": "cpp",
+        "*.tcc": "cpp",
+        "cwctype": "cpp",
+        "deque": "cpp",
+        "functional": "cpp",
+        "numbers": "cpp",
+        "string_view": "cpp"
     },
     "cmake.configureOnOpen": false
 }

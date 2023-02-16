@@ -209,8 +209,23 @@ void Menu::showHighscores()
 /// @brief Show lists of games and it's log
 void Menu::gameList()
 {
+
+    dbLog_->addDebugLog(
+        {dbLog_->dbLogMenuMainGameList}
+    );
+
+    dbLog_->buildDebugLogs();
+
+
     std::cout << "Game list!\n";
     std::vector<std::string> gamesFiles = fManager_->loadFilesFromPath(FILE_GAME_SAVE_LOG_PATH);
+
+    dbLog_->addDebugLog(
+        {dbLog_->dbLogMenuMainGameListDisplay(gamesFiles)}
+    );
+
+    dbLog_->buildDebugLogs();
+
     for(auto gamePath : gamesFiles)
     {
         if(fManager_->isEntryFolder(gamePath))
@@ -219,14 +234,12 @@ void Menu::gameList()
         }
 
         gamePath = fManager_->trimPath(gamePath);
-        std::cout << gamePath << std::endl;
     }
 
     std::vector<std::string> gameIDs = gamesFiles;
     for(auto& Id : gameIDs)
     {
         Id.erase(Id.begin(), Id.begin() + 6);
-        std::cout << Id << std::endl;
     }
 
     chooseGameToDisplayLogs(gameIDs);
@@ -251,6 +264,13 @@ std::vector <std::string> Menu::getPlayerStatsFiles()
 
 void Menu::showPlayerStats(const Player& showPlayer)
 {
+
+    dbLog_->addDebugLog(
+        {dbLog_->dbLogMenuMainPlayerListAttemptToShowDetails(showPlayer.getNickName())}
+    );
+
+
+
     std::cout << "Player name: " << showPlayer.getNickName() <<std::endl;
     std::cout <<"Managed to placed " << showPlayer.getGlobalGoodBetCount() << " bets right\n";
     std::cout <<"Placed " << showPlayer.getGlobalBetCount() << " bets\n";
@@ -262,6 +282,13 @@ void Menu::showPlayerStats(const Player& showPlayer)
 
 void Menu::displayFullPlayerList(const std::vector<Player*>& listToDisplay)
 {
+
+    dbLog_->addDebugLog(
+        {dbLog_->dbLogMenuMainPlayerList}
+    );
+
+    dbLog_->buildDebugLogs();
+
     for(int entryNo = 0; entryNo < listToDisplay.size(); entryNo++)
     {
         std::cout << entryNo + 1 << ": " << listToDisplay[entryNo]->getNickName() << std::endl;
@@ -277,16 +304,34 @@ void Menu::displayFullPlayerList(const std::vector<Player*>& listToDisplay)
 
  void Menu::choosePlayerToDisplayDetails(const std::vector<Player*>& listToDisplay)
  {
+
+    dbLog_->addDebugLog(
+        {dbLog_->dbLogMenuMainPlayerListChooseDetails}
+    );
+
+    dbLog_->buildDebugLogs();
+
         std::cout << "If you want to see someones detailed stats please write down their name\n";
         std::cout << "Take note that it is case sensitive\n";
         std::string checkForDetails;
         do
         {
+
             std::cout << "Provide Player name: \n";
             checkForDetails.clear();
             std::getline(std::cin, checkForDetails);
+
+            dbLog_->addDebugLog(
+                {dbLog_->dbLogMenuGetInput,
+                 dbLog_->dbLogMenuCheckUserInput(checkForDetails ,ValidateInput::stringToLower(checkForDetails) != "q" && ValidateInput::isADuplicatePlayer(listToDisplay, checkForDetails))}
+            );
+
             if(ValidateInput::stringToLower(checkForDetails) != "q")
             {
+                dbLog_->addDebugLog(
+                    {dbLog_->dbLogMenuMainPlayerListAttemptToShowDetails(checkForDetails)}
+                );
+
                 // Search and display player
                 if(ValidateInput::isADuplicatePlayer(listToDisplay, checkForDetails))
                 {
@@ -305,6 +350,7 @@ void Menu::displayFullPlayerList(const std::vector<Player*>& listToDisplay)
                 }
                 std::cout << "Press any key to continue...\n";
                 std::cin.get();                    
+                dbLog_->buildDebugLogs();
             }
         } while (ValidateInput::stringToLower(checkForDetails) != "q");
  }
@@ -334,6 +380,11 @@ void Menu::chooseGameToDisplayLogs(const std::vector<std::string>& fullGameList)
     std::cout << "Take note that it is case sensitive\n";
     std::cout << "If you want to exit from this section simply type 'q'\n";
     std::string checkForDetails;
+
+    dbLog_->addDebugLog(
+        {dbLog_->dbLogMenuGetInput}
+    );
+
     do
     {
         std::cout << "Provide game id: \n";
@@ -341,6 +392,11 @@ void Menu::chooseGameToDisplayLogs(const std::vector<std::string>& fullGameList)
         std::getline(std::cin, checkForDetails);
         if(ValidateInput::stringToLower(checkForDetails) != "q")
         {
+
+            dbLog_->addDebugLog(
+                {dbLog_->dbLogGameGetInputCheck(checkForDetails, ValidateInput::isStringNumber(checkForDetails))}
+            );
+
             if(ValidateInput::isStringNumber(checkForDetails))
             {
                 showGameSave(static_cast<uint16_t>(std::stoi(checkForDetails)));
@@ -348,7 +404,10 @@ void Menu::chooseGameToDisplayLogs(const std::vector<std::string>& fullGameList)
             else
             {
                 std::cout << "Please provide a numeric value!\n";
-            }    
+            }
+
+            dbLog_->buildDebugLogs();
+
         }
     } while (ValidateInput::stringToLower(checkForDetails) != "q");
 }

@@ -98,6 +98,14 @@ public:
     const std::string dbLogMenuCheckUserInput(const std::string& userInput, const bool& isGood);
     const std::string dbLogMenuChoosenOption(const std::string& choosenOption)
         { return helperDbLogPositionMenu + "Option: Choosen: " + choosenOption;}
+    const std::string dbLogMenuMainPlayerList = helperDbLogPositionMenu + "MainPlayerList";
+    const std::string dbLogMenuMainPlayerListChooseDetails = dbLogMenuMainPlayerList + "Choose: Detailed Record";
+    const std::string dbLogMenuMainPlayerListAttemptToShowDetails(const std::string& player)
+        { return dbLogMenuMainPlayerListChooseDetails + ": Player: " + player; }
+    const std::string dbLogMenuMainGameList = helperDbLogPositionMenu + "MainGameList";
+    const std::string dbLogMenuMainGameListChooseDetails = dbLogMenuMainGameList + "Choose: Detailed Record";
+    const std::string dbLogMenuMainGameListDisplay(const std::vector<std::string>& games);
+
     // Game Substance logs
     const std::string helperDbLogPositionGame = "Debug: Application: Game: ";
     const std::string helperDbLogPositionGameGetInput = helperDbLogPositionGame + "Get: Input";
@@ -126,10 +134,21 @@ public:
     const std::string dbLogGameIfPlayerExists(const std::string& playerName, const bool& result)
         { return helperDbLogBoolResult(dbLogGameSetupConfig + ": Player: Name: " + playerName + " Check: IfExists", result); }
     const std::string dbLogGamePushPlayers(const std::string& nickname, const int& vecsSize)
-        { return dbLogGameSetPlayerNameSection + ": Add: To: players_: "; }
+        { return dbLogGameSetPlayerNameSection + ": " + nickname + ": Add: To: players_: "; }
     const std::string dbLogGameSetPlayerAliveVector = dbLogGameSetPlayerNameSection + ": players_: Assign: To: playersAlive_";
+    const std::string dbLogGamePushPlayersEliminated(const std::string& nickname, const int& vecsSize)
+        { return dbLogGameSetPlayerNameSection + ": " + nickname + ": Add: To: playersEliminated_: "; }
+    const std::string dbLogGameEraseEliminatedPlayers(const std::string& nickname, const int& vecsSize)
+        { return dbLogGameSetPlayerNameSection + ":" + nickname + ": Kill New vector size: " + std::to_string(vecsSize); }
+    const std::string dbLogGamePushTurn(const int& vecsSize)
+        { return helperDbLogPositionGame + "Turn: PushBack: NewSize: " + std::to_string(vecsSize); }
+    const std::string dbLogGameInsertBetsAndPlayer(const int& vecsSize)
+        { return helperDbLogPositionGame + "Bets: Insert: NewSize: " + std::to_string(vecsSize); }
+    const std::string dbLogGameCheckConditionsIfEndEarly(const bool& endEarly)
+        { return helperDbLogBoolResult(helperDbLogPositionGame + "Flow: Check if conditions to stop early are met ", endEarly); }
     const std::string dbLogGameFlowStarts = helperDbLogPositionGame + "Flow: Starts";
     const std::string dbLogGameFlowEnds = helperDbLogPositionGame + "Flow: Ends";
+    const std::string dbLogGameFlowEndsSummary = dbLogGameFlowEnds + ": Summary";
 
     // Player 
     const std::string helperDbLogPositionGameSpecifiedPlayer(const std::string& playerName)
@@ -145,12 +164,16 @@ public:
     const std::string dbLogPlayerSetBetCount(const std::string& playerName, const int& newBetCount)
         { return helperDbLogPositionGameSpecifiedPlayer(playerName) + "Bet: Count: Set: " + std::to_string(newBetCount); }
     const std::string dbLogPlayerSetPassCount(const std::string& playerName, const int& newPassCount)
-        { return helperDbLogPositionGameSpecifiedPlayer(playerName) + "Bet: Pass: Count: Set: " + std::to_string(newPassCount); }        
+        { return helperDbLogPositionGameSpecifiedPlayer(playerName) + "Bet: Pass: Count: Set: " + std::to_string(newPassCount); }      
+    const std::string dbLogGamePlayerMoveToGlobal(const std::string& nickName, std::vector<int> globalStatsEarly, std::vector<int> newGlobalStats, const double& oldRatio);
+
 
     // Turn
     const std::string helperDbLogPositionGameTurn = helperDbLogPositionGame + "Turn: ";
     const std::string dbLogGameTurnIdStarts(const int& turnId)
         { return helperDbLogPositionGameTurn + "With: Id: " + std::to_string(turnId) + " Starts"; }
+    const std::string dbLogGameTurnIdEnd(const int& turnId)
+        { return helperDbLogPositionGameTurn + "With: Id: " + std::to_string(turnId) + " Ends"; }    
     const std::string dbLogGameTurnBettingPhase = helperDbLogPositionGameTurn + " BettingPhase: ";
     const std::string dbLogGameTurnShowPlayer(const std::string& nickname, const int& bankBalance, const bool& isBot)
         { return dbLogGameTurnBettingPhase + "Turn: " + nickname + ": BankBalance: " + std::to_string(bankBalance) + ": IsBot: " + std::to_string(isBot); }
@@ -164,8 +187,14 @@ public:
         { return helperDbLogMapValues(dbLogGameTurnBettingPhase, userName, betType); }
     const std::string dbLogGameTurnPlayerEnd(const std::string& userTurn)
         { return dbLogGameTurnBettingPhase + "Turn: " + userTurn + ": Has ended"; }
-    const std::string dbLogGameTurnRollTheRoulettePhase = helperDbLogPositionGameTurn + " RollPhase:";
-    const std::string dbLogGameTurnSummaryPhase = helperDbLogPositionGameTurn + " SummaryPhase:";
+    const std::string dbLogGameTurnRollTheRoulettePhase = helperDbLogPositionGameTurn + " RollPhase: ";
+    const std::string dbLogGameTurnRollTheGetRandomNumber(const int& randomNumber)
+        { return dbLogGameTurnRollTheRoulettePhase + "Generate: RandomNumber: " + std::to_string(randomNumber); }    
+    const std::string dbLogGameTurnRollSetLuckyNumber(const int& luckyNumber)
+        { return dbLogGameTurnRollTheRoulettePhase + "LuckyNumber: Set: " + std::to_string(luckyNumber); }
+    const std::string dbLogGameTurnSummaryPhase = helperDbLogPositionGameTurn + " SummaryPhase: ";
+    const std::string dbLogGameTurnSumPlayerWonMoney(const std::string& playerName, const int& currentMoney, const int& wonAmmount);
+    const std::string dbLogGameTurnSumPlayerNotWonMoney(const std::string&, const int& currentMoney, const int& moneyLost);
 
     // Bet
     const std::string helperDbLogPositionGameTurnBet = helperDbLogPositionGameTurn + "Bet: ";
@@ -186,9 +215,24 @@ public:
     const std::string dbLogGameTurnBetBuildBetStraightUpSet(const std::string& nickname, const int& luckNumber)
         { return dbLogGameTurnBetBuildObtainBetType + "StraightUp: Player: Name: " + nickname + ": Choosen: " + std::to_string(luckNumber); }
     const std::string dbLogGameTurnBetBuildBetDozenSet(const std::string& nickname, const std::string& numberRange)
-        { return dbLogGameTurnBetBuildObtainBetType + "StraightUp: Player: Name: " + nickname + ": Choosen: " + numberRange; }
+        { return dbLogGameTurnBetBuildObtainBetType + "DozenBet: Player: Name: " + nickname + ": Choosen: " + numberRange; }
     const std::string dbLogGameTurnBetBuildBetIsOddChoosenSet(const std::string& nickname, const bool& isOddChoosen)
         { return helperDbLogBoolResult(dbLogGameTurnBetBuildObtainBetType + "StraightUp: Player: Name: " + nickname + ": Choosen: IsOdd: ", isOddChoosen); }
+    const std::string dbLogGameTurnBetPlayerPassed(const std::string& playerName)
+        { return helperDbLogPositionGameTurnBet + playerName + ": " + "Passed "; }
+    const std::string dbLogGameTurnBetIsBetGood(const std::string& playerName,  const bool& isBetGood)
+        { return helperDbLogBoolResult(helperDbLogPositionGameTurnBet + "Player: " + playerName + ": IsBetGood: ", isBetGood); }
+
+    // Ai
+    const std::string helperDbLogPositionGameTurnBetAi = helperDbLogPositionGameTurnBet + "Ai: ";
+    const std::string dbLogGameTurnBetAiGeneratedSeed(const int& seed)
+        { return helperDbLogPositionGameTurnBetAi + "Seed: " + std::to_string(seed); }
+    const std::string dbLogGameTurnBetAiChooseActionWithBalance(const int& balance)
+        { return helperDbLogPositionGameTurnBetAi + "Action: Choose: With Balance " + std::to_string(balance);}
+    const std::string dbLogGameTurnBetAiChooseActionWithBalanceResult(const bool& result, const int& balance)
+        { return helperDbLogBoolResult(dbLogGameTurnBetAiChooseActionWithBalance(balance), result); }
+
+    
     // Logger
     const std::string helperDbLogPlainFlow = "Debug: Application: Game: Game --> Log Msg: \n";
     const std::string dbLogLoggerGetMessage(const std::string& plainLog);

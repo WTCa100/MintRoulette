@@ -370,15 +370,33 @@ void Game::startGame()
         currentTurn->playTurn();
         gameTurns_.push_back(currentTurn);
         playersAndBetsSave_.push_back(currentTurn->getPlayersBets());
+
+        dbLog_->addDebugLog(
+            {dbLog_->dbLogGamePushTurn(gameTurns_.size()),
+             dbLog_->dbLogGameInsertBetsAndPlayer(playersAndBetsSave_.size())}
+        );
+
+        dbLog_->buildDebugLogs();
+
         eliminatePlayers();
+
+        dbLog_->addDebugLog(
+            {dbLog_->dbLogGameCheckConditionsIfEndEarly(playersAlive_.size() <= 1)}
+        );
 
         // Check if players want to continue
         if(playersAlive_.size() > 1)
         {
             stopGameEarly = askForStopGameEarly(stopGameEarly);
+
+            dbLog_->addDebugLog(
+                {dbLog_->dbLogGameCheckConditionsIfEndEarly(stopGameEarly)}
+            );
+
         }
         canGameProgress = checkGameCondition(stopGameEarly);
 
+        dbLog_->buildDebugLogs();
         gameLog_->buildLogs();
     }
 }
@@ -394,16 +412,30 @@ void Game::eliminatePlayers()
             std::cout << "Player: " << checkPlayer->getNickName() << " got eliminated!\n";
             playersEliminated_.push_back(checkPlayer);
 
+            dbLog_->addDebugLog(
+                {dbLog_->dbLogGamePushPlayersEliminated(checkPlayer->getNickName(), playersEliminated_.size()),
+                 dbLog_->dbLogLoggerGetMessage(gameLog_->logGamePlayerElimination(checkPlayer->getNickName()))}
+            );
+
             gameLog_->addLog(
                 gameLog_->logGamePlayerElimination(checkPlayer->getNickName())
             );
+
 
         }
     }
     for(auto& killPlayer : playersEliminated_)
     {
         playersAlive_.erase(std::remove(playersAlive_.begin(), playersAlive_.end(), killPlayer), playersAlive_.end());
+
+        dbLog_->addDebugLog(
+            {dbLog_->dbLogGameEraseEliminatedPlayers(killPlayer->getNickName(), playersAlive_.size())}
+        );
+
     }
+
+    dbLog_->buildDebugLogs();
+
 }
 
 /// @brief Check if user inputed 'y' or 'n'
@@ -420,6 +452,11 @@ bool Game::isStringValid(const std::string& userInput)
 /// @return if players wants to stop early
 bool Game::askForStopGameEarly(bool& stopEarly)
 {
+
+    dbLog_->addDebugLog(
+        {dbLog_->dbLogGameGetInput}
+    );
+
     std::string userInput = "";
     std::cout << "Do you wish to proccede? y/n\n";
     do
@@ -428,7 +465,14 @@ bool Game::askForStopGameEarly(bool& stopEarly)
         if(!this->isStringValid(userInput))
         {
             std::cout << "It's either yes or no\n";
+
+            dbLog_->addDebugLog(
+                {dbLog_->dbLogGameGetInputCheck(userInput, this->isStringValid(userInput))}
+            );
         }
+
+        dbLog_->buildDebugLogs();
+
     } while (!this->isStringValid(userInput));
 
     if(tolower(userInput[0]) == 'y')
@@ -458,6 +502,11 @@ bool Game::checkGameCondition(const bool& stopEarly)
 /// @brief Summerizes game progress. Display how much money player lost and how many bets and passes they have placed
 void Game::endScreen()
 {
+
+    dbLog_->addDebugLog(
+        {dbLog_->dbLogGameFlowEndsSummary,
+         dbLog_->dbLogLoggerGetMessage(gameLog_->logGameHasEnded())}
+    );
 
     gameLog_->addLog(
         gameLog_->logGameHasEnded()
