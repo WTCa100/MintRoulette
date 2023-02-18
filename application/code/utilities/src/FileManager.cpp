@@ -15,7 +15,7 @@
 /// @return File state
 bool FileManager::isFileGood(const std::string& path, const std::string& fileName)
 {
-    std::cout << "Debug: File: Check: Path:" << path + "/" + fileName << std::endl;
+
     std::ifstream fileCheck(path + "/" + fileName);
     
     dbLog_->addDebugLog(
@@ -241,9 +241,7 @@ Player* FileManager::makePlayerFromLoadedFile(const std::string& name,
     // Get Values
     for(auto& line : playerValues)
     {
-        //std::cout << "Debug: Player: Load: Attrval: " << line << std::endl;
         line.erase(line.begin(), line.begin() + line.rfind(':') + 1);
-        std::cout << "Debug: Player: Load: Attrval: Trimmed: " << line << std::endl;
     }
 
     // Initialize temporary values
@@ -318,7 +316,6 @@ std::vector<std::string> FileManager::makeFileContentUnique(std::vector<std::str
 
 std::string FileManager::trimPath(const std::string& rawFile)
 {
-    std::cout << "Check me here!\n";
     std::string plainFile = rawFile;
     plainFile.erase(plainFile.begin(), plainFile.begin() + plainFile.rfind("\\") + 1);
     plainFile.erase(plainFile.begin() + plainFile.rfind('.'), plainFile.end());
@@ -355,7 +352,6 @@ uint16_t FileManager::nextGameSaveId()
     std::vector<uint16_t> gameSaveIds;
     for(auto& file : gameSaveFolder)
     {
-        std::cout << file << std::endl;
         if(isEntryFolder(file))
         {
             continue;
@@ -388,9 +384,7 @@ std::string FileManager::extractConfigValueFromTag(const std::string& tag)
         {
             // remove whitespaces
             std::string tagValue = configTag;
-            std::cout << "Debug: FManager: Config: Tag: Name: " << tagValue << std::endl;
             tagValue.erase(tagValue.begin(), tagValue.begin() + tagValue.rfind(":") + 1);
-            std::cout << "Debug: FManager: Config: Tag: Value: " << tagValue << std::endl;
             return tagValue; 
         }
     }
@@ -409,7 +403,7 @@ void FileManager::changeConfigTagValue(const std::string& tag, const std::string
 
     if(extractConfigValueFromTag(tag) == newValue)
     {
-        std::cout << "Debug: Config: Edit: Message: Already the same value.\n";
+        std::cout << "System Message: Already the same value.\n";
     }
 
     std::string initPath = INIT_CONFIG_PATH;
@@ -439,7 +433,6 @@ void FileManager::changeConfigTagValue(const std::string& tag, const std::string
         initFile << newConfgLine << "\n";
     }
 
-    std::cout << "Debug: Config: Edit: Message: New value has been succesfully added\n";
     dbLog_->buildDebugLogs();
     
 }
@@ -470,15 +463,11 @@ std::vector<std::pair<double, std::string>> FileManager::loadHighscores()
         // Handle splitting
         std::string ratio, name;
         ratio = line; name = line;
-        std::cout << "Debug: Game: Highscores: Line: " << line << std::endl; 
-        std::cout << "Debug: Game: HighScores: Name:" << name <<std::endl;
-        std::cout << "Debug: Game: HighScores: Ratio:" << ratio <<std::endl;
         ratio.erase(ratio.begin(), ratio.begin() + ratio.find(',') + 1);
         ratio.erase(ratio.begin() + ratio.find(","), ratio.end());
         name.erase(name.begin(), name.begin() + name.rfind(",") + 1);
 
-        std::cout << "Debug: Game: HighScores: Name:" << name <<std::endl;
-        std::cout << "Debug: Game: HighScores: Ratio:" << ratio <<std::endl;
+
         finalHighscores.push_back(std::make_pair(std::stod(ratio), name));
     }
 

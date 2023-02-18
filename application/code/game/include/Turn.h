@@ -26,6 +26,7 @@ class Turn
 
     // Getter
     std::unordered_map<Player*, Bet*> getPlayersBets() {return playerAndBets_; }
+    const uint32_t getTurnNumber() { return turnNumber_; }
 
     Turn(std::vector<Player*>& currentPlayers, const uint32_t turnNumber, Logger* gameLog, DebugLogger* dbLog) 
          :currentPlayers_(currentPlayers), turnNumber_(turnNumber), gameLog_(gameLog), dbLog_(dbLog) { dbLog_->addDebugLog({dbLog_->dbLogClassTurnInitialize}); }

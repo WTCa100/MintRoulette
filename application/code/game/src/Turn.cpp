@@ -32,7 +32,6 @@ void Turn::bettingPhase()
 
     for(int i = 0; i < currentPlayers_.size(); i++)
     {
-        std::cout << "Debug info: " << currentPlayers_[i]->getNickName() << " turn has started\n";
         std::cout << "It's " << currentPlayers_[i]->getNickName() << "'s turn\n";
         if(!currentPlayers_[i]->getPlayerIsBot())
         {
@@ -114,7 +113,7 @@ void Turn::bettingPhase()
 
             Ai* botBrain = new Ai(currentPlayers_[i], dbLog_);
 
-            std::cout << "Bot player " << currentPlayers_[i]->getNickName();
+            std::cout << "Bot player " << currentPlayers_[i]->getNickName() << std::endl;
 
             if(botBrain->chooseActionBetOrPass())
             {
@@ -125,7 +124,7 @@ void Turn::bettingPhase()
 
                 dbLog_->buildDebugLogs();
 
-                std::cout << " decided to bet:";
+                std::cout << "decided to bet:";
                 Bet* botBet = new Bet(dbLog_);
                 botBet = botBrain->buildBet(botBet);
                 switch (botBet->getBetType())
@@ -150,11 +149,11 @@ void Turn::bettingPhase()
                     break;
                 case BetType::EvenOdd:
                     std::cout << " even/odd ";
-                    botBet->getIsOddChoosen() ? std::cout << " thinking that the lucky number is odd\n" : std::cout << " thinking that the lucky number is even\n";
+                    botBet->getIsOddChoosen() ? std::cout << "thinking that the lucky number is odd\n" : std::cout << "thinking that the lucky number is even\n";
                     break;
                 }
 
-                std::cout << " worth " << botBet->getAmmountBetted() << std::endl;
+                std::cout << "worth " << botBet->getAmmountBetted() << std::endl;
 
                 dbLog_->addDebugLog(
                     {dbLog_->dbLogLoggerGetMessage(gameLog_->logGamePlayerPlacedBet(currentPlayers_[i],
@@ -180,7 +179,7 @@ void Turn::bettingPhase()
                 Bet* playerPass = new Bet(*currentPlayers_[i], dbLog_);
                 playerAndBets_.insert(std::make_pair(currentPlayers_[i], playerPass));
                 currentPlayers_[i]->setPassCount(currentPlayers_[i]->getPassCount() + 1);
-                std::cout << " decided to pass this turn\n";
+                std::cout << "decided to pass this turn\n";
 
                 dbLog_->addDebugLog(
                     {dbLog_->dbLogLoggerGetMessage(gameLog_->logGamePlayerPassed(currentPlayers_[i]->getNickName()))}
@@ -279,9 +278,6 @@ void Turn::rollTheRoulette()
                 i.second->setBetSucces(luckyNumber_ % 2 == 0);
             }
             break;
-        default:
-            std::cout << "Debug Info: "<< i.first->getNickName() <<"passed this turn!\n";
-            break;
         }
 
         dbLog_->addDebugLog(
@@ -292,11 +288,6 @@ void Turn::rollTheRoulette()
 
     }
 
-    for(auto debugPlayer : playerAndBets_)
-    {
-        std::cout << "Debug Info: Player: NickName: " << debugPlayer.first->getNickName() << std::endl;
-        std::cout << "Debug Info: Bet: Value: " << debugPlayer.second->getAmmountBetted() << std::endl;
-    }
 }
 
 bool Turn::askForBet()
@@ -305,7 +296,7 @@ bool Turn::askForBet()
     dbLog_->buildDebugLogs();
 
     std::string userInput;
-    std::cout << "Are you betting or passing?\n";
+    std::cout << "Are you betting (1) or passing (2)?\n";
     do
     {
         "1. Yes\n";
@@ -387,7 +378,7 @@ void Turn::summaryPhase()
             }
             break;
         default:
-            std::cout << "passed this turn!\n";
+            std::cout << " passed this turn!\n";
             break;
         }
         if(player.second->getBetType() != BetType::Pass)
@@ -477,5 +468,4 @@ Turn::~Turn()
 
     dbLog_->buildDebugLogs();
 
-    std::cout << "Debug Info: Turn: " << turnNumber_ << " Teardown\n";
 }

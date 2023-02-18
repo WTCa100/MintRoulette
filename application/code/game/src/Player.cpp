@@ -7,16 +7,16 @@ void Player::displayMoneyWonLoss(int initBankBalance)
     std::cout << "Player " << nickName_;
     if(moneyAccumulated_ == 0)
     {
-        std::cout << "have won no money and ";
+        std::cout << " have won no money and ";
     }
     else if(moneyAccumulated_ > 0)
     {
-        std::cout << "have won: " << moneyAccumulated_ 
+        std::cout << " have won: " << moneyAccumulated_ 
         <<" and ";
     }
     if(moneyLost_ == 0)
     {
-        std::cout << "have lost no money";
+        std::cout << " have lost no money";
     }
     else
     {
@@ -24,7 +24,7 @@ void Player::displayMoneyWonLoss(int initBankBalance)
     }
     std::cout << "!" << std::endl;
 
-    std::cout<< nickName_ << " ended the game with " << balance_ << "which is ";
+    std::cout<< nickName_ << " ended the game with " << balance_ << " which is ";
     if(balance_ - initBankBalance > 0)
     {
         std::cout << balance_ - initBankBalance << " more than the starting ammount\n";

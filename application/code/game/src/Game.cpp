@@ -226,7 +226,6 @@ bool Game::checkIfPlayerExists(const std::string& name) const
 /// @brief Core gameplay - create player instances, assign them nicknames, and play
 void Game::startGame()
 {
-    std::cout << "WIP!\n";
     std::cout << "Player count: " << numberOfPlayers_ << std::endl;
     std::cout << "Init balance: " << initBankBalance_ << std::endl;
 
@@ -359,7 +358,6 @@ void Game::startGame()
 
     dbLog_->buildDebugLogs();
     
-    std::cout << "Debug info: Start of turns\n";
     bool canGameProgress = true;
     uint16_t turnId = 0;
     while(canGameProgress)
@@ -527,6 +525,9 @@ void Game::endScreen()
         );
 
     }
+
+    std::cout << "Press any key to continue...\n";
+    std::cin.ignore();
 }
 
 /// @brief Defult constructor
@@ -579,37 +580,33 @@ Game::~Game()
     gameLog_->buildLogs();
     
     // Save player progress
+
+    std::cout << "Saving game..."  << std::endl;
+
      for(auto i = 0; i < players_.size(); i++)
     {
-        std::cout << "Debug Info: Player: Save: " << i + 1 << std::endl;
         if(!players_[i]->getPlayerIsBot())
         {
             savePlayerStats(*players_[i]);
         }
-        else
-        {
-            std::cout << "Debug Info: Player: Save: Bot skipping...\n";
-        }
     }   
+
+    std::cout << "Saved!\n";
 
     Game::updateHighscores();
 
     std::cout << "Teardown game\n";
-    std::cout << "Debug: Info: Players: Alive: Clear\n";
     playersAlive_.clear(); 
-    std::cout << "Debug: Info: Players: Elimineted: Clear\n";
     playersEliminated_.clear(); 
 
     // Delete bets
     for(auto turn = 0; turn < playersAndBetsSave_.size(); turn++)
     {
-        std::cout << "Turn: " << turn << std::endl;
+        std::cout << "Bets from turn: " << turn << std::endl;
         // Itarate throught the map and delete it's second argument
         for(auto& pAndB : playersAndBetsSave_[turn])
         {
-            std::cout << "Debug: Deleting bet for " << pAndB.first->getNickName() << std::endl;
-            std::cout << "Debug: Bet info: Type:" << pAndB.second->getBetType() << std::endl;
-            std::cout << "Debug: Bet info: Value: " << pAndB.second->getAmmountBetted() << std::endl;
+            std::cout << "Delete bet from " << pAndB.first->getNickName() << " of size " << pAndB.second->getAmmountBetted() << std::endl;
             delete pAndB.second;
         }
     }
@@ -617,19 +614,22 @@ Game::~Game()
     // Delete turn info
     for(auto i = 0; i < gameTurns_.size(); i++)
     {
-        std::cout << "Debug Info: Delete turn " << i << std::endl;
+        std::cout << "Delete turn " << gameTurns_[i]->getTurnNumber() << std::endl;
         delete gameTurns_[i];
     }
     
     // Delete player info
     for(auto i = 0; i < players_.size(); i++)
     {
-        std::cout << "Debug Info: Delete player " << i + 1 << std::endl;
+
+        std::cout << "Delete player: " << players_[i]->getNickName() << std::endl;
+
         delete players_[i];
     }
 
     fManager_->iterateGameIdConfig(fManager_->nextGameSaveId());
     
+    std::cout << "Finalize teardown\n";
     delete gameLog_;
 }
 
@@ -684,14 +684,12 @@ uint16_t Game::loadNextGameId()
 
             for(auto gFile : gameFiles)
             {
-                std::cout << "Debug: Game: Files: Game: Plain: " << gFile << std::endl;
                 // Check if entry is a folder
                 if(fManager_->isEntryFolder(gFile))
                 {
                     continue;
                 }
                 std::string numberText = fManager_->trimPath(gFile);
-                std::cout << "Debug: Game: Files: Game: Trimmed: " << numberText << std::endl;
                 numberText.erase(numberText.begin(), numberText.begin() + 6);
                 gameIds.push_back(std::stoi(numberText));
             }
@@ -716,9 +714,14 @@ void Game::updateHighscores()
 
     //std::sort(players_.begin(), players_.end());
 
+    // Add every player from session to the list
     for(auto sessionPlayer : players_)
     {
-        fullPlayerList.push_back(std::make_pair<double, std::string>(sessionPlayer->getGlobalGoodBetRatio(), sessionPlayer->getNickName()));
+        // Avoid adding bots
+        if(!sessionPlayer->getPlayerIsBot())
+        {
+            fullPlayerList.push_back(std::make_pair<double, std::string>(sessionPlayer->getGlobalGoodBetRatio(), sessionPlayer->getNickName()));
+        }
     }
 
     // Sort ascending

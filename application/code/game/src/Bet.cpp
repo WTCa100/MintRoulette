@@ -21,7 +21,7 @@ void Bet::askForBetType()
         std::cout << "Bet types are:\n";
         std::cout << "1. Straight Up - you may pick one number\n";
         std::cout << "2. Dozen Bet - you may range withing the lucky number might be\n";
-        std::cout << "3 Even odd - you may guess whether the lucky number is odd or even\n";
+        std::cout << "3. Even odd - you may guess whether the lucky number is odd or even\n";
 
         dbLog_->addDebugLog(
             {dbLog_->dbLogGameTurnBetBuildGetInput}
@@ -95,7 +95,7 @@ void Bet::askForBetType()
 void Bet::askForBetAmmount(const Player& whoPlacedBet)
 {
     std::string* userInput = new std::string;
-    std::cout << "How much money you are willing to bet? (you have "<< whoPlacedBet.getBalance() << "\n";
+    std::cout << "How much money you are willing to bet? (you have "<< whoPlacedBet.getBalance() << " money)\n";
     do
     {
         do

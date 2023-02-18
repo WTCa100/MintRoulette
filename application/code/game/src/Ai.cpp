@@ -78,12 +78,10 @@ bool Ai::chooseGoAllIn()
 
 int Ai::chooseBetSize(int botBalance)
 {   
-    std::cout << "Debug: Game: Ai: Seed: Show: " << actionSeed_ << std::endl;
     if(self_->getBalance() > 150)
     {
         if(chooseGoAllIn())
         {
-            std::cout << "Debug: Game: Ai: Bet: Size: Msg: Go all in!\n";
             return self_->getBalance();
         }
     }

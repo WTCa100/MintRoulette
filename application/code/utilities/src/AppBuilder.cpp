@@ -144,7 +144,6 @@ void AppBuilder::buildInitConfig()
                 std::cout << gameVersionContent[i] << std::endl;
                 if(gameVersionContent[i].find("gameVersion:") != std::string::npos)
                 {
-                    std::cout << "IAM HERE!\n";
                     std::string tmp = gameVersionContent[i];
                     std::cout << tmp << std::endl;
                     tmp.erase(tmp.begin(), tmp.begin() + tmp.rfind(":") + 1);
@@ -310,6 +309,8 @@ AppBuilder::~AppBuilder()
 
         dbLog_->buildDebugLogs();
     }
+
+    system("cls");
 
     delete fileMgmt_;
 }

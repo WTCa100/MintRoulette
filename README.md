@@ -64,7 +64,6 @@ void Logger::touchLog(const uint32_t& gameNumber)
     std::string logFileExt = EXT_GAME_LOG;
     logFileName_ = "GameNr" + std::to_string(gameNumber) + logFileExt;
     fManager_->touch(FileType::GameSave, std::to_string(gameNumber));
-    std::cout << "Debug: Logger: File: Creation of: " << logsPath + "/" + logFileName_ << std::endl;
     logFile_.open(logsPath + "/" + logFileName_,
                   std::ios::out);
    // Skipping error handle

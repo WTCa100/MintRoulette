@@ -48,7 +48,7 @@ void Menu::mainMenuDisplay()
 
             if(!ValidateInput::isStringNumber(choosenOption))
             {
-                std::cout << "You may only enter a numeric value!\n";
+                std::cout << "You may only enter a numeric value!\n";         
             }
         } while (!ValidateInput::isStringNumber(choosenOption));
         
@@ -84,10 +84,13 @@ void Menu::mainMenuDisplay()
                 {dbLog_->dbLogMenuChoosenOption("Exit")}
             );
 
-            confirmExit();
+            std::cout << "See you again next time!\n";
+
             break;
         default:
             std::cout << "No such option!\n";
+            system("pause");
+            system("cls");
             break;
         }
 
@@ -101,26 +104,29 @@ void Menu::mainMenuDisplay()
 void Menu::startNewGame()
 {
 
+    system("cls");    
     std::cout << "Start new game!\n";
-    std::cout << "WIP!\n";
     Game* session = new Game(dbLog_, fManager_);
     session->startGame();
     delete session;
+
+    system("pause");
+    system("cls");
+
 }
 
 /// @brief Show lists of players and higscores
 void Menu::playerList()
 {
 
+    system("cls");
     std::vector <Player*> savedPlayers = loadEveryPlayerStat();
     std::string optionChoosen;
-
-    
     do
     {
         std::cout << "Player list!\n";
         std::cout << "Options are: \n";
-        std::cout << "1. Show highscores WIP\n";
+        std::cout << "1. Show highscores\n";
         std::cout << "2. List all player names\n";
         std::cout << "3. Go back\n";
         do
@@ -153,13 +159,17 @@ void Menu::playerList()
     {
         delete player;
     }
+    system("cls");
 }
 
 void Menu::showHighscores()
 {
+    system("cls");
+
     // Load contents of highscores.csv
     std::vector<std::string> highscoresContent = fManager_->loadFileContent(FILE_PLAYER_HIGHSCORES_PATH, FILE_PLAYER_HIGHSCORES);
-    
+    std::vector<Player*> laterDisplay;
+
     // In order style the text we need to separate informations from the highscores
     std::cout << "Place:\tRatio:\tName:\n";
     for(auto rawLine : highscoresContent)
@@ -184,9 +194,26 @@ void Menu::showHighscores()
 
         // Display properties 
         std::cout << place << "\t" << ratio << "\t" << name << std::endl;
+
+        if(fManager_->isFileGood(FILE_PLAYER_STATS_PATH, name + EXT_PLAYER_STATS))
+        {
+            laterDisplay.push_back(fManager_->makePlayerFromLoadedFile(name));
+        }
+        else
+        {
+            std::cout << "System Message: Error! No such user found.\n";
+        }
+
     }
 
     choosePlayerToDisplayDetails(loadEveryPlayerStat());
+    system("cls");
+
+    for(auto player : laterDisplay)
+    {
+        delete player;
+    }
+
 }
 
  std::vector<Player*> Menu::loadEveryPlayerStat()
@@ -199,7 +226,6 @@ void Menu::showHighscores()
     for(auto& player : avilableFiles)
     {
         player = fManager_->trimPath(player);
-        std::cout << "Debug: List: Players: File: Name: " << player << std::endl;
         savedPlayers.push_back(fManager_->makePlayerFromLoadedFile(player));
     }   
 
@@ -209,6 +235,8 @@ void Menu::showHighscores()
 /// @brief Show lists of games and it's log
 void Menu::gameList()
 {
+
+    system("cls");
 
     dbLog_->addDebugLog(
         {dbLog_->dbLogMenuMainGameList}
@@ -226,7 +254,7 @@ void Menu::gameList()
 
     dbLog_->buildDebugLogs();
 
-    for(auto gamePath : gamesFiles)
+    for(auto& gamePath : gamesFiles)
     {
         if(fManager_->isEntryFolder(gamePath))
         {
@@ -242,23 +270,14 @@ void Menu::gameList()
         Id.erase(Id.begin(), Id.begin() + 6);
     }
 
-    chooseGameToDisplayLogs(gameIDs);
+    chooseGameToDisplayLogs(gameIDs, gamesFiles);
 
 }
 
-/// @brief Prompt user to double check 
-void Menu::confirmExit()
-{
-    std::cout << "You sure you want to exit?\n";
-}
 
 std::vector <std::string> Menu::getPlayerStatsFiles()
 {
     std::vector<std::string> files = fManager_->loadFilesFromPath(FILE_PLAYER_STATS_PATH);
-    for(auto test : files)
-    {
-        std::cout << "Debug: Files: Path: Display: " << test << std::endl;
-    }
     return files;
 }
 
@@ -282,24 +301,15 @@ void Menu::showPlayerStats(const Player& showPlayer)
 
 void Menu::displayFullPlayerList(const std::vector<Player*>& listToDisplay)
 {
-
+    system("cls");
     dbLog_->addDebugLog(
         {dbLog_->dbLogMenuMainPlayerList}
     );
 
     dbLog_->buildDebugLogs();
 
-    for(int entryNo = 0; entryNo < listToDisplay.size(); entryNo++)
-    {
-        std::cout << entryNo + 1 << ": " << listToDisplay[entryNo]->getNickName() << std::endl;
-        if(entryNo % 50 == 0 && entryNo != 0)
-        {
-            std::cout << "End of the page!\n";
-            std::cin.get();
-        }
-    }
     choosePlayerToDisplayDetails(listToDisplay);
-
+    
 }
 
  void Menu::choosePlayerToDisplayDetails(const std::vector<Player*>& listToDisplay)
@@ -316,6 +326,17 @@ void Menu::displayFullPlayerList(const std::vector<Player*>& listToDisplay)
         std::string checkForDetails;
         do
         {
+
+        std::cout << "Press \"q\" to go back\n";
+        for(int entryNo = 0; entryNo < listToDisplay.size(); entryNo++)
+        {
+            std::cout << entryNo + 1 << ": " << listToDisplay[entryNo]->getNickName() << std::endl;
+            if(entryNo % 50 == 0 && entryNo != 0)
+            {
+                std::cout << "End of the page!\n";
+                std::cin.get();
+            }
+        }                        
 
             std::cout << "Provide Player name: \n";
             checkForDetails.clear();
@@ -340,6 +361,8 @@ void Menu::displayFullPlayerList(const std::vector<Player*>& listToDisplay)
                         if(player->getNickName() == checkForDetails)
                         {
                             showPlayerStats(*player);
+                            system("Pause");
+                            system("cls");
                             break;
                         }
                     }
@@ -347,12 +370,14 @@ void Menu::displayFullPlayerList(const std::vector<Player*>& listToDisplay)
                 else
                 {
                     std::cout << "No such player found!\n";
-                }
-                std::cout << "Press any key to continue...\n";
-                std::cin.get();                    
+                    system("Pause");
+                    system("cls");
+
+                }           
                 dbLog_->buildDebugLogs();
             }
         } while (ValidateInput::stringToLower(checkForDetails) != "q");
+        system("cls");
  }
 
 void Menu::showGameSave(const uint16_t& gameId)
@@ -372,13 +397,15 @@ void Menu::showGameSave(const uint16_t& gameId)
         ///@todo Improve displaying functions (add for example pages)
         std::cout << showLine << std::endl;
     }
+
+    system("Pause");
+    system("cls");
 }
 
-void Menu::chooseGameToDisplayLogs(const std::vector<std::string>& fullGameList)
+void Menu::chooseGameToDisplayLogs(const std::vector<std::string>& fullGameIds, const std::vector<std::string>& fullGameList)
 {
     std::cout << "If you want to see detailed logs please enter a game id\n";
     std::cout << "Take note that it is case sensitive\n";
-    std::cout << "If you want to exit from this section simply type 'q'\n";
     std::string checkForDetails;
 
     dbLog_->addDebugLog(
@@ -387,6 +414,12 @@ void Menu::chooseGameToDisplayLogs(const std::vector<std::string>& fullGameList)
 
     do
     {
+        std::cout << "Press \"q\" to go back\n";
+        for(auto path : fullGameList)
+        {
+            std::cout << path << std::endl;
+        }
+
         std::cout << "Provide game id: \n";
         checkForDetails.clear();
         std::getline(std::cin, checkForDetails);
@@ -404,11 +437,15 @@ void Menu::chooseGameToDisplayLogs(const std::vector<std::string>& fullGameList)
             else
             {
                 std::cout << "Please provide a numeric value!\n";
+                system("Pause");                
             }
 
             dbLog_->buildDebugLogs();
 
         }
+
+
+        system("cls");
     } while (ValidateInput::stringToLower(checkForDetails) != "q");
 }
 

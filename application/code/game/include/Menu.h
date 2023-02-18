@@ -35,7 +35,7 @@ class Menu
     void showHighscores();
     std::vector<Player*> loadEveryPlayerStat();
     void displayFullPlayerList(const std::vector<Player*>& listToDisplay);
-    void chooseGameToDisplayLogs(const std::vector<std::string>& fullGameList);
+    void chooseGameToDisplayLogs(const std::vector<std::string>& fullGameIds, const std::vector<std::string>& fullGameList );
     void choosePlayerToDisplayDetails(const std::vector<Player*>& listToDisplay);
     
     Menu(DebugLogger* dbLog);

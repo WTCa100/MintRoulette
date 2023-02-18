@@ -10,7 +10,6 @@ void Logger::touchLog(const uint32_t& gameNumber)
     std::string logsPath = FILE_GAME_SAVE_LOG_PATH;
     std::string logFileExt = EXT_GAME_LOG;
     logFileName_ = "GameNr" + std::to_string(gameNumber) + logFileExt;
-    std::cout << "Debug: Logger: File: Creation of: " << logsPath + "/" + logFileName_ << std::endl;
     logFile_.open(logsPath + "/" + logFileName_,
                   std::ios::out);
 
@@ -204,7 +203,7 @@ std::string Logger::logGamePlayerSummerizeGame(const Player* playerToSum) const
     }
     else
     {
-        logMsg += ". Placed no bets!";
+        logMsg += ". Placed no bets";
     }
 
     if(playerToSum->getPassCount())
