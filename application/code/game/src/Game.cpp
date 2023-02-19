@@ -281,7 +281,7 @@ void Game::startGame()
                     std::getline(std::cin, tmpNicknameHolder);
                     if(!isPlayerNameGood(tmpNicknameHolder))
                     {
-                        std::cout << "Player must have a name, and cannot contain < > | \\ / \" * = sings and be no shorer than " << MIN_NICKNAME_LENGTH << std::endl;
+                        std::cout << "Player must have a name, and cannot contain < > | : \\ / \" * = sings and be no shorer than " << MIN_NICKNAME_LENGTH << std::endl;
                     }
 
                     dbLog_->addDebugLog(
