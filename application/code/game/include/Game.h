@@ -27,6 +27,7 @@ class Game : public ValidateInput
     bool checkIfPlayerExists(const std::string& name) const;
     uint16_t loadNextGameId();
     void updateHighscores();
+    bool isPlayerNameGood(const std::string& name) const;
 
     // Setters
     // Config

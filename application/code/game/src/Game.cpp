@@ -223,6 +223,24 @@ bool Game::checkIfPlayerExists(const std::string& name) const
     return fManager_->isFileGood(FILE_PLAYER_STATS_PATH, name + EXT_PLAYER_STATS);
 }
 
+bool Game::isPlayerNameGood(const std::string& name) const
+{
+    if(name.empty() || (name.size() < MIN_NICKNAME_LENGTH || name.size() > MAX_NICKNAME_LENGTH))
+    {
+        return false;
+    }
+
+    for(auto letter : name)
+    {
+        if(letter == '\\' || letter == '/' || letter == ':' || letter == '*' || letter == '?' || letter == '\"' || letter == '<' || letter == '>' || letter == '|' )
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 /// @brief Core gameplay - create player instances, assign them nicknames, and play
 void Game::startGame()
 {
@@ -261,19 +279,19 @@ void Game::startGame()
                 do
                 {
                     std::getline(std::cin, tmpNicknameHolder);
-                    if(tmpNicknameHolder.empty())
+                    if(!isPlayerNameGood(tmpNicknameHolder))
                     {
-                        std::cout << "Player must have a name!\n";
+                        std::cout << "Player must have a name, and cannot contain < > | \\ / \" * = sings and be no shorer than " << MIN_NICKNAME_LENGTH << std::endl;
                     }
 
                     dbLog_->addDebugLog(
                         {dbLog_->dbLogGameGetInput,
-                         dbLog_->dbLogGameGetInputCheck(tmpNicknameHolder, tmpNicknameHolder.size() < MIN_NICKNAME_LENGTH || tmpNicknameHolder.size() > MAX_NICKNAME_LENGTH)}
+                         dbLog_->dbLogGameGetInputCheck(tmpNicknameHolder, isPlayerNameGood(tmpNicknameHolder))}
                     );         
 
                     dbLog_->buildDebugLogs();           
 
-                } while (tmpNicknameHolder.size() < MIN_NICKNAME_LENGTH || tmpNicknameHolder.size() > MAX_NICKNAME_LENGTH);
+                } while (!isPlayerNameGood(tmpNicknameHolder));
                 if(ValidateInput::isADuplicatePlayer(players_, tmpNicknameHolder))
                 {
                     std::cout << "2 Players cannot have the same nickname!\n";

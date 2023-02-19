@@ -216,6 +216,7 @@ void Turn::rollTheRoulette()
     std::vector<uint16_t> numbers(3, 0);
     for(auto &i : numbers)
     {
+        // bool isDuplicate = false;
         i = randomizeNumber();
         dbLog_->addDebugLog(
             {dbLog_->dbLogGameTurnRollTheGetRandomNumber(i)}
