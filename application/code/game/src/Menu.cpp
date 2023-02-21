@@ -25,7 +25,8 @@ void Menu::mainMenuDisplay()
     do
     {
         choosenOption.clear();
-        std::cout << "Welcome to the mintRoulette!\t";
+        std::cout << "Welcome to the mintRoulette!\n";
+        std::cout << "(Version: " << fManager_->extractConfigValueFromTag("gameVersion") << ") \n";
         std::cout << "Made by John \"WTCa100\" Bielawa\n";
         std::cout << "Test your lucky pawn!\n";
         std::cout << "1. New game\n";

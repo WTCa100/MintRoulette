@@ -376,8 +376,6 @@ std::string FileManager::extractConfigValueFromTag(const std::string& tag)
 {
     std::vector<std::string> configTags = loadFileContent(INIT_CONFIG_PATH, INIT_CONFIG_FILE);
 
-    std::cout << std::endl; // debug purposes
-
     for(auto configTag : configTags)
     {
         if(configTag.find(tag) != std::string::npos)
