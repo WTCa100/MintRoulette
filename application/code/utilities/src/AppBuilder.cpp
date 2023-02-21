@@ -281,8 +281,6 @@ AppBuilder::AppBuilder(DebugLogger* dbLog)
     if(!isDirectoryGood("debug/"))
     {
         createDirectory("debug\\");
-        // To get easy access to logs
-        std::cin.ignore();
     }
 
     // Debug Logger
