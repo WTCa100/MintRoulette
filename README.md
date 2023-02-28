@@ -52,6 +52,8 @@ At the very end during the game teardown, the Id is being iterated to the next h
 // In Game::~Game()
 fManager_->iterateGameIdConfig(fManager_->nextGameSaveId());
 ```
+### AI
+While configuring the game, you are allowed to create bots, instead of playing with real life friends. These bots are rather simple machines since, they are operating on a predictible pattern based on randomly generated number `actionSeed`. Bots only take to account it's balance while making certain actions, the more money they have the more `"braver"` (if you can call it bravery of course!). 
 ## Saving system
 ### Logs
 Logs are basic game save that is later on display inside the `Menu` class. It contains every event that had occured during every `Turn` and it is saved as `GameNrX.gm` (where `X` is a unique game Id).
