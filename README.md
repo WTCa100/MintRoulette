@@ -2,8 +2,7 @@
 Basic game written in C++ - the idea is rather simple, simulate roulette game.
 
 ### Compiling
-MintRoulette uses `std::experimental::filesystem`, which requires an additional tag if you want to compile it. 
-While using g++ please include `-lstdc++fs` as an additional tag for the compiler. 
+Simply execute the `Makefile.bat` while being in the `application/` directory. `-lstdc++fs` was used, as when it was developed, `std::filesystem` was still under the `std::experimental` library.
 
 ## Initial Launch
 This game was designed to work only on Windows. It uses cmdlet commands in order to create a initial setup (we are talking mostly about `mkdir`). That being said, it is necessery to launch the binary `*.exe` file one shall launch it giving administration persmissions. 
