@@ -48,7 +48,7 @@ class Game : public ValidateInput
 
     private:
     Logger* gameLog_;
-    DebugLogger* dbLog_;
+    DebugLogger* dbgLog_;
 
     std::vector<std::pair<double, std::string>> highscores_;
     bool inProgress_;

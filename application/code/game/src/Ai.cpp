@@ -10,11 +10,11 @@
 bool Ai::chooseActionBetOrPass()
 {
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogGameTurnBetAiChooseActionWithBalance(self_->getBalance())}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogGameTurnBetAiChooseActionWithBalance(self_->getBalance())}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
     // Bot shall choose depending on ammount of money he has wether pass or not
     // First let's check ammount of money player have (it's fixed since it will make the game flow much faster)
@@ -27,8 +27,8 @@ bool Ai::chooseActionBetOrPass()
     }
     else if(self_->getBalance() > 150 && self_->getBalance() <= 1500)
     {
-        // 50/50 ratio
-        return actionSeed_ % 100 <= 50;
+        // Originally 50/50 ratio was here, however that still felt too safe for bots
+        return actionSeed_ % 100 <= 35;
     }
     else
     {
@@ -97,16 +97,23 @@ std::string Ai::pickBotName(FileManager* fManager)
 uint32_t Ai::generateActionSeed()
 {
     int seedRoot = self_->getBalance();
-
-    return static_cast<uint32_t> (rand() % seedRoot);
+    int actionSeed = rand() % seedRoot;
+    if(actionSeed)
+    {
+        return actionSeed;
+    }
+    else
+    {
+        return 1;
+    }
 }
 
 Bet* Ai::buildBet(Bet*& botBet)
 {
     botBet->setAmmountBetted(chooseBetSize(self_->getBalance()));
     botBet->setBetType(chooseBetType());
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogGameTurnBetBuildSetAmmountBetted(botBet->getAmmountBetted())}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogGameTurnBetBuildSetAmmountBetted(botBet->getAmmountBetted())}
     );
 
     switch (botBet->getBetType())
@@ -115,9 +122,9 @@ Bet* Ai::buildBet(Bet*& botBet)
         botBet->setGuessedNumber(chooseLuckynumber());
         botBet->setWinningOdds(botBet->StraightUpOdd);
 
-        dbLog_->addDebugLog(
-            {dbLog_->dbLogGameTurnBetBuildSetBetType("StraightUp"),
-             dbLog_->dbLogGameTurnBetBuildBetTypeWinningOdds("StraightUpOdd", botBet->getWinningOdds())}
+        dbgLog_->addDebugLog(
+            {dbgLog_->dbLogGameTurnBetBuildSetBetType("StraightUp"),
+             dbgLog_->dbLogGameTurnBetBuildBetTypeWinningOdds("StraightUpOdd", botBet->getWinningOdds())}
         );
 
 
@@ -126,9 +133,9 @@ Bet* Ai::buildBet(Bet*& botBet)
         botBet->setGuessedNumberRangeType(chooseLuckyNumberRange());
         botBet->setWinningOdds(botBet->DozenBetOdd);
 
-        dbLog_->addDebugLog(
-            {dbLog_->dbLogGameTurnBetBuildSetBetType("DozenBet"),
-             dbLog_->dbLogGameTurnBetBuildBetTypeWinningOdds("StraightUpOdd", botBet->getWinningOdds())}
+        dbgLog_->addDebugLog(
+            {dbgLog_->dbLogGameTurnBetBuildSetBetType("DozenBet"),
+             dbgLog_->dbLogGameTurnBetBuildBetTypeWinningOdds("StraightUpOdd", botBet->getWinningOdds())}
         );
 
         break;
@@ -136,9 +143,9 @@ Bet* Ai::buildBet(Bet*& botBet)
         botBet->setIsOddChoosen(chooseOddOrEven());
         botBet->setWinningOdds(botBet->EvenOddOdd);
 
-        dbLog_->addDebugLog(
-            {dbLog_->dbLogGameTurnBetBuildSetBetType("EvenOdd"),
-             dbLog_->dbLogGameTurnBetBuildBetTypeWinningOdds("StraightUpOdd", botBet->getWinningOdds())}
+        dbgLog_->addDebugLog(
+            {dbgLog_->dbLogGameTurnBetBuildSetBetType("EvenOdd"),
+             dbgLog_->dbLogGameTurnBetBuildBetTypeWinningOdds("StraightUpOdd", botBet->getWinningOdds())}
         );
 
         break;
@@ -146,33 +153,33 @@ Bet* Ai::buildBet(Bet*& botBet)
         break;
     }
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
     return botBet;
 }
 
 Ai::Ai(Player* self, DebugLogger* dbLog)
 {
-    dbLog_ = dbLog;
+    dbgLog_ = dbLog;
 
 
     self_ = self;
     actionSeed_ = generateActionSeed();
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogClassAiInitialize,
-         dbLog_->dbLogGameTurnBetAiGeneratedSeed(actionSeed_)}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogClassAiInitialize,
+         dbgLog_->dbLogGameTurnBetAiGeneratedSeed(actionSeed_)}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 }
 
 Ai::~Ai()
 {
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogClassAiDestruct}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogClassAiDestruct}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
 }

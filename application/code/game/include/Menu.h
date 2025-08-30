@@ -43,6 +43,6 @@ class Menu
 
     private:
     FileManager* fManager_;
-    DebugLogger* dbLog_;
+    DebugLogger* dbgLog_;
 
 };

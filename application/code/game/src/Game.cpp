@@ -20,11 +20,11 @@
 void Game::setGameConfig()
 {
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogGameSetupConfig}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogGameSetupConfig}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
     
     std::string userInput = "";
     bool isInputGood = false;
@@ -53,20 +53,20 @@ void Game::setGameConfig()
                 std::cout << "Input must be a numeric value!\n";
             }
 
-            dbLog_->addDebugLog(
-                {dbLog_->dbLogGameGetInput,
-                 dbLog_->dbLogGameGetInputCheck(userInput, isInputGood)}
+            dbgLog_->addDebugLog(
+                {dbgLog_->dbLogGameGetInput,
+                 dbgLog_->dbLogGameGetInputCheck(userInput, isInputGood)}
             );
 
-            dbLog_->buildDebugLogs();
+            dbgLog_->buildDebugLogs();
 
         } while (!isInputGood);
         // Everything in order we can set config count
 
-        dbLog_->addDebugLog(
-            {dbLog_->dbLogGamePlayerCountSet(std::stoi(userInput))}
+        dbgLog_->addDebugLog(
+            {dbgLog_->dbLogGamePlayerCountSet(std::stoi(userInput))}
         );
-        dbLog_->buildDebugLogs();
+        dbgLog_->buildDebugLogs();
 
         setPlayerCount(std::stoi(userInput));
     }
@@ -81,9 +81,9 @@ void Game::setGameConfig()
                 std::cout << "It's either yes or no\n";
             } 
 
-            dbLog_->addDebugLog(
-                {dbLog_->dbLogGameGetInput,
-                 dbLog_->dbLogGameGetInputCheck(userInput, this->isStringValid(userInput))}
+            dbgLog_->addDebugLog(
+                {dbgLog_->dbLogGameGetInput,
+                 dbgLog_->dbLogGameGetInputCheck(userInput, this->isStringValid(userInput))}
             );            
            
         } while (!this->isStringValid(userInput));
@@ -93,11 +93,11 @@ void Game::setGameConfig()
             hasBots_ = true;
         }   
 
-        dbLog_->addDebugLog(
-            {dbLog_->dbLogGameCheckForBots(hasBots_)}
+        dbgLog_->addDebugLog(
+            {dbgLog_->dbLogGameCheckForBots(hasBots_)}
         );
 
-        dbLog_->buildDebugLogs();
+        dbgLog_->buildDebugLogs();
 
     }
     // Setup bots if necessery
@@ -111,12 +111,12 @@ void Game::setGameConfig()
                 {
                     std::getline(std::cin, userInput);
 
-                    dbLog_->addDebugLog(
-                        {dbLog_->dbLogGameGetInput,
-                         dbLog_->dbLogGameGetInputCheck(userInput, ValidateInput::isStringNumber(userInput))}
+                    dbgLog_->addDebugLog(
+                        {dbgLog_->dbLogGameGetInput,
+                         dbgLog_->dbLogGameGetInputCheck(userInput, ValidateInput::isStringNumber(userInput))}
                     );
 
-                    dbLog_->buildDebugLogs();
+                    dbgLog_->buildDebugLogs();
 
                     if(!ValidateInput::isStringNumber(userInput))
                     {
@@ -139,22 +139,22 @@ void Game::setGameConfig()
 
                 }
 
-                dbLog_->addDebugLog(
-                    {dbLog_->dbLogGameGetInput,
-                     dbLog_->dbLogGameGetInputCheck(userInput, std::stoi(userInput) < 0 || std::stoi(userInput) > numberOfPlayers_)}
+                dbgLog_->addDebugLog(
+                    {dbgLog_->dbLogGameGetInput,
+                     dbgLog_->dbLogGameGetInputCheck(userInput, std::stoi(userInput) < 0 || std::stoi(userInput) > numberOfPlayers_)}
                 );
 
-                dbLog_->buildDebugLogs();
+                dbgLog_->buildDebugLogs();
 
         } while (std::stoi(userInput) < 0 || std::stoi(userInput) > numberOfPlayers_);
         
             numOfBots_ = numberOfPlayers_ - std::stoi(userInput);
 
-            dbLog_->addDebugLog(
-                {dbLog_->dbLogGameSetBotCount(numOfBots_)}
+            dbgLog_->addDebugLog(
+                {dbgLog_->dbLogGameSetBotCount(numOfBots_)}
             );
 
-            dbLog_->buildDebugLogs();
+            dbgLog_->buildDebugLogs();
 
         }
     }
@@ -185,23 +185,23 @@ void Game::setGameConfig()
             }
 
 
-            dbLog_->addDebugLog(
-                {dbLog_->dbLogGameGetInput,
-                 dbLog_->dbLogGameGetInputCheck(userInput, ValidateInput::isStringNumber(userInput))}
+            dbgLog_->addDebugLog(
+                {dbgLog_->dbLogGameGetInput,
+                 dbgLog_->dbLogGameGetInputCheck(userInput, ValidateInput::isStringNumber(userInput))}
             );
 
-            dbLog_->buildDebugLogs();
+            dbgLog_->buildDebugLogs();
 
         } while (!isInputGood);
         setInitialBankBalance(std::stoi(userInput));
     }
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogGameSetBankBalance(std::stoi(userInput)),
-         dbLog_->dbLogLoggerGetMessage(gameLog_->logInitialGameConfig(1, numberOfPlayers_, initBankBalance_))}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogGameSetBankBalance(std::stoi(userInput)),
+         dbgLog_->dbLogLoggerGetMessage(gameLog_->logInitialGameConfig(1, numberOfPlayers_, initBankBalance_))}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
     gameLog_->addLog(
         gameLog_->logInitialGameConfig(1, numberOfPlayers_, initBankBalance_)
@@ -214,11 +214,11 @@ void Game::setGameConfig()
 /// @return if file nammed [playerNickname].pl exists
 bool Game::checkIfPlayerExists(const std::string& name) const
 {   
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogGameCheckIfPlayerExists(name)}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogGameCheckIfPlayerExists(name)}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
     return fManager_->isFileGood(FILE_PLAYER_STATS_PATH, name + EXT_PLAYER_STATS);
 }
@@ -247,18 +247,18 @@ void Game::startGame()
     std::cout << "Player count: " << numberOfPlayers_ << std::endl;
     std::cout << "Init balance: " << initBankBalance_ << std::endl;
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogGameStartOfTheGame(gameId_)}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogGameStartOfTheGame(gameId_)}
     );
 
 
     bool isThisPlayerBot = false;
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogGameSetPlayerNameSection}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogGameSetPlayerNameSection}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
     // ask for names
     for(int i = 0; i < numberOfPlayers_; i++)
     {
@@ -284,12 +284,12 @@ void Game::startGame()
                         std::cout << "Player must have a name, and cannot contain < > | : \\ / \" * = sings and be no shorer than " << MIN_NICKNAME_LENGTH << std::endl;
                     }
 
-                    dbLog_->addDebugLog(
-                        {dbLog_->dbLogGameGetInput,
-                         dbLog_->dbLogGameGetInputCheck(tmpNicknameHolder, isPlayerNameGood(tmpNicknameHolder))}
+                    dbgLog_->addDebugLog(
+                        {dbgLog_->dbLogGameGetInput,
+                         dbgLog_->dbLogGameGetInputCheck(tmpNicknameHolder, isPlayerNameGood(tmpNicknameHolder))}
                     );         
 
-                    dbLog_->buildDebugLogs();           
+                    dbgLog_->buildDebugLogs();           
 
                 } while (!isPlayerNameGood(tmpNicknameHolder));
                 if(ValidateInput::isADuplicatePlayer(players_, tmpNicknameHolder))
@@ -297,23 +297,23 @@ void Game::startGame()
                     std::cout << "2 Players cannot have the same nickname!\n";
                 }
 
-                dbLog_->addDebugLog(
-                    {dbLog_->dbLogGameGetInput,
-                     dbLog_->dbLogGameGetInputCheck(tmpNicknameHolder, ValidateInput::isADuplicatePlayer(players_, tmpNicknameHolder))}
+                dbgLog_->addDebugLog(
+                    {dbgLog_->dbLogGameGetInput,
+                     dbgLog_->dbLogGameGetInputCheck(tmpNicknameHolder, ValidateInput::isADuplicatePlayer(players_, tmpNicknameHolder))}
                 );         
 
-                dbLog_->buildDebugLogs();     
+                dbgLog_->buildDebugLogs();     
 
             } while (ValidateInput::isADuplicatePlayer(players_, tmpNicknameHolder));
 
             // Check if player is returning one or not
             bool ifPlayerExists = checkIfPlayerExists(tmpNicknameHolder);
 
-            dbLog_->addDebugLog(
-                {dbLog_->dbLogGameIfPlayerExists(tmpNicknameHolder, ifPlayerExists)}
+            dbgLog_->addDebugLog(
+                {dbgLog_->dbLogGameIfPlayerExists(tmpNicknameHolder, ifPlayerExists)}
             );
 
-            dbLog_->buildDebugLogs();
+            dbgLog_->buildDebugLogs();
 
             if(ifPlayerExists)
             {
@@ -321,11 +321,11 @@ void Game::startGame()
             }
             else
             {
-                roulettePlayer = new Player(initBankBalance_, i + 1, dbLog_, isThisPlayerBot);
+                roulettePlayer = new Player(initBankBalance_, i + 1, dbgLog_, isThisPlayerBot);
                 roulettePlayer->setNickName(tmpNicknameHolder);
 
-                dbLog_->addDebugLog(
-                    {dbLog_->dbLogPlayerSetNickname(tmpNicknameHolder)}
+                dbgLog_->addDebugLog(
+                    {dbgLog_->dbLogPlayerSetNickname(tmpNicknameHolder)}
                 );
 
             }
@@ -333,7 +333,7 @@ void Game::startGame()
         }
         else
         {
-            roulettePlayer = new Player(initBankBalance_, i + 1, dbLog_, isThisPlayerBot);
+            roulettePlayer = new Player(initBankBalance_, i + 1, dbgLog_, isThisPlayerBot);
             std::string* randomlyPickedName = new std::string; 
             do
             {
@@ -343,17 +343,17 @@ void Game::startGame()
 
             }while(ValidateInput::isADuplicatePlayer(players_, *randomlyPickedName));
             
-            dbLog_->addDebugLog(
-                {dbLog_->dbLogPlayerSetNickname(*randomlyPickedName)}
+            dbgLog_->addDebugLog(
+                {dbgLog_->dbLogPlayerSetNickname(*randomlyPickedName)}
             );
 
             delete randomlyPickedName;
         }
         players_.push_back(roulettePlayer);
 
-        dbLog_->addDebugLog(
-            {dbLog_->dbLogGamePushPlayers(roulettePlayer->getNickName(), players_.size()),
-             dbLog_->dbLogLoggerGetMessage(gameLog_->logGamePlayerCreation(roulettePlayer->getNickName(), roulettePlayer->getPlayerOrderNumber()))}
+        dbgLog_->addDebugLog(
+            {dbgLog_->dbLogGamePushPlayers(roulettePlayer->getNickName(), players_.size()),
+             dbgLog_->dbLogLoggerGetMessage(gameLog_->logGamePlayerCreation(roulettePlayer->getNickName(), roulettePlayer->getPlayerOrderNumber()))}
         );
 
         gameLog_->addLog(
@@ -362,19 +362,19 @@ void Game::startGame()
 
     }
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogGameSetPlayerAliveVector}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogGameSetPlayerAliveVector}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
     playersAlive_ = players_;
 
     // Start turns
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogGameFlowStarts}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogGameFlowStarts}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
     
     bool canGameProgress = true;
     uint16_t turnId = 0;
@@ -382,22 +382,22 @@ void Game::startGame()
     {
         turnId ++;
         bool stopGameEarly = false;
-        Turn* currentTurn = new Turn(playersAlive_, turnId, gameLog_, dbLog_);
+        Turn* currentTurn = new Turn(playersAlive_, turnId, gameLog_, dbgLog_);
         currentTurn->playTurn();
         gameTurns_.push_back(currentTurn);
         playersAndBetsSave_.push_back(currentTurn->getPlayersBets());
 
-        dbLog_->addDebugLog(
-            {dbLog_->dbLogGamePushTurn(gameTurns_.size()),
-             dbLog_->dbLogGameInsertBetsAndPlayer(playersAndBetsSave_.size())}
+        dbgLog_->addDebugLog(
+            {dbgLog_->dbLogGamePushTurn(gameTurns_.size()),
+             dbgLog_->dbLogGameInsertBetsAndPlayer(playersAndBetsSave_.size())}
         );
 
-        dbLog_->buildDebugLogs();
+        dbgLog_->buildDebugLogs();
 
         eliminatePlayers();
 
-        dbLog_->addDebugLog(
-            {dbLog_->dbLogGameCheckConditionsIfEndEarly(playersAlive_.size() <= 1)}
+        dbgLog_->addDebugLog(
+            {dbgLog_->dbLogGameCheckConditionsIfEndEarly(playersAlive_.size() <= 1)}
         );
 
         // Check if players want to continue
@@ -405,14 +405,14 @@ void Game::startGame()
         {
             stopGameEarly = askForStopGameEarly(stopGameEarly);
 
-            dbLog_->addDebugLog(
-                {dbLog_->dbLogGameCheckConditionsIfEndEarly(stopGameEarly)}
+            dbgLog_->addDebugLog(
+                {dbgLog_->dbLogGameCheckConditionsIfEndEarly(stopGameEarly)}
             );
 
         }
         canGameProgress = checkGameCondition(stopGameEarly);
 
-        dbLog_->buildDebugLogs();
+        dbgLog_->buildDebugLogs();
         gameLog_->buildLogs();
     }
 }
@@ -428,9 +428,9 @@ void Game::eliminatePlayers()
             std::cout << "Player: " << checkPlayer->getNickName() << " got eliminated!\n";
             playersEliminated_.push_back(checkPlayer);
 
-            dbLog_->addDebugLog(
-                {dbLog_->dbLogGamePushPlayersEliminated(checkPlayer->getNickName(), playersEliminated_.size()),
-                 dbLog_->dbLogLoggerGetMessage(gameLog_->logGamePlayerElimination(checkPlayer->getNickName()))}
+            dbgLog_->addDebugLog(
+                {dbgLog_->dbLogGamePushPlayersEliminated(checkPlayer->getNickName(), playersEliminated_.size()),
+                 dbgLog_->dbLogLoggerGetMessage(gameLog_->logGamePlayerElimination(checkPlayer->getNickName()))}
             );
 
             gameLog_->addLog(
@@ -444,13 +444,13 @@ void Game::eliminatePlayers()
     {
         playersAlive_.erase(std::remove(playersAlive_.begin(), playersAlive_.end(), killPlayer), playersAlive_.end());
 
-        dbLog_->addDebugLog(
-            {dbLog_->dbLogGameEraseEliminatedPlayers(killPlayer->getNickName(), playersAlive_.size())}
+        dbgLog_->addDebugLog(
+            {dbgLog_->dbLogGameEraseEliminatedPlayers(killPlayer->getNickName(), playersAlive_.size())}
         );
 
     }
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
 }
 
@@ -469,8 +469,8 @@ bool Game::isStringValid(const std::string& userInput)
 bool Game::askForStopGameEarly(bool& stopEarly)
 {
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogGameGetInput}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogGameGetInput}
     );
 
     std::string userInput = "";
@@ -482,12 +482,12 @@ bool Game::askForStopGameEarly(bool& stopEarly)
         {
             std::cout << "It's either yes or no\n";
 
-            dbLog_->addDebugLog(
-                {dbLog_->dbLogGameGetInputCheck(userInput, this->isStringValid(userInput))}
+            dbgLog_->addDebugLog(
+                {dbgLog_->dbLogGameGetInputCheck(userInput, this->isStringValid(userInput))}
             );
         }
 
-        dbLog_->buildDebugLogs();
+        dbgLog_->buildDebugLogs();
 
     } while (!this->isStringValid(userInput));
 
@@ -519,9 +519,9 @@ bool Game::checkGameCondition(const bool& stopEarly)
 void Game::endScreen()
 {
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogGameFlowEndsSummary,
-         dbLog_->dbLogLoggerGetMessage(gameLog_->logGameHasEnded())}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogGameFlowEndsSummary,
+         dbgLog_->dbLogLoggerGetMessage(gameLog_->logGameHasEnded())}
     );
 
     gameLog_->addLog(
@@ -551,14 +551,14 @@ void Game::endScreen()
 /// @brief Defult constructor
 Game::Game(DebugLogger* dbLog, const FileManager* fManager)
 {
-    dbLog_ = dbLog;
-    dbLog_->addDebugLog(
+    dbgLog_ = dbLog;
+    dbgLog_->addDebugLog(
         {dbLog->dbLogClassGameInitialize}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
     // For checking and manipulating files
-    fManager_ = new FileManager(dbLog_);
+    fManager_ = new FileManager(dbgLog_);
 
     // For creating logs
     gameLog_ = new Logger;
@@ -567,12 +567,12 @@ Game::Game(DebugLogger* dbLog, const FileManager* fManager)
 
     gameId_ = loadNextGameId();
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogGameGetGameId,
-         dbLog_->dbLogGameGetGameIdObtained(gameId_)}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogGameGetGameId,
+         dbgLog_->dbLogGameGetGameIdObtained(gameId_)}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
     gameLog_->touchLog(gameId_);
     highscores_ = fManager_->loadHighscores();
@@ -586,11 +586,11 @@ Game::Game(DebugLogger* dbLog, const FileManager* fManager)
 /// @brief Deconstructs the game with it's content
 Game::~Game()
 {
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogClassGameDestruct}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogClassGameDestruct}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
     // Summarize game
     endScreen();
 
@@ -612,19 +612,19 @@ Game::~Game()
     std::cout << "Saved!\n";
 
     Game::updateHighscores();
-
-    std::cout << "Teardown game\n";
+    
+    dbgLog_->addDebugLog({"Teardown game"});
     playersAlive_.clear(); 
     playersEliminated_.clear(); 
 
     // Delete bets
     for(auto turn = 0; turn < playersAndBetsSave_.size(); turn++)
     {
-        std::cout << "Bets from turn: " << turn << std::endl;
+        dbgLog_->addDebugLog({"Bets from turn: " + std::to_string(turn)});
         // Itarate throught the map and delete it's second argument
         for(auto& pAndB : playersAndBetsSave_[turn])
         {
-            std::cout << "Delete bet from " << pAndB.first->getNickName() << " of size " << pAndB.second->getAmmountBetted() << std::endl;
+            dbgLog_->addDebugLog({"Delete bet from " + pAndB.first->getNickName() + " of size " + std::to_string(pAndB.second->getAmmountBetted())});
             delete pAndB.second;
         }
     }
@@ -632,22 +632,21 @@ Game::~Game()
     // Delete turn info
     for(auto i = 0; i < gameTurns_.size(); i++)
     {
-        std::cout << "Delete turn " << gameTurns_[i]->getTurnNumber() << std::endl;
+        dbgLog_->addDebugLog({"Delete turn: " + std::to_string(gameTurns_[i]->getTurnNumber())});
         delete gameTurns_[i];
     }
     
     // Delete player info
     for(auto i = 0; i < players_.size(); i++)
     {
-
-        std::cout << "Delete player: " << players_[i]->getNickName() << std::endl;
-
+        dbgLog_->addDebugLog({"Delete player: " + players_[i]->getNickName()});
         delete players_[i];
     }
 
     fManager_->iterateGameIdConfig(fManager_->nextGameSaveId());
     
-    std::cout << "Finalize teardown\n";
+    dbgLog_->addDebugLog({"Finalized teardown"});
+    dbgLog_->buildDebugLogs();
     delete gameLog_;
 }
 

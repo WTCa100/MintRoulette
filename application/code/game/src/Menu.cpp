@@ -16,10 +16,10 @@
 /// @brief Shows main menu with asking which action user wants to take next
 void Menu::mainMenuDisplay()
 {
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogMenuMainMenuDisplay}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogMenuMainMenuDisplay}
     );
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
     std::string choosenOption = "";
     do
@@ -40,12 +40,12 @@ void Menu::mainMenuDisplay()
 
             std::getline(std::cin, choosenOption);
 
-            dbLog_->addDebugLog(
-                {dbLog_->dbLogMenuGetInput,
-                 dbLog_->dbLogMenuCheckUserInput(choosenOption, ValidateInput::isStringNumber(choosenOption))}
+            dbgLog_->addDebugLog(
+                {dbgLog_->dbLogMenuGetInput,
+                 dbgLog_->dbLogMenuCheckUserInput(choosenOption, ValidateInput::isStringNumber(choosenOption))}
             );
 
-            dbLog_->buildDebugLogs();
+            dbgLog_->buildDebugLogs();
 
             if(!ValidateInput::isStringNumber(choosenOption))
             {
@@ -57,8 +57,8 @@ void Menu::mainMenuDisplay()
         {
         case options::StartNewGame:
 
-            dbLog_->addDebugLog(
-                {dbLog_->dbLogMenuChoosenOption("StartNewGame")}
+            dbgLog_->addDebugLog(
+                {dbgLog_->dbLogMenuChoosenOption("StartNewGame")}
             );
 
             startNewGame();
@@ -66,23 +66,23 @@ void Menu::mainMenuDisplay()
         case options::ShowPlayerList:
             playerList();
 
-            dbLog_->addDebugLog(
-                {dbLog_->dbLogMenuChoosenOption("ShowPlayerList")}
+            dbgLog_->addDebugLog(
+                {dbgLog_->dbLogMenuChoosenOption("ShowPlayerList")}
             );            
 
             break;
         case options::ShowGameList:
             gameList();
 
-            dbLog_->addDebugLog(
-                {dbLog_->dbLogMenuChoosenOption("ShowGameList")}
+            dbgLog_->addDebugLog(
+                {dbgLog_->dbLogMenuChoosenOption("ShowGameList")}
             );
 
             break;
         case options::Exit:
 
-            dbLog_->addDebugLog(
-                {dbLog_->dbLogMenuChoosenOption("Exit")}
+            dbgLog_->addDebugLog(
+                {dbgLog_->dbLogMenuChoosenOption("Exit")}
             );
 
             std::cout << "See you again next time!\n";
@@ -95,7 +95,7 @@ void Menu::mainMenuDisplay()
             break;
         }
 
-        dbLog_->buildDebugLogs();
+        dbgLog_->buildDebugLogs();
         
     } while (std::stoi(choosenOption) != options::Exit);
     
@@ -107,13 +107,10 @@ void Menu::startNewGame()
 
     system("cls");    
     std::cout << "Start new game!\n";
-    Game* session = new Game(dbLog_, fManager_);
+    Game* session = new Game(dbgLog_, fManager_);
     session->startGame();
     delete session;
-
     system("pause");
-    system("cls");
-
 }
 
 /// @brief Show lists of players and higscores
@@ -239,21 +236,21 @@ void Menu::gameList()
 
     system("cls");
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogMenuMainGameList}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogMenuMainGameList}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
 
     std::cout << "Game list!\n";
     std::vector<std::string> gamesFiles = fManager_->loadFilesFromPath(FILE_GAME_SAVE_LOG_PATH);
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogMenuMainGameListDisplay(gamesFiles)}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogMenuMainGameListDisplay(gamesFiles)}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
     for(auto& gamePath : gamesFiles)
     {
@@ -285,8 +282,8 @@ std::vector <std::string> Menu::getPlayerStatsFiles()
 void Menu::showPlayerStats(const Player& showPlayer)
 {
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogMenuMainPlayerListAttemptToShowDetails(showPlayer.getNickName())}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogMenuMainPlayerListAttemptToShowDetails(showPlayer.getNickName())}
     );
 
 
@@ -303,11 +300,11 @@ void Menu::showPlayerStats(const Player& showPlayer)
 void Menu::displayFullPlayerList(const std::vector<Player*>& listToDisplay)
 {
     system("cls");
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogMenuMainPlayerList}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogMenuMainPlayerList}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
     choosePlayerToDisplayDetails(listToDisplay);
     
@@ -316,11 +313,11 @@ void Menu::displayFullPlayerList(const std::vector<Player*>& listToDisplay)
  void Menu::choosePlayerToDisplayDetails(const std::vector<Player*>& listToDisplay)
  {
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogMenuMainPlayerListChooseDetails}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogMenuMainPlayerListChooseDetails}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
         std::cout << "If you want to see someones detailed stats please write down their name\n";
         std::cout << "Take note that it is case sensitive\n";
@@ -343,15 +340,15 @@ void Menu::displayFullPlayerList(const std::vector<Player*>& listToDisplay)
             checkForDetails.clear();
             std::getline(std::cin, checkForDetails);
 
-            dbLog_->addDebugLog(
-                {dbLog_->dbLogMenuGetInput,
-                 dbLog_->dbLogMenuCheckUserInput(checkForDetails ,ValidateInput::stringToLower(checkForDetails) != "q" && ValidateInput::isADuplicatePlayer(listToDisplay, checkForDetails))}
+            dbgLog_->addDebugLog(
+                {dbgLog_->dbLogMenuGetInput,
+                 dbgLog_->dbLogMenuCheckUserInput(checkForDetails ,ValidateInput::stringToLower(checkForDetails) != "q" && ValidateInput::isADuplicatePlayer(listToDisplay, checkForDetails))}
             );
 
             if(ValidateInput::stringToLower(checkForDetails) != "q")
             {
-                dbLog_->addDebugLog(
-                    {dbLog_->dbLogMenuMainPlayerListAttemptToShowDetails(checkForDetails)}
+                dbgLog_->addDebugLog(
+                    {dbgLog_->dbLogMenuMainPlayerListAttemptToShowDetails(checkForDetails)}
                 );
 
                 // Search and display player
@@ -375,7 +372,7 @@ void Menu::displayFullPlayerList(const std::vector<Player*>& listToDisplay)
                     system("cls");
 
                 }           
-                dbLog_->buildDebugLogs();
+                dbgLog_->buildDebugLogs();
             }
         } while (ValidateInput::stringToLower(checkForDetails) != "q");
         system("cls");
@@ -409,8 +406,8 @@ void Menu::chooseGameToDisplayLogs(const std::vector<std::string>& fullGameIds, 
     std::cout << "Take note that it is case sensitive\n";
     std::string checkForDetails;
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogMenuGetInput}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogMenuGetInput}
     );
 
     do
@@ -427,8 +424,8 @@ void Menu::chooseGameToDisplayLogs(const std::vector<std::string>& fullGameIds, 
         if(ValidateInput::stringToLower(checkForDetails) != "q")
         {
 
-            dbLog_->addDebugLog(
-                {dbLog_->dbLogGameGetInputCheck(checkForDetails, ValidateInput::isStringNumber(checkForDetails))}
+            dbgLog_->addDebugLog(
+                {dbgLog_->dbLogGameGetInputCheck(checkForDetails, ValidateInput::isStringNumber(checkForDetails))}
             );
 
             if(ValidateInput::isStringNumber(checkForDetails))
@@ -441,7 +438,7 @@ void Menu::chooseGameToDisplayLogs(const std::vector<std::string>& fullGameIds, 
                 system("Pause");                
             }
 
-            dbLog_->buildDebugLogs();
+            dbgLog_->buildDebugLogs();
 
         }
 
@@ -452,12 +449,12 @@ void Menu::chooseGameToDisplayLogs(const std::vector<std::string>& fullGameIds, 
 
 Menu::Menu(DebugLogger* dbLog)
 {
-    dbLog_ = dbLog;
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogClassMenuInitialize}
+    dbgLog_ = dbLog;
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogClassMenuInitialize}
     );
 
-    fManager_ = new FileManager(dbLog_);
-    dbLog_->buildDebugLogs();
+    fManager_ = new FileManager(dbgLog_);
+    dbgLog_->buildDebugLogs();
 
 }

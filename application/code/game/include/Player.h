@@ -81,5 +81,5 @@ class Player
     double globGoodBetRatio_;
 
     // Misc
-    DebugLogger* dbLog_;
+    DebugLogger* dbgLog_;
 };

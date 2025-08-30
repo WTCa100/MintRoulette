@@ -59,11 +59,11 @@ class Bet : public ValidateInput
     const GuessedNumberRangeType getGuessedNumberRange() {return GuessedNumberRange_;}
     const bool getIsOddChoosen() {return isOddChoosen_;}
 
-    Bet(DebugLogger* dbLog) : dbLog_(dbLog) { dbLog_->addDebugLog({dbLog_->dbLogClassBetInitialize}); }
+    Bet(DebugLogger* dbLog) : dbgLog_(dbLog) { dbgLog_->addDebugLog({dbgLog_->dbLogClassBetInitialize}); }
     // Passing constructor
     Bet(const Player& currentTurnPlayer, DebugLogger* dbLog);
     private:
-    DebugLogger* dbLog_;
+    DebugLogger* dbgLog_;
     int ammountBetted_;
     size_t guessedNumber_;
     GuessedNumberRangeType GuessedNumberRange_;

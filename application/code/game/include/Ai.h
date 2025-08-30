@@ -40,7 +40,7 @@ class Ai
    /// @param botBalance is used as reference on what action should be done 
    /// @return Seed */
    private:
-   DebugLogger* dbLog_;
+   DebugLogger* dbgLog_;
    uint32_t actionSeed_;
    Player* self_;
    int* initialBankBalance_;

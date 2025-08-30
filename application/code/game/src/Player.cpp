@@ -118,17 +118,17 @@ Player::Player(const std::string nickName, int globMoneyAccumulated,
     playerOrderNumber_ = playerOrder;
 
     // Misc
-    dbLog_ = dbLog;
+    dbgLog_ = dbLog;
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogPlayerInitializedValues(nickName_, globMoneyAccumulated_,
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogPlayerInitializedValues(nickName_, globMoneyAccumulated_,
                                               globMoneyLost_, globGoodBetCount_,
                                               globBetCount_, globPassCount_,
                                               balance, globGoodBetRatio_,
                                               playerOrderNumber_, false)}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
 }
 
@@ -157,17 +157,17 @@ Player::Player(int balance, int playerOrder, DebugLogger* dbLog, bool isPlayerBo
     isPlayerBot_ = isPlayerBot;
 
     // Misc
-    dbLog_ = dbLog;
+    dbgLog_ = dbLog;
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogPlayerInitializedValues(nickName_, globMoneyAccumulated_,
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogPlayerInitializedValues(nickName_, globMoneyAccumulated_,
                                               globMoneyLost_, globGoodBetCount_,
                                               globBetCount_, globPassCount_,
                                               balance, globGoodBetRatio_, 
                                               playerOrderNumber_, isPlayerBot_)}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
 }
 
@@ -196,17 +196,17 @@ Player::Player(const std::string nickName, int balance, DebugLogger* dbLog, bool
     isPlayerBot_ = isPlayerBot;
     
     // Misc
-    dbLog_ = dbLog;
+    dbgLog_ = dbLog;
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogPlayerInitializedValues(nickName_, globMoneyAccumulated_,
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogPlayerInitializedValues(nickName_, globMoneyAccumulated_,
                                               globMoneyLost_, globGoodBetCount_,
                                               globBetCount_, globPassCount_,
                                               balance, globGoodBetRatio_, 
                                               playerOrderNumber_, isPlayerBot_)}
     );
 
-    dbLog_->buildDebugLogs(); 
+    dbgLog_->buildDebugLogs(); 
 
 }
 
@@ -214,8 +214,8 @@ Player::Player(const std::string nickName, int balance, DebugLogger* dbLog, bool
 void Player::moveToGlobalStats()
 {
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogGamePlayerMoveToGlobal(nickName_,
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogGamePlayerMoveToGlobal(nickName_,
         {static_cast<int>(globPassCount_), static_cast<int>(globBetCount_), static_cast<int>(globGoodBetCount_), globMoneyAccumulated_, globMoneyLost_},
         {static_cast<int>(passCount_), static_cast<int>(betCount_), static_cast<int>(goodBetCount_), moneyAccumulated_, moneyLost_},
          globGoodBetRatio_)}
@@ -235,7 +235,7 @@ void Player::moveToGlobalStats()
         globGoodBetRatio_ = 0;
     }
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
 
 

@@ -42,7 +42,7 @@ class AppBuilder
     bool isInitRequired();
 
     private:
-    DebugLogger* dbLog_;
+    DebugLogger* dbgLog_;
     bool isInitLaunch_;
     FileManager* fileMgmt_;
 };

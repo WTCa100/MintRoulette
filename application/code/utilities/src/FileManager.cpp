@@ -18,11 +18,11 @@ bool FileManager::isFileGood(const std::string& path, const std::string& fileNam
 
     std::ifstream fileCheck(path + "/" + fileName);
     
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogFmanagerCheckForFile(path, fileName),
-         dbLog_->dbLogFManagerCheckForFileResult(path, fileName, fileCheck.good())}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogFmanagerCheckForFile(path, fileName),
+         dbgLog_->dbLogFManagerCheckForFileResult(path, fileName, fileCheck.good())}
     );
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
     return fileCheck.good();
 }
@@ -41,11 +41,11 @@ void FileManager::createFile(const std::string& path, const std::string& fileNam
         return;
     }
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogFManagerCreateFile(path, fileName)}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogFManagerCreateFile(path, fileName)}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
     
     std::cout << "Could not create the file!\n";
 }
@@ -62,8 +62,8 @@ void FileManager::touch(const FileType& fType, const std::string& fileName)
     switch (fType)
     {
     case PlayerStat:
-        dbLog_->addDebugLog(
-            {dbLog_->dbLogFManagerTouchFile("PlayerStat", FILE_PLAYER_STATS_PATH, fileName)}
+        dbgLog_->addDebugLog(
+            {dbgLog_->dbLogFManagerTouchFile("PlayerStat", FILE_PLAYER_STATS_PATH, fileName)}
         );
 
         createFile(FILE_PLAYER_STATS_PATH, fileName);
@@ -71,8 +71,8 @@ void FileManager::touch(const FileType& fType, const std::string& fileName)
         filePath = tmpPathHolder + "/" + fileName;
         makeFile.open(filePath);
 
-        dbLog_->addDebugLog(
-            {dbLog_->dbLogFManagerFileAddContent(tmpPathHolder, fileName, "Name:\nGoodBetCount:\nPassCount:\nBetCount:\nTotalMoneyGained:\nTotalMoneyLost:\nGoodBetRatio:\n")}
+        dbgLog_->addDebugLog(
+            {dbgLog_->dbLogFManagerFileAddContent(tmpPathHolder, fileName, "Name:\nGoodBetCount:\nPassCount:\nBetCount:\nTotalMoneyGained:\nTotalMoneyLost:\nGoodBetRatio:\n")}
         );
 
         makeFile << "Name:\nGoodBetCount:\nPassCount:\nBetCount:\nTotalMoneyGained:\nTotalMoneyLost:\nGoodBetRatio:\n";
@@ -80,24 +80,24 @@ void FileManager::touch(const FileType& fType, const std::string& fileName)
         break;
     case GameSave:
 
-        dbLog_->addDebugLog(
-            {dbLog_->dbLogFManagerTouchFile("GameSave", FILE_GAME_SAVE_LOG_PATH, fileName + EXT_GAME_LOG)}
+        dbgLog_->addDebugLog(
+            {dbgLog_->dbLogFManagerTouchFile("GameSave", FILE_GAME_SAVE_LOG_PATH, fileName + EXT_GAME_LOG)}
         );
 
         createFile(FILE_GAME_SAVE_LOG_PATH, "GameNr" + fileName + EXT_GAME_LOG);
         break;
     case ProgramSaveDbg:
         
-        dbLog_->addDebugLog(
-            {dbLog_->dbLogFManagerTouchFile("ProgramSaveDbg", FILE_GAME_DEBUG_LOG_DBG_PATH, fileName + EXT_PROGRAM_LOG_DEBUG)}
+        dbgLog_->addDebugLog(
+            {dbgLog_->dbLogFManagerTouchFile("ProgramSaveDbg", FILE_GAME_DEBUG_LOG_DBG_PATH, fileName + EXT_PROGRAM_LOG_DEBUG)}
         );
 
         createFile(FILE_GAME_DEBUG_LOG_DBG_PATH, fileName + EXT_PROGRAM_LOG_DEBUG);
         break;
     case AiNameList:
 
-        dbLog_->addDebugLog(
-            {dbLog_->dbLogFManagerTouchFile("AiNameList", FILE_GAME_AI_NAME_LIST_PATH, FILE_AI_NAME_LIST)}
+        dbgLog_->addDebugLog(
+            {dbgLog_->dbLogFManagerTouchFile("AiNameList", FILE_GAME_AI_NAME_LIST_PATH, FILE_AI_NAME_LIST)}
         );
 
         createFile(FILE_GAME_AI_NAME_LIST_PATH, FILE_AI_NAME_LIST);
@@ -108,8 +108,8 @@ void FileManager::touch(const FileType& fType, const std::string& fileName)
         for(auto& name : nameOutput)
         {
 
-            dbLog_->addDebugLog(
-                {dbLog_->dbLogFManagerFileAddContent(tmpPathHolder, fileName, name)}
+            dbgLog_->addDebugLog(
+                {dbgLog_->dbLogFManagerFileAddContent(tmpPathHolder, fileName, name)}
             );
 
             makeFile << name << std::endl;
@@ -118,8 +118,8 @@ void FileManager::touch(const FileType& fType, const std::string& fileName)
         break;
     case Highscores:
 
-        dbLog_->addDebugLog(
-            {dbLog_->dbLogFManagerTouchFile("Highscores", FILE_PLAYER_HIGHSCORES_PATH, FILE_PLAYER_HIGHSCORES)}
+        dbgLog_->addDebugLog(
+            {dbgLog_->dbLogFManagerTouchFile("Highscores", FILE_PLAYER_HIGHSCORES_PATH, FILE_PLAYER_HIGHSCORES)}
         );
 
         createFile(FILE_PLAYER_HIGHSCORES_PATH, FILE_PLAYER_HIGHSCORES);
@@ -127,8 +127,8 @@ void FileManager::touch(const FileType& fType, const std::string& fileName)
         filePath = tmpPathHolder + "/" + FILE_PLAYER_HIGHSCORES;
         makeFile.open(filePath);
         
-        dbLog_->addDebugLog(
-            {dbLog_->dbLogFManagerFileAddContent(tmpPathHolder, FILE_PLAYER_HIGHSCORES, "PlaceNo,BetRatio,Name")}
+        dbgLog_->addDebugLog(
+            {dbgLog_->dbLogFManagerFileAddContent(tmpPathHolder, FILE_PLAYER_HIGHSCORES, "PlaceNo,BetRatio,Name")}
         );
                 
         makeFile << "PlaceNo,BetRatio,Name\n";
@@ -139,7 +139,7 @@ void FileManager::touch(const FileType& fType, const std::string& fileName)
         break;
     }
     
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
 }
 
@@ -213,11 +213,11 @@ std::vector <std::string> FileManager::loadFileContent(const std::string& path, 
     }
     readFile.close();
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogFManagerLoadFilesContent(path, fileName, fileContent)}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogFManagerLoadFilesContent(path, fileName, fileContent)}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
     return fileContent;
 }
@@ -232,11 +232,11 @@ Player* FileManager::makePlayerFromLoadedFile(const std::string& name,
 {
     std::vector<std::string> playerValues = loadFileContent(FILE_PLAYER_STATS_PATH, name + EXT_PLAYER_STATS);
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogFMangagerMakePlayerWithValues(name, playerNumber, initialBankBalance)}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogFMangagerMakePlayerWithValues(name, playerNumber, initialBankBalance)}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
     // Get Values
     for(auto& line : playerValues)
@@ -275,7 +275,7 @@ Player* FileManager::makePlayerFromLoadedFile(const std::string& name,
         }
     }
 
-    Player* returnPlayer = new Player(name, totalMoneyGained, totalMoneyLost, goodBetCount, betCount, passCount, dbLog_, goodBetRatio, playerNumber, initialBankBalance);
+    Player* returnPlayer = new Player(name, totalMoneyGained, totalMoneyLost, goodBetCount, betCount, passCount, dbgLog_, goodBetRatio, playerNumber, initialBankBalance);
     return returnPlayer;    
 }
 
@@ -286,18 +286,18 @@ std::vector<std::string> FileManager::loadFilesFromPath(const std::string path)
     {
         files.push_back(entry.path().string());
     }
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogFManagerLoadFilesFromPath(path)}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogFManagerLoadFilesFromPath(path)}
     );
 
     if(!files.empty())
     {
-        dbLog_->addDebugLog(
-            {dbLog_->dbLogFManagerLoadFilesFromPathResult(path, files)}
+        dbgLog_->addDebugLog(
+            {dbgLog_->dbLogFManagerLoadFilesFromPathResult(path, files)}
         );
     }
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
     return files;
 }
@@ -335,11 +335,11 @@ bool FileManager::isEntryFolder(const std::string& path)
 
 void FileManager::iterateGameIdConfig(const uint16_t& nextGameId)
 {
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogFManagerInitConfigIterateGameId}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogFManagerInitConfigIterateGameId}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
     changeConfigTagValue("NextGameNumber",std::to_string(nextGameId));
 }
@@ -366,8 +366,8 @@ uint16_t FileManager::nextGameSaveId()
         nextId++;
     }
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogFManagerInitConfigGetNameSaveId(nextId)}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogFManagerInitConfigGetNameSaveId(nextId)}
     );
     return nextId;
 }
@@ -422,8 +422,8 @@ void FileManager::changeConfigTagValue(const std::string& tag, const std::string
         }
     }
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogFManagerInitConfigEditTag(tag, newValue)}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogFManagerInitConfigEditTag(tag, newValue)}
     );
 
     for(auto& newConfgLine : oldConfigValues)
@@ -431,7 +431,7 @@ void FileManager::changeConfigTagValue(const std::string& tag, const std::string
         initFile << newConfgLine << "\n";
     }
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
     
 }
 
@@ -501,16 +501,16 @@ void FileManager::updateHighscores(std::vector<std::pair<double, std::string>> h
 
 FileManager::FileManager(DebugLogger* dbLog)
 {
-    dbLog_ = dbLog;
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogClassFManagerInitialize}
+    dbgLog_ = dbLog;
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogClassFManagerInitialize}
     );
 
 }
 FileManager::~FileManager()
 {
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogClassFManageDestruct}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogClassFManageDestruct}
     );
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 }

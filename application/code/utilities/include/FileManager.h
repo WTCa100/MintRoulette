@@ -74,5 +74,5 @@ class FileManager{
     ~FileManager();
 
     private:
-    DebugLogger* dbLog_;
+    DebugLogger* dbgLog_;
 };

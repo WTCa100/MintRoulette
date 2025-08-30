@@ -20,10 +20,10 @@ void AppBuilder::createDirectory(const std::string& pathToSet)
         system(sysCommandExec.c_str());
     }while(!isDirectoryGood(pathToSet));
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogAppBuilderCreateFolder(pathToSet)}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogAppBuilderCreateFolder(pathToSet)}
     );
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
     std::cout << "Done!\n";
 }
@@ -35,12 +35,12 @@ bool AppBuilder::isDirectoryGood(const std::string& path)
 {
     struct stat buffer;
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogAppBuilderCheckFolder(path),
-         dbLog_->dbLogAppBuilderCheckFolderResult((stat(path.c_str(), &buffer) == 0))}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogAppBuilderCheckFolder(path),
+         dbgLog_->dbLogAppBuilderCheckFolderResult((stat(path.c_str(), &buffer) == 0))}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
     return (stat(path.c_str(), &buffer) == 0);
 }
@@ -83,16 +83,16 @@ void AppBuilder::buildInitConfig()
 
     std::vector<uint16_t>* potentialGameSavesId = new std::vector<uint16_t>;
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogAppBuilderInitConfigPotentialGameListEmpty(potentialGameSaves)}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogAppBuilderInitConfigPotentialGameListEmpty(potentialGameSaves)}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
     if(!potentialGameSaves.empty())
     {
-        dbLog_->addDebugLog(
-            {dbLog_->dbLogAppBuilderInitConfigPotentialGameListShow(potentialGameSaves)}
+        dbgLog_->addDebugLog(
+            {dbgLog_->dbLogAppBuilderInitConfigPotentialGameListShow(potentialGameSaves)}
         );
 
         for(const auto entry : potentialGameSaves)
@@ -118,11 +118,11 @@ void AppBuilder::buildInitConfig()
         nextGameId = fileMgmt_->nextGameSaveId();
     }
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogAppBuilderInitConfigNextGameIdSet(nextGameId)}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogAppBuilderInitConfigNextGameIdSet(nextGameId)}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
     // Handle game version
     std::string gameVersion = "";
 
@@ -130,12 +130,12 @@ void AppBuilder::buildInitConfig()
     {
         std::vector<std::string> gameVersionContent = fileMgmt_->loadFileContent(FILE_VERSION_PATH, FILE_VERSION);
 
-        dbLog_->addDebugLog(
-            {dbLog_->dbLogFManagerLoadFilesContentEmpty(FILE_VERSION_PATH, FILE_VERSION, gameVersionContent),
-             dbLog_->dbLogFManagerLoadFilesContent(FILE_VERSION_PATH, FILE_VERSION, gameVersionContent)}
+        dbgLog_->addDebugLog(
+            {dbgLog_->dbLogFManagerLoadFilesContentEmpty(FILE_VERSION_PATH, FILE_VERSION, gameVersionContent),
+             dbgLog_->dbLogFManagerLoadFilesContent(FILE_VERSION_PATH, FILE_VERSION, gameVersionContent)}
         );
 
-        dbLog_->buildDebugLogs();
+        dbgLog_->buildDebugLogs();
 
         if(!gameVersionContent.empty())
         {
@@ -155,8 +155,8 @@ void AppBuilder::buildInitConfig()
 
             }
 
-            dbLog_->addDebugLog(
-                {dbLog_->dbLogFManagerLoadFilesContentExtractedGameVersion(gameVersion)}
+            dbgLog_->addDebugLog(
+                {dbgLog_->dbLogFManagerLoadFilesContentExtractedGameVersion(gameVersion)}
             );
         }
         else
@@ -171,16 +171,16 @@ void AppBuilder::buildInitConfig()
         gameVersion = "1.0.0";
     }
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogAppBuilderInitConfigGameVersion(gameVersion)}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogAppBuilderInitConfigGameVersion(gameVersion)}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
 
     // Build game config
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogAppBuilderInitConfigBuild}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogAppBuilderInitConfigBuild}
     );
 
     std::string initConfigPath = INIT_CONFIG_PATH;
@@ -188,11 +188,11 @@ void AppBuilder::buildInitConfig()
     initConfig.open(initConfigPath + "/" + INIT_CONFIG_FILE);
     if(initConfig.is_open())
     {
-        dbLog_->addDebugLog(
-            {dbLog_->dbLogAppBuilderInitConfigAddContent(initConfigPath, INIT_CONFIG_FILE, "isInit         :1"),
-             dbLog_->dbLogAppBuilderInitConfigAddContent(initConfigPath, INIT_CONFIG_FILE, "NextGameNumber :" + std::to_string(nextGameId)),
-             dbLog_->dbLogAppBuilderInitConfigAddContent(initConfigPath, INIT_CONFIG_FILE, "gameVersion    :" + gameVersion),
-             dbLog_->dbLogAppBuilderInitConfigAddContent(initConfigPath, INIT_CONFIG_FILE, "dummy          :text")}
+        dbgLog_->addDebugLog(
+            {dbgLog_->dbLogAppBuilderInitConfigAddContent(initConfigPath, INIT_CONFIG_FILE, "isInit         :1"),
+             dbgLog_->dbLogAppBuilderInitConfigAddContent(initConfigPath, INIT_CONFIG_FILE, "NextGameNumber :" + std::to_string(nextGameId)),
+             dbgLog_->dbLogAppBuilderInitConfigAddContent(initConfigPath, INIT_CONFIG_FILE, "gameVersion    :" + gameVersion),
+             dbgLog_->dbLogAppBuilderInitConfigAddContent(initConfigPath, INIT_CONFIG_FILE, "dummy          :text")}
         );
 
         initConfig << "isInit         :1\n";
@@ -205,7 +205,7 @@ void AppBuilder::buildInitConfig()
         std::cout << "Could not open " << initConfigPath << " !" <<std::endl;
     }
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
     
     delete potentialGameSavesId;
 
@@ -217,17 +217,17 @@ void AppBuilder::buildInitConfig()
 void AppBuilder::setupGameFiles()
 {
     isInitLaunch_ = isInitRequired();
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogAppBuilderIsInitLaunch(isInitLaunch_)}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogAppBuilderIsInitLaunch(isInitLaunch_)}
     );
 
     if(isInitLaunch_)
     {
         // If initial launch we need to create files first
-        dbLog_->addDebugLog(
-            {dbLog_->dbLogAppBuilderFolderCheckList(_pathsToCheck)}
+        dbgLog_->addDebugLog(
+            {dbgLog_->dbLogAppBuilderFolderCheckList(_pathsToCheck)}
         );
-        dbLog_->buildDebugLogs();
+        dbgLog_->buildDebugLogs();
 
         for(auto path : _pathsToCheck)
         {
@@ -275,7 +275,7 @@ bool AppBuilder::isInitRequired()
 AppBuilder::AppBuilder(DebugLogger* dbLog)
 {
 
-    dbLog_ = dbLog;
+    dbgLog_ = dbLog;
 
     // Prioritize making debug folder
     if(!isDirectoryGood("debug/"))
@@ -285,14 +285,14 @@ AppBuilder::AppBuilder(DebugLogger* dbLog)
 
     // Debug Logger
     {
-        dbLog_->addDebugLog(
+        dbgLog_->addDebugLog(
             {dbLog->dbLogClassAppBuilderInitialize}
         );
-        dbLog_->touchDbLog();
-        dbLog_->buildDebugLogs();
+        dbgLog_->touchDbLog();
+        dbgLog_->buildDebugLogs();
     }
 
-    fileMgmt_ = new FileManager(dbLog_);
+    fileMgmt_ = new FileManager(dbgLog_);
     isInitLaunch_ = true;
 }
 
@@ -301,11 +301,11 @@ AppBuilder::~AppBuilder()
 {
     //Debug Logger
     {
-        dbLog_->addDebugLog(
-            {dbLog_->dbLogClassAppBuilderDestruct}
+        dbgLog_->addDebugLog(
+            {dbgLog_->dbLogClassAppBuilderDestruct}
         );
 
-        dbLog_->buildDebugLogs();
+        dbgLog_->buildDebugLogs();
     }
 
     system("cls");

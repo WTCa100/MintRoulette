@@ -24,11 +24,11 @@ uint16_t Turn::randomizeNumber()
 void Turn::bettingPhase()
 {
     
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogGameTurnBettingPhase}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogGameTurnBettingPhase}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
     for(int i = 0; i < currentPlayers_.size(); i++)
     {
@@ -42,13 +42,13 @@ void Turn::bettingPhase()
             std::cout << "This bot have: " << currentPlayers_[i]->getBalance() << " worth of balance\n";
         }
         
-        dbLog_->addDebugLog(
-            {dbLog_->dbLogGameTurnShowPlayer(currentPlayers_[i]->getNickName(), currentPlayers_[i]->getBalance(), currentPlayers_[i]->getPlayerIsBot()),
-             dbLog_->dbLogLoggerGetMessage(gameLog_->logGameTurnStartPlayerState(currentPlayers_[i]->getNickName(),
+        dbgLog_->addDebugLog(
+            {dbgLog_->dbLogGameTurnShowPlayer(currentPlayers_[i]->getNickName(), currentPlayers_[i]->getBalance(), currentPlayers_[i]->getPlayerIsBot()),
+             dbgLog_->dbLogLoggerGetMessage(gameLog_->logGameTurnStartPlayerState(currentPlayers_[i]->getNickName(),
                                                                                  currentPlayers_[i]->getBalance()))}
         );
         
-        dbLog_->buildDebugLogs();
+        dbgLog_->buildDebugLogs();
 
         gameLog_->addLog(
             gameLog_->logGameTurnStartPlayerState(currentPlayers_[i]->getNickName(),
@@ -58,30 +58,30 @@ void Turn::bettingPhase()
         if(!currentPlayers_[i]->getPlayerIsBot())
         {
             // Check if player is willing to place bet
-            dbLog_->addDebugLog(
-                {dbLog_->dbLogGameTurnAskForBet(currentPlayers_[i]->getNickName())}
+            dbgLog_->addDebugLog(
+                {dbgLog_->dbLogGameTurnAskForBet(currentPlayers_[i]->getNickName())}
             );
 
             if(askForBet())
             {
-                Bet* playerBet = new Bet(dbLog_);
+                Bet* playerBet = new Bet(dbgLog_);
                 playerBet->buildBet(*currentPlayers_[i]);
                 playerAndBets_.insert(std::make_pair(currentPlayers_[i], playerBet));
 
-                dbLog_->addDebugLog(
-                    {dbLog_->dbLogLoggerGetMessage(gameLog_->logGamePlayerPlacedBet(currentPlayers_[i],
+                dbgLog_->addDebugLog(
+                    {dbgLog_->dbLogLoggerGetMessage(gameLog_->logGamePlayerPlacedBet(currentPlayers_[i],
                                                                                     playerBet->getAmmountBetted()) + " "),
-                     dbLog_->dbLogLoggerGetMessage(gameLog_->logGamePlayerBetDetails(currentPlayers_[i],
+                     dbgLog_->dbLogLoggerGetMessage(gameLog_->logGamePlayerBetDetails(currentPlayers_[i],
                                                                                      playerBet)),
-                     dbLog_->dbLogGameTurnMapUserWithBetValues(currentPlayers_[i]->getNickName(), std::to_string(playerBet->getAmmountBetted())),
-                     dbLog_->dbLogPlayerSetBetCount(currentPlayers_[i]->getNickName(), currentPlayers_[i]->getBetCount() + 1)
+                     dbgLog_->dbLogGameTurnMapUserWithBetValues(currentPlayers_[i]->getNickName(), std::to_string(playerBet->getAmmountBetted())),
+                     dbgLog_->dbLogPlayerSetBetCount(currentPlayers_[i]->getNickName(), currentPlayers_[i]->getBetCount() + 1)
                     }
                 );
 
                 currentPlayers_[i]->setBetCount(currentPlayers_[i]->getBetCount() + 1);
 
 
-                dbLog_->buildDebugLogs();
+                dbgLog_->buildDebugLogs();
 
                 gameLog_->addLog(
                     gameLog_->logGamePlayerPlacedBet(currentPlayers_[i],
@@ -92,12 +92,12 @@ void Turn::bettingPhase()
             }        
             else
             {
-                Bet* playerPass = new Bet(*currentPlayers_[i], dbLog_);
+                Bet* playerPass = new Bet(*currentPlayers_[i], dbgLog_);
                 playerAndBets_.insert(std::make_pair(currentPlayers_[i], playerPass));
 
-                dbLog_->addDebugLog(
-                    {dbLog_->dbLogPlayerSetPassCount(currentPlayers_[i]->getNickName(), currentPlayers_[i]->getPassCount() + 1),
-                     dbLog_->dbLogLoggerGetMessage(gameLog_->logGamePlayerPassed(currentPlayers_[i]->getNickName()))}
+                dbgLog_->addDebugLog(
+                    {dbgLog_->dbLogPlayerSetPassCount(currentPlayers_[i]->getNickName(), currentPlayers_[i]->getPassCount() + 1),
+                     dbgLog_->dbLogLoggerGetMessage(gameLog_->logGamePlayerPassed(currentPlayers_[i]->getNickName()))}
                 );
 
                 currentPlayers_[i]->setPassCount(currentPlayers_[i]->getPassCount() + 1);
@@ -111,21 +111,21 @@ void Turn::bettingPhase()
         else
         {
 
-            Ai* botBrain = new Ai(currentPlayers_[i], dbLog_);
+            Ai* botBrain = new Ai(currentPlayers_[i], dbgLog_);
 
             std::cout << "Bot player " << currentPlayers_[i]->getNickName() << std::endl;
 
             if(botBrain->chooseActionBetOrPass())
             {
 
-                dbLog_->addDebugLog(
-                    {dbLog_->dbLogGameTurnBetAiChooseActionWithBalanceResult(true, currentPlayers_[i]->getBalance())}
+                dbgLog_->addDebugLog(
+                    {dbgLog_->dbLogGameTurnBetAiChooseActionWithBalanceResult(true, currentPlayers_[i]->getBalance())}
                 );
 
-                dbLog_->buildDebugLogs();
+                dbgLog_->buildDebugLogs();
 
-                std::cout << "decided to bet:";
-                Bet* botBet = new Bet(dbLog_);
+                std::cout << "Decided to bet:";
+                Bet* botBet = new Bet(dbgLog_);
                 botBet = botBrain->buildBet(botBet);
                 switch (botBet->getBetType())
                 {
@@ -153,14 +153,14 @@ void Turn::bettingPhase()
                     break;
                 }
 
-                std::cout << "worth " << botBet->getAmmountBetted() << std::endl;
+                std::cout << "Worth: " << botBet->getAmmountBetted() << std::endl;
 
-                dbLog_->addDebugLog(
-                    {dbLog_->dbLogLoggerGetMessage(gameLog_->logGamePlayerPlacedBet(currentPlayers_[i],
+                dbgLog_->addDebugLog(
+                    {dbgLog_->dbLogLoggerGetMessage(gameLog_->logGamePlayerPlacedBet(currentPlayers_[i],
                                                    botBet->getAmmountBetted()) + " " +
                                                    gameLog_->logGamePlayerBetDetails(currentPlayers_[i],
                                                    botBet)),
-                     dbLog_->dbLogPlayerSetBetCount(currentPlayers_[i]->getNickName(), currentPlayers_[i]->getBetCount() + 1)}
+                     dbgLog_->dbLogPlayerSetBetCount(currentPlayers_[i]->getNickName(), currentPlayers_[i]->getBetCount() + 1)}
                 );
                 playerAndBets_.insert(std::make_pair(currentPlayers_[i], botBet));
                 currentPlayers_[i]->setBetCount(currentPlayers_[i]->getBetCount() + 1);
@@ -176,16 +176,16 @@ void Turn::bettingPhase()
             }
             else
             {
-                Bet* playerPass = new Bet(*currentPlayers_[i], dbLog_);
+                Bet* playerPass = new Bet(*currentPlayers_[i], dbgLog_);
                 playerAndBets_.insert(std::make_pair(currentPlayers_[i], playerPass));
                 currentPlayers_[i]->setPassCount(currentPlayers_[i]->getPassCount() + 1);
                 std::cout << "decided to pass this turn\n";
 
-                dbLog_->addDebugLog(
-                    {dbLog_->dbLogLoggerGetMessage(gameLog_->logGamePlayerPassed(currentPlayers_[i]->getNickName()))}
+                dbgLog_->addDebugLog(
+                    {dbgLog_->dbLogLoggerGetMessage(gameLog_->logGamePlayerPassed(currentPlayers_[i]->getNickName()))}
                 );
 
-                dbLog_->buildDebugLogs();
+                dbgLog_->buildDebugLogs();
                 gameLog_->addLog(
                     gameLog_->logGamePlayerPassed(currentPlayers_[i]->getNickName())
                 );
@@ -195,11 +195,11 @@ void Turn::bettingPhase()
             delete botBrain;
         }
 
-            dbLog_->addDebugLog(
-                {dbLog_->dbLogGameTurnPlayerEnd(currentPlayers_[i]->getNickName())}
+            dbgLog_->addDebugLog(
+                {dbgLog_->dbLogGameTurnPlayerEnd(currentPlayers_[i]->getNickName())}
             );
 
-            dbLog_->buildDebugLogs();
+            dbgLog_->buildDebugLogs();
 
         }
 }
@@ -207,30 +207,36 @@ void Turn::bettingPhase()
 void Turn::rollTheRoulette()
 {
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogGameTurnRollTheRoulettePhase}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogGameTurnRollTheRoulettePhase}
     );
 
-    dbLog_->buildDebugLogs();    
+    dbgLog_->buildDebugLogs();    
 
-    std::vector<uint16_t> numbers(3, 0);
+    std::vector<uint16_t> numbers(3, 37); // There will never be a situation where the number exceedes 36
     for(auto &i : numbers)
     {
         // bool isDuplicate = false;
-        i = randomizeNumber();
-        dbLog_->addDebugLog(
-            {dbLog_->dbLogGameTurnRollTheGetRandomNumber(i)}
+        int generatedNumber;
+        do
+        {
+            generatedNumber = randomizeNumber();
+        } while (std::count(numbers.begin(), numbers.end(), generatedNumber) != 0);
+        
+        i = generatedNumber;
+        dbgLog_->addDebugLog(
+            {dbgLog_->dbLogGameTurnRollTheGetRandomNumber(i)}
         );
     }
     size_t luckyNumPos = rand() % numbers.size();
     setLuckyNumber(numbers[luckyNumPos]);
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogGameTurnRollSetLuckyNumber(luckyNumber_),
-         dbLog_->dbLogLoggerGetMessage(gameLog_->logGameLuckyNumberGen(luckyNumber_))}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogGameTurnRollSetLuckyNumber(luckyNumber_),
+         dbgLog_->dbLogLoggerGetMessage(gameLog_->logGameLuckyNumberGen(luckyNumber_))}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
     std::cout << "Bets are now clossed!\n";
     std::cout << "The roulette is being rolled\n";
@@ -281,11 +287,11 @@ void Turn::rollTheRoulette()
             break;
         }
 
-        dbLog_->addDebugLog(
-            {dbLog_->dbLogGameTurnBetIsBetGood(i.first->getNickName(), i.second->getBetSucces())}
+        dbgLog_->addDebugLog(
+            {dbgLog_->dbLogGameTurnBetIsBetGood(i.first->getNickName(), i.second->getBetSucces())}
         );
 
-        dbLog_->buildDebugLogs();
+        dbgLog_->buildDebugLogs();
 
     }
 
@@ -294,7 +300,7 @@ void Turn::rollTheRoulette()
 bool Turn::askForBet()
 {
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
     std::string userInput;
     std::cout << "Are you betting (1) or passing (2)?\n";
@@ -329,12 +335,12 @@ bool Turn::askForBet()
 void Turn::summaryPhase()
 {
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogGameTurnSummaryPhase,
-         dbLog_->dbLogLoggerGetMessage(gameLog_->logGameTurnSummaryBeginMessage())}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogGameTurnSummaryPhase,
+         dbgLog_->dbLogLoggerGetMessage(gameLog_->logGameTurnSummaryBeginMessage())}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
     std::cout << "Summary!\n"; 
 
@@ -390,8 +396,8 @@ void Turn::summaryPhase()
             if(player.second->getBetSucces())
             {
 
-                dbLog_->addDebugLog(
-                    {dbLog_->dbLogGameTurnSumPlayerWonMoney(player.first->getNickName(), currentPlayerBalance, winAmmount)}
+                dbgLog_->addDebugLog(
+                    {dbgLog_->dbLogGameTurnSumPlayerWonMoney(player.first->getNickName(), currentPlayerBalance, winAmmount)}
                 );
 
                 std::cout << "and got it!\n";
@@ -404,8 +410,8 @@ void Turn::summaryPhase()
             else
             {
 
-                dbLog_->addDebugLog(
-                    {dbLog_->dbLogGameTurnSumPlayerNotWonMoney(player.first->getNickName(), currentPlayerBalance, player.second->getAmmountBetted())}
+                dbgLog_->addDebugLog(
+                    {dbgLog_->dbLogGameTurnSumPlayerNotWonMoney(player.first->getNickName(), currentPlayerBalance, player.second->getAmmountBetted())}
                 );
 
                 std::cout << "and did not got it right!\n";
@@ -414,13 +420,13 @@ void Turn::summaryPhase()
                 player.first->setMoneyLost(player.first->getMoneyLost() + player.second->getAmmountBetted());
             }
 
-            dbLog_->addDebugLog(
-                {dbLog_->dbLogLoggerGetMessage(gameLog_->logGamePlayerBetSummarize(player.first,
+            dbgLog_->addDebugLog(
+                {dbgLog_->dbLogLoggerGetMessage(gameLog_->logGamePlayerBetSummarize(player.first,
                                                                                    player.second,
                                                                                    winAmmount))}
             );
 
-            dbLog_->buildDebugLogs();
+            dbgLog_->buildDebugLogs();
 
             gameLog_->addLog(
                 gameLog_->logGamePlayerBetSummarize(player.first,
@@ -433,12 +439,12 @@ void Turn::summaryPhase()
 
     }
 
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogLoggerGetMessage(gameLog_->logGameTurnSummaryEndMessage()),
-         dbLog_->dbLogGameTurnIdEnd(turnNumber_)}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogLoggerGetMessage(gameLog_->logGameTurnSummaryEndMessage()),
+         dbgLog_->dbLogGameTurnIdEnd(turnNumber_)}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
     gameLog_->addLog(
         gameLog_->logGameTurnSummaryEndMessage()
@@ -450,10 +456,10 @@ void Turn::summaryPhase()
 
 void Turn::playTurn()
 {
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogGameTurnIdStarts(turnNumber_)}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogGameTurnIdStarts(turnNumber_)}
         );
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
     std::cout << "Turn " << turnNumber_ << std::endl;
     bettingPhase();
@@ -463,10 +469,10 @@ void Turn::playTurn()
 
 Turn::~Turn()
 {
-    dbLog_->addDebugLog(
-        {dbLog_->dbLogClassTurnDestruct}
+    dbgLog_->addDebugLog(
+        {dbgLog_->dbLogClassTurnDestruct}
     );
 
-    dbLog_->buildDebugLogs();
+    dbgLog_->buildDebugLogs();
 
 }

@@ -3,7 +3,7 @@ import subprocess
 
 if __name__ == "__main__":
     print("In order to update software version you must provide the following arguments:")
-    versionWeight = input("Version weight:")
+    versionWeight = input("Version weight (major, minor, patch):")
 
     if not (versionWeight.lower() == "major" or versionWeight.lower() == "minor" or versionWeight.lower() == "patch"):
         print("Those are forbidden arguments. Allowed arguments are \"major\", \"minor\" and \"patch\"")
