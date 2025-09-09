@@ -249,6 +249,8 @@ void Turn::rollTheRoulette()
     std::cout << "The lucky number is: ";
     Sleep(1000);
     std::cout << luckyNumber_ << std::endl;
+    Sleep(1000);
+
 
     gameLog_->addLog(
         gameLog_->logGameLuckyNumberGen(luckyNumber_)
